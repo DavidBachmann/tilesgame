@@ -69,7 +69,7 @@ const solve = (tiles: Tile[]) => {
     m.push(hits);
   }
 
-  const matches = m.filter((arr) => arr.some(Boolean));
+  const matches = m.filter((arr) => arr.some(Boolean)).flat();
 
   return { grid: tiles, matches };
 };
@@ -143,7 +143,7 @@ const swap_two_tiles_and_solve = (
   firstIdx: number,
   secondIdx: number,
   tiles: Tile[]
-): { tiles: Tile[]; matches: Tile[][][] } => {
+): { tiles: Tile[]; matches: Tile[][] } => {
   const firstNode = get_tile_at_index(firstIdx, tiles);
   const secondNode = get_tile_at_index(secondIdx, tiles);
 
