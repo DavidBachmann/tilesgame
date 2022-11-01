@@ -154,6 +154,15 @@ const swap_two_tiles_and_solve = (
   const g = grid.flat();
 
   if (firstNode && secondNode) {
+    // Clones the nodes
+    const tmp1 = { ...firstNode };
+    const tmp2 = { ...secondNode };
+
+    // Swap idx
+    secondNode.idx = tmp1.idx;
+    firstNode.idx = tmp2.idx;
+
+    // Swap positions
     g[firstIdx] = secondNode;
     g[secondIdx] = firstNode;
 
@@ -216,7 +225,7 @@ export default function App() {
   useEffect(() => {
     const [id1, id2] = selection;
 
-    if (id1 && id2) {
+    if (!Number.isNaN(id1 + id2)) {
       // TODO: if id1 og id2 is a valid selection...
       const { grid, matches } = swap_two_tiles_and_solve(id1, id2, latestGrid);
       console.log(matches);
