@@ -1,4 +1,8 @@
-import { ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Grid as TGrid, Tile, TileType, Directions } from "./types";
+import { CONSTANTS } from "./constants";
+import { useTileStore } from "./state";
+import { Grid, Row } from "./components/Grid";
 
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -7,36 +11,7 @@ function randomBetween(min: number, max: number) {
 const expand = (xs: any[], n: number): any[] =>
   xs.length <= n ? [xs] : [xs.slice(0, n), ...expand(xs.slice(n), n)];
 
-type Relationships = {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-};
-
-type TilePosition = {
-  row: number;
-  col: number;
-};
-
-type TileType = 0 | 1 | 2 | 3;
-
-type Tile = {
-  relationships: Relationships;
-  type: TileType;
-  idx: number;
-  position?: TilePosition;
-};
-
-const CONSTANTS = {
-  DIRECTIONS: ["top", "right", "bottom", "left"] as const,
-  REGULAR_HIT: 3,
-};
-
-type Directions = typeof CONSTANTS.DIRECTIONS[number];
-type Grid = Tile[][];
-
-const initialize_grid = (count: 6) => {
+const initialize_grid = (count: number) => {
   let grid = [];
   const dimensions = count * count;
 
@@ -57,7 +32,7 @@ const initialize_grid = (count: 6) => {
   return calculate_relationships(grid, count);
 };
 
-const calculate_relationships = (nodes: Tile[], dimension: number): Grid => {
+const calculate_relationships = (nodes: Tile[], dimension: number): TGrid => {
   const newNodes = [];
 
   // Go through each node in the grid and figure out their positional relationship
@@ -82,9 +57,10 @@ const calculate_relationships = (nodes: Tile[], dimension: number): Grid => {
   return grid;
 };
 
-// Solve takes a grid and finds matches
-const solve = (grid: Grid) => {
+// `Solve` takes a grid and finds matches
+const solve = (grid: TGrid) => {
   const flat = grid.flat();
+
   const m = [];
 
   for (let i = 0; i < flat.length; i++) {
@@ -101,17 +77,17 @@ const solve = (grid: Grid) => {
   return { grid, matches };
 };
 
-// Create tries to generate a grid without any matches
-const create = (): Grid => {
-  const newGrid = initialize_grid(6);
-  const flat = newGrid.flat();
+// `Create` tries to generate a grid without any matches
+const create = (): TGrid => {
+  const new_grid = initialize_grid(CONSTANTS.DIMENSIONS);
+  const flat = new_grid.flat();
 
   const m = [];
 
   for (let i = 0; i < flat.length; i++) {
     const node = flat[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
-      seek(node, direction, newGrid)
+      seek(node, direction, new_grid)
     ).filter((arr) => arr.length >= CONSTANTS.REGULAR_HIT);
 
     m.push(hits);
@@ -125,22 +101,28 @@ const create = (): Grid => {
   }
 
   // That's better
-  return newGrid;
+  return new_grid;
 };
 
 const seek = (
   node: Tile,
   direction: Directions,
-  grid: Grid,
+  grid: TGrid,
   hits: Tile[] = []
 ): Tile[] => {
   const arr = [...hits];
 
   arr.push(node);
 
-  const nextNode = getTileAtIndex(node.relationships[direction], grid);
+  const nextNode = get_tile_at_index(node.relationships[direction], grid);
 
   if (nextNode === null) {
+    return arr;
+  }
+
+  if (node.idx === nextNode.idx) {
+    // We're crashing here.
+    console.log("Still happening");
     return arr;
   }
 
@@ -151,7 +133,7 @@ const seek = (
   return seek(nextNode, direction, grid, arr);
 };
 
-const getTileAtIndex = (index: number, grid: Grid) => {
+const get_tile_at_index = (index: number, grid: TGrid) => {
   const flat = grid.flat();
   const found = flat[index];
 
@@ -162,15 +144,34 @@ const getTileAtIndex = (index: number, grid: Grid) => {
   return null;
 };
 
-const Grid = ({ children }: { children: ReactNode }) => (
-  <div style={{ display: "flex", flexDirection: "column" }}>{children}</div>
-);
+const swap_two_tiles_and_solve = (
+  firstIdx: number,
+  secondIdx: number,
+  grid: TGrid
+): { grid: TGrid; matches: Tile[][][] } => {
+  const firstNode = get_tile_at_index(firstIdx, grid);
+  const secondNode = get_tile_at_index(secondIdx, grid);
+  const g = grid.flat();
 
-const Row = ({ children }: { children: ReactNode }) => (
-  <div style={{ display: "flex" }}>{children}</div>
-);
+  if (firstNode && secondNode) {
+    g[firstIdx] = secondNode;
+    g[secondIdx] = firstNode;
 
-const TileDiv = ({ type, idx, relationships }: Tile) => {
+    const expanded = expand(g, CONSTANTS.DIMENSIONS);
+    const { grid: ugh, matches } = solve(expanded);
+    const grid = calculate_relationships(ugh.flat(), CONSTANTS.DIMENSIONS);
+
+    return { grid, matches };
+  }
+
+  return { grid, matches: [] };
+};
+
+type TileB = Tile & {
+  onClick?: () => void;
+};
+
+const TileDiv = ({ type, idx, relationships, onClick }: TileB) => {
   const bg = {
     0: "purple",
     1: "green",
@@ -184,33 +185,65 @@ const TileDiv = ({ type, idx, relationships }: Tile) => {
         padding: 10,
         background: bg[type],
       }}
-      title={Object.values(relationships).toString()}
+      title={`I am ${idx} (${Object.values(relationships).toString()})`}
+      onClick={onClick}
     >
       {String(idx).padStart(2, "0")}
     </div>
   );
 };
 
-export default function App() {
-  const grid = create();
-  const { matches } = solve(grid);
+const queue = (insert: number, arr: number[]): number[] => {
+  let a = [...arr];
 
-  console.log(matches);
+  a.push(insert);
+
+  if (a.length > 2) {
+    a = [insert];
+  }
+
+  return a;
+};
+
+export default function App() {
+  const latestGrid = useTileStore((state) => state.grid);
+  const update_grid = useTileStore((state) => state.actions.update_grid);
+
+  useMemo(() => update_grid(create()), []);
+
+  const [selection, set] = useState<number[]>([]);
+
+  useEffect(() => {
+    const [id1, id2] = selection;
+
+    if (id1 && id2) {
+      // TODO: if id1 og id2 is a valid selection...
+      const { grid, matches } = swap_two_tiles_and_solve(id1, id2, latestGrid);
+      console.log(matches);
+
+      update_grid(grid);
+    }
+  }, [selection]);
 
   return (
-    <Grid>
-      {grid.map((row, index) => (
-        <Row key={index}>
-          {row.map((tile) => (
-            <TileDiv
-              key={tile.idx}
-              idx={tile.idx}
-              type={tile.type as TileType}
-              relationships={tile.relationships}
-            />
-          ))}
-        </Row>
-      ))}
-    </Grid>
+    <>
+      <Grid>
+        {latestGrid.map((row, index) => (
+          <Row key={index}>
+            {row.map((tile) => (
+              <TileDiv
+                key={tile.idx}
+                idx={tile.idx}
+                type={tile.type as TileType}
+                relationships={tile.relationships}
+                onClick={() => {
+                  set((prev) => queue(tile.idx, prev));
+                }}
+              />
+            ))}
+          </Row>
+        ))}
+      </Grid>
+    </>
   );
 }

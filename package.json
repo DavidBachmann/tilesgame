@@ -15,7 +15,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.146.0",
-    "three-stdlib": "^2.17.3"
+    "three-stdlib": "^2.17.3",
+    "zustand": "^4.1.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.22",
