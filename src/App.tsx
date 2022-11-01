@@ -32,7 +32,7 @@ const initialize_grid = (count: number) => {
   return calculate_relationships(grid, count);
 };
 
-const calculate_relationships = (nodes: Tile[], dimension: number): TGrid => {
+const calculate_relationships = (nodes: Tile[], dimension: number): Tile[] => {
   const newNodes = [];
 
   // Go through each node in the grid and figure out their positional relationship
@@ -53,20 +53,17 @@ const calculate_relationships = (nodes: Tile[], dimension: number): TGrid => {
     };
   }
 
-  const grid = expand(newNodes, dimension);
-  return grid;
+  return newNodes;
 };
 
 // `Solve` takes a grid and finds matches
-const solve = (grid: TGrid) => {
-  const flat = grid.flat();
-
+const solve = (tiles: Tile[]) => {
   const m = [];
 
-  for (let i = 0; i < flat.length; i++) {
-    const node = flat[i];
+  for (let i = 0; i < tiles.length; i++) {
+    const node = tiles[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
-      seek(node, direction, grid)
+      seek(node, direction, tiles)
     ).filter((arr) => arr.length >= CONSTANTS.REGULAR_HIT);
 
     m.push(hits);
@@ -74,18 +71,17 @@ const solve = (grid: TGrid) => {
 
   const matches = m.filter((arr) => arr.some(Boolean));
 
-  return { grid, matches };
+  return { grid: tiles, matches };
 };
 
 // `Create` tries to generate a grid without any matches
-const create = (): TGrid => {
+const create = (): Tile[] => {
   const new_grid = initialize_grid(CONSTANTS.DIMENSIONS);
-  const flat = new_grid.flat();
 
   const m = [];
 
-  for (let i = 0; i < flat.length; i++) {
-    const node = flat[i];
+  for (let i = 0; i < new_grid.length; i++) {
+    const node = new_grid[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
       seek(node, direction, new_grid)
     ).filter((arr) => arr.length >= CONSTANTS.REGULAR_HIT);
@@ -107,14 +103,14 @@ const create = (): TGrid => {
 const seek = (
   node: Tile,
   direction: Directions,
-  grid: TGrid,
+  tiles: Tile[],
   hits: Tile[] = []
 ): Tile[] => {
   const arr = [...hits];
 
   arr.push(node);
 
-  const nextNode = get_tile_at_index(node.relationships[direction], grid);
+  const nextNode = get_tile_at_index(node.relationships[direction], tiles);
 
   if (nextNode === null) {
     return arr;
@@ -130,12 +126,11 @@ const seek = (
     return arr;
   }
 
-  return seek(nextNode, direction, grid, arr);
+  return seek(nextNode, direction, tiles, arr);
 };
 
-const get_tile_at_index = (index: number, grid: TGrid) => {
-  const flat = grid.flat();
-  const found = flat[index];
+const get_tile_at_index = (index: number, tiles: Tile[]) => {
+  const found = tiles[index];
 
   if (found) {
     return found;
@@ -147,11 +142,10 @@ const get_tile_at_index = (index: number, grid: TGrid) => {
 const swap_two_tiles_and_solve = (
   firstIdx: number,
   secondIdx: number,
-  grid: TGrid
-): { grid: TGrid; matches: Tile[][][] } => {
-  const firstNode = get_tile_at_index(firstIdx, grid);
-  const secondNode = get_tile_at_index(secondIdx, grid);
-  const g = grid.flat();
+  tiles: Tile[]
+): { tiles: Tile[]; matches: Tile[][][] } => {
+  const firstNode = get_tile_at_index(firstIdx, tiles);
+  const secondNode = get_tile_at_index(secondIdx, tiles);
 
   if (firstNode && secondNode) {
     // Clones the nodes
@@ -163,17 +157,16 @@ const swap_two_tiles_and_solve = (
     firstNode.idx = tmp2.idx;
 
     // Swap positions
-    g[firstIdx] = secondNode;
-    g[secondIdx] = firstNode;
+    tiles[firstIdx] = secondNode;
+    tiles[secondIdx] = firstNode;
 
-    const expanded = expand(g, CONSTANTS.DIMENSIONS);
-    const { grid: ugh, matches } = solve(expanded);
-    const grid = calculate_relationships(ugh.flat(), CONSTANTS.DIMENSIONS);
+    const unsolved = calculate_relationships(tiles, CONSTANTS.DIMENSIONS);
+    const { grid, matches } = solve(unsolved);
 
-    return { grid, matches };
+    return { tiles: grid, matches };
   }
 
-  return { grid, matches: [] };
+  return { tiles, matches: [] };
 };
 
 type TileB = Tile & {
@@ -215,29 +208,38 @@ const queue = (insert: number, arr: number[]): number[] => {
 };
 
 export default function App() {
-  const latestGrid = useTileStore((state) => state.grid);
-  const update_grid = useTileStore((state) => state.actions.update_grid);
+  const latestTiles = useTileStore((state) => state.tiles);
+  const update = useTileStore((state) => state.actions.update);
 
-  useMemo(() => update_grid(create()), []);
+  useMemo(() => update(create()), []);
 
   const [selection, set] = useState<number[]>([]);
+  const [matches, setMatches] = useState<any[]>([]);
 
   useEffect(() => {
     const [id1, id2] = selection;
 
     if (!Number.isNaN(id1 + id2)) {
-      // TODO: if id1 og id2 is a valid selection...
-      const { grid, matches } = swap_two_tiles_and_solve(id1, id2, latestGrid);
-      console.log(matches);
+      // TODO: _AND_ if id1 og id2 is a valid selection...
+      const { tiles, matches } = swap_two_tiles_and_solve(
+        id1,
+        id2,
+        latestTiles
+      );
 
-      update_grid(grid);
+      setMatches(matches);
+      update(tiles);
     }
   }, [selection]);
+
+  console.log(matches);
+
+  const grid = expand(latestTiles, CONSTANTS.DIMENSIONS) as TGrid;
 
   return (
     <>
       <Grid>
-        {latestGrid.map((row, index) => (
+        {grid.map((row, index) => (
           <Row key={index}>
             {row.map((tile) => (
               <TileDiv
