@@ -12,13 +12,17 @@ const expand = (xs: any[], n: number): any[] =>
   xs.length <= n ? [xs] : [xs.slice(0, n), ...expand(xs.slice(n), n)];
 
 const initialize_grid = (count: number) => {
-  let grid = [];
+  const grid = [];
   const dimensions = count * count;
 
   for (let i = 0; i < dimensions; i++) {
     const tile: Tile = {
       idx: i,
       type: randomBetween(0, 3) as TileType,
+      position: {
+        row: Math.floor(i / count),
+        col: i % count,
+      },
       relationships: {
         top: -1,
         right: -1,
@@ -26,6 +30,7 @@ const initialize_grid = (count: number) => {
         left: -1,
       },
     };
+
     grid.push(tile);
   }
 
@@ -108,20 +113,23 @@ const seek = (
 ): Tile[] => {
   const arr = [...hits];
 
+  // Always push this node
   arr.push(node);
 
   const nextNode = get_tile_at_index(node.relationships[direction], tiles);
 
+  // There is no next node, we're done!
   if (nextNode === null) {
     return arr;
   }
 
+  // We're crashing here for some reason.
   if (node.idx === nextNode.idx) {
-    // We're crashing here.
     console.log("Still happening");
     return arr;
   }
 
+  // Next node is of another type, we're not interested in exploring further.
   if (node.type !== nextNode.type) {
     return arr;
   }
@@ -140,25 +148,28 @@ const get_tile_at_index = (index: number, tiles: Tile[]) => {
 };
 
 const swap_two_tiles_and_solve = (
-  firstIdx: number,
-  secondIdx: number,
+  firstTile: Tile,
+  secondTile: Tile,
   tiles: Tile[]
 ): { tiles: Tile[]; matches: Tile[][] } => {
-  const firstNode = get_tile_at_index(firstIdx, tiles);
-  const secondNode = get_tile_at_index(secondIdx, tiles);
-
-  if (firstNode && secondNode) {
+  if (firstTile && secondTile) {
     // Clones the nodes
-    const tmp1 = { ...firstNode };
-    const tmp2 = { ...secondNode };
+    const tmp1 = { ...firstTile };
+    const tmp2 = { ...secondTile };
+    const tmpIdx1 = tmp1.idx;
+    const tmpIdx2 = tmp2.idx;
 
     // Swap idx
-    secondNode.idx = tmp1.idx;
-    firstNode.idx = tmp2.idx;
+    secondTile.idx = tmp1.idx;
+    firstTile.idx = tmp2.idx;
+
+    // Swap positional data
+    secondTile.position = tmp1.position;
+    firstTile.position = tmp2.position;
 
     // Swap positions
-    tiles[firstIdx] = secondNode;
-    tiles[secondIdx] = firstNode;
+    tiles[tmpIdx1] = secondTile;
+    tiles[tmpIdx2] = firstTile;
 
     const unsolved = calculate_relationships(tiles, CONSTANTS.DIMENSIONS);
     const { grid, matches } = solve(unsolved);
@@ -173,7 +184,7 @@ type TileB = Tile & {
   onClick?: () => void;
 };
 
-const TileDiv = ({ type, idx, relationships, onClick }: TileB) => {
+const TileDiv = ({ type, idx, position, relationships, onClick }: TileB) => {
   const bg = {
     0: "purple",
     1: "green",
@@ -187,7 +198,9 @@ const TileDiv = ({ type, idx, relationships, onClick }: TileB) => {
         padding: 10,
         background: bg[type],
       }}
-      title={`I am ${idx} (${Object.values(relationships).toString()})`}
+      title={`I am ${idx}, row ${position.row}, col ${
+        position.col
+      }, (${Object.values(relationships).toString()})`}
       onClick={onClick}
     >
       {String(idx).padStart(2, "0")}
@@ -207,6 +220,19 @@ const queue = (insert: number, arr: number[]): number[] => {
   return a;
 };
 
+const check_swap = (tile1: Tile, tile2: Tile) => {
+  if (
+    Object.values(tile1.relationships).includes(tile2.idx) &&
+    Object.values(tile2.relationships).includes(tile1.idx)
+  ) {
+    console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);
+    return true;
+  }
+
+  console.log(`Can't swap ${tile1.idx} and ${tile2.idx}`);
+  return false;
+};
+
 export default function App() {
   const latestTiles = useTileStore((state) => state.tiles);
   const update = useTileStore((state) => state.actions.update);
@@ -214,25 +240,35 @@ export default function App() {
   useMemo(() => update(create()), []);
 
   const [selection, set] = useState<number[]>([]);
-  const [matches, setMatches] = useState<any[]>([]);
+  const [matches, setMatches] = useState<Tile[]>([]);
 
   useEffect(() => {
     const [id1, id2] = selection;
 
+    // If both are actually number
     if (!Number.isNaN(id1 + id2)) {
-      // TODO: _AND_ if id1 og id2 is a valid selection...
-      const { tiles, matches } = swap_two_tiles_and_solve(
-        id1,
-        id2,
-        latestTiles
-      );
+      const tile1 = get_tile_at_index(id1, latestTiles);
+      const tile2 = get_tile_at_index(id2, latestTiles);
 
-      setMatches(matches);
-      update(tiles);
+      if (!tile1 || !tile2) {
+        throw new Error("Tile not found");
+      }
+
+      const legalSwap = check_swap(tile1, tile2);
+
+      // and if this is a legal move
+      if (legalSwap) {
+        const { tiles, matches } = swap_two_tiles_and_solve(
+          tile1,
+          tile2,
+          latestTiles
+        );
+
+        setMatches(matches.flat());
+        update(tiles);
+      }
     }
   }, [selection]);
-
-  console.log(matches);
 
   const grid = expand(latestTiles, CONSTANTS.DIMENSIONS) as TGrid;
 
@@ -241,17 +277,22 @@ export default function App() {
       <Grid>
         {grid.map((row, index) => (
           <Row key={index}>
-            {row.map((tile) => (
-              <TileDiv
-                key={tile.idx}
-                idx={tile.idx}
-                type={tile.type as TileType}
-                relationships={tile.relationships}
-                onClick={() => {
-                  set((prev) => queue(tile.idx, prev));
-                }}
-              />
-            ))}
+            {row.map((tile) => {
+              const hit = matches.some((el) => el.idx === tile.idx);
+              return (
+                <div key={tile.idx} style={{ opacity: hit ? 0 : 1 }}>
+                  <TileDiv
+                    idx={tile.idx}
+                    type={tile.type as TileType}
+                    position={tile.position}
+                    relationships={tile.relationships}
+                    onClick={() => {
+                      set((prev) => queue(tile.idx, prev));
+                    }}
+                  />
+                </div>
+              );
+            })}
           </Row>
         ))}
       </Grid>

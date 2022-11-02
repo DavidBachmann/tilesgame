@@ -18,7 +18,7 @@ export type Tile = {
   relationships: Relationships;
   type: TileType;
   idx: number;
-  position?: TilePosition;
+  position: TilePosition;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];
