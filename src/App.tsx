@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { Grid as TGrid, Tile, TileType, Directions } from "./types";
+import { v4 } from "uuid";
+import { Tile, TileType, Directions } from "./types";
 import { CONSTANTS } from "./constants";
 import { useTileStore } from "./state";
-import { Grid, Row } from "./components/Grid";
+import { Grid } from "./components/Grid";
 
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-
-const expand = (xs: any[], n: number): any[] =>
-  xs.length <= n ? [xs] : [xs.slice(0, n), ...expand(xs.slice(n), n)];
 
 const initialize_grid = (count: number) => {
   const grid = [];
@@ -17,6 +15,7 @@ const initialize_grid = (count: number) => {
 
   for (let i = 0; i < dimensions; i++) {
     const tile: Tile = {
+      id: v4(),
       idx: i,
       type: randomBetween(0, 3) as TileType,
       position: {
@@ -61,6 +60,46 @@ const calculate_relationships = (nodes: Tile[], dimension: number): Tile[] => {
   return newNodes;
 };
 
+// Matches get turned into empty tiles
+const create_empty_tile_at_index = (idx: number): Tile => ({
+  id: v4(),
+  type: -1,
+  relationships: { top: -1, right: -1, bottom: -1, left: -1 },
+  idx,
+  position: {
+    row: -1,
+    col: -1,
+  },
+});
+
+// Deleted matches need to bubble up, moving tiles down
+const move_down = ({ grid, matches }: { grid: Tile[]; matches: Tile[][] }) => {
+  const clone = [...grid];
+
+  return { grid: clone, matches };
+};
+
+// Receives a list of matches and deletes them from the grid
+// by replacing them with empties.
+const delete_matches = ({
+  tiles,
+  matches,
+}: {
+  tiles: Tile[];
+  matches: Tile[][];
+}) => {
+  const clone = [...tiles];
+  const uniqueMatches = new Set<number>();
+  matches.flat().forEach((obj) => uniqueMatches.add(obj.idx));
+  const removedIdx = Array.from(uniqueMatches);
+
+  for (let idx of removedIdx) {
+    clone[idx] = create_empty_tile_at_index(idx);
+  }
+
+  return { grid: clone, matches };
+};
+
 // `Solve` takes a grid and finds matches
 const solve = (tiles: Tile[]) => {
   const m = [];
@@ -76,7 +115,7 @@ const solve = (tiles: Tile[]) => {
 
   const matches = m.filter((arr) => arr.some(Boolean)).flat();
 
-  return { grid: tiles, matches };
+  return { tiles, matches };
 };
 
 // `Create` tries to generate a grid without any matches
@@ -156,12 +195,13 @@ const swap_two_tiles_and_solve = (
     // Clones the nodes
     const tmp1 = { ...firstTile };
     const tmp2 = { ...secondTile };
+
     const tmpIdx1 = tmp1.idx;
     const tmpIdx2 = tmp2.idx;
 
     // Swap idx
-    secondTile.idx = tmp1.idx;
-    firstTile.idx = tmp2.idx;
+    secondTile.idx = tmpIdx1;
+    firstTile.idx = tmpIdx2;
 
     // Swap positional data
     secondTile.position = tmp1.position;
@@ -172,7 +212,7 @@ const swap_two_tiles_and_solve = (
     tiles[tmpIdx2] = firstTile;
 
     const unsolved = calculate_relationships(tiles, CONSTANTS.DIMENSIONS);
-    const { grid, matches } = solve(unsolved);
+    const { grid, matches } = move_down(delete_matches(solve(unsolved)));
 
     return { tiles: grid, matches };
   }
@@ -186,10 +226,11 @@ type TileB = Tile & {
 
 const TileDiv = ({ type, idx, position, relationships, onClick }: TileB) => {
   const bg = {
-    0: "purple",
-    1: "green",
-    2: "blue",
-    3: "red",
+    "-1": "black",
+    "0": "purple",
+    "1": "green",
+    "2": "blue",
+    "3": "red",
   };
   return (
     <div
@@ -270,30 +311,24 @@ export default function App() {
     }
   }, [selection]);
 
-  const grid = expand(latestTiles, CONSTANTS.DIMENSIONS) as TGrid;
+  const grid = latestTiles;
 
   return (
     <>
       <Grid>
-        {grid.map((row, index) => (
-          <Row key={index}>
-            {row.map((tile) => {
-              const hit = matches.some((el) => el.idx === tile.idx);
-              return (
-                <div key={tile.idx} style={{ opacity: hit ? 0 : 1 }}>
-                  <TileDiv
-                    idx={tile.idx}
-                    type={tile.type as TileType}
-                    position={tile.position}
-                    relationships={tile.relationships}
-                    onClick={() => {
-                      set((prev) => queue(tile.idx, prev));
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </Row>
+        {grid.map((tile) => (
+          <div key={tile.id}>
+            <TileDiv
+              id={tile.id}
+              idx={tile.idx}
+              type={tile.type as TileType}
+              position={tile.position}
+              relationships={tile.relationships}
+              onClick={() => {
+                set((prev) => queue(tile.idx, prev));
+              }}
+            />
+          </div>
         ))}
       </Grid>
     </>

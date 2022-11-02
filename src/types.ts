@@ -12,9 +12,10 @@ export type TilePosition = {
   col: number;
 };
 
-export type TileType = 0 | 1 | 2 | 3;
+export type TileType = -1 | 0 | 1 | 2 | 3;
 
 export type Tile = {
+  id: string;
   relationships: Relationships;
   type: TileType;
   idx: number;
@@ -22,4 +23,3 @@ export type Tile = {
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];
-export type Grid = Tile[][];

@@ -16,11 +16,13 @@
     "react-dom": "^18.2.0",
     "three": "^0.146.0",
     "three-stdlib": "^2.17.3",
+    "uuid": "^9.0.0",
     "zustand": "^4.1.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
+    "@types/uuid": "^8.3.4",
     "@vitejs/plugin-react": "^2.2.0",
     "typescript": "^4.6.4",
     "vite": "^3.2.0"
