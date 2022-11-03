@@ -1,6 +1,8 @@
+import { motion } from "framer-motion";
 import { TileCell } from "../types";
 
 export const Tile = ({
+  id,
   type,
   idx,
   relationships,
@@ -16,7 +18,9 @@ export const Tile = ({
   };
 
   return (
-    <div
+    <motion.div
+      layoutId={String(id)}
+      layout="position"
       style={{
         fontSize: 18,
         padding: 10,
@@ -34,6 +38,6 @@ export const Tile = ({
       >
         {String(idx).padStart(2, "0")}
       </div>
-    </div>
+    </motion.div>
   );
 };
