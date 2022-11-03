@@ -7,11 +7,6 @@ export type Relationships = {
   left: number;
 };
 
-export type TilePosition = {
-  row: number;
-  col: number;
-};
-
 export type TileType = -1 | 0 | 1 | 2 | 3;
 
 export type Tile = {
@@ -19,7 +14,10 @@ export type Tile = {
   relationships: Relationships;
   type: TileType;
   idx: number;
-  position: TilePosition;
+};
+
+export type TileCell = Tile & {
+  onClick?: () => void;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];
