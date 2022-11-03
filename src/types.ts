@@ -18,6 +18,7 @@ export type Tile = {
 
 export type TileCell = Tile & {
   onClick?: () => void;
+  selected?: boolean;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];

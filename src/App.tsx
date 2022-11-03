@@ -84,9 +84,7 @@ const delete_matches = ({
   }
 
   // Deleted tiles need to know their relationships, so we recalculate.
-  const g = calculate_relationships(clone, CONSTANTS.DIMENSIONS);
-
-  return g;
+  return calculate_relationships(clone, CONSTANTS.DIMENSIONS);
 };
 
 // `Solve` takes a grid and finds matches
@@ -153,7 +151,7 @@ const seek = (
 
   // We're crashing here for some reason.
   if (node.idx === nextNode.idx) {
-    console.log("Still happening");
+    console.log("node.idx === nextNode.idx");
     return arr;
   }
 
@@ -218,9 +216,12 @@ const queue = (insert: number, arr: number[]): number[] => {
 };
 
 const check_swap = (tile1: Tile, tile2: Tile) => {
+  // TODO: This allows too much
   if (
     Object.values(tile1.relationships).includes(tile2.idx) &&
-    Object.values(tile2.relationships).includes(tile1.idx)
+    Object.values(tile2.relationships).includes(tile1.idx) &&
+    tile1.type !== -1 &&
+    tile2.type !== -1
   ) {
     console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);
     return true;
@@ -231,8 +232,8 @@ const check_swap = (tile1: Tile, tile2: Tile) => {
 };
 
 const bubble_up = (tiles: Tile[]) => {
-  const t: Tile[] = [...tiles];
-  let returned: Tile[] = t;
+  let t: Tile[] = [...tiles];
+  let returned = t;
 
   for (let i = 0; i < t.length; i++) {
     const tile = t[i];
@@ -241,7 +242,7 @@ const bubble_up = (tiles: Tile[]) => {
       // Figure out how many tiles are above this one.
       let totalAbove = Math.floor(tile.idx / CONSTANTS.DIMENSIONS) ?? 0;
 
-      console.log(`Above ${tile.idx}: ${totalAbove}`);
+      // console.log(`Above ${tile.idx}: ${totalAbove}`);
 
       const indicesAbove = Array.from(
         { length: totalAbove },
@@ -322,6 +323,8 @@ export default function App() {
     return <div>wtf</div>;
   }
 
+  console.log("render");
+
   return (
     <Grid>
       {grid.map((tile) => (
@@ -330,6 +333,7 @@ export default function App() {
             id={tile.id}
             idx={tile.idx}
             type={tile.type as TileType}
+            selected={selection.includes(tile.idx)}
             relationships={tile.relationships}
             onClick={() => {
               set((prev) => queue(tile.idx, prev));

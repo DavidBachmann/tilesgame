@@ -1,6 +1,12 @@
 import { TileCell } from "../types";
 
-export const Tile = ({ type, idx, relationships, onClick }: TileCell) => {
+export const Tile = ({
+  type,
+  idx,
+  relationships,
+  onClick,
+  selected,
+}: TileCell) => {
   const bg = {
     "-1": "black",
     "0": "purple",
@@ -20,7 +26,9 @@ export const Tile = ({ type, idx, relationships, onClick }: TileCell) => {
       ).toString()})`}
       onClick={onClick}
     >
-      {String(idx).padStart(2, "0")}
+      <div style={{ background: selected ? "red" : "transparent" }}>
+        {String(idx).padStart(2, "0")}
+      </div>
     </div>
   );
 };
