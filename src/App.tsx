@@ -1,5 +1,6 @@
-import { useMemo } from "react";
-import { TileType } from "./types";
+import { useCallback, useMemo } from "react";
+import { PanInfo } from "framer-motion";
+import { Relationships, TileType } from "./types";
 import { useTileStore } from "./state";
 import { delay } from "./utils";
 import { Grid } from "./components/Grid";
@@ -26,6 +27,33 @@ export default function App() {
     delay(500).then(spawnTiles);
   }
 
+  const onDrag = useCallback(
+    (info: PanInfo, idx: number, relationships: Relationships) => {
+      const xOrY = info.offset.x === 0 && info.offset.y !== 0 ? "y" : "x";
+      const direction = Math.sign(info.offset[xOrY]);
+
+      addToSelection(idx);
+
+      if (xOrY === "x") {
+        if (direction === -1) {
+          addToSelection(relationships.left);
+        }
+        if (direction === 1) {
+          addToSelection(relationships.right);
+        }
+      }
+      if (xOrY === "y") {
+        if (direction === -1) {
+          addToSelection(relationships.top);
+        }
+        if (direction === 1) {
+          addToSelection(relationships.bottom);
+        }
+      }
+    },
+    [addToSelection]
+  );
+
   return (
     <UI>
       <Grid>
@@ -37,9 +65,7 @@ export default function App() {
               type={tile.type as TileType}
               selected={selection.includes(tile.idx)}
               relationships={tile.relationships}
-              onClick={() => {
-                addToSelection(tile.idx);
-              }}
+              onDrag={(info) => onDrag(info, tile.idx, tile.relationships)}
             />
           </div>
         ))}

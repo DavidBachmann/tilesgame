@@ -6,19 +6,25 @@ export const Tile = ({
   type,
   idx,
   relationships,
-  onClick,
+  onDrag,
   selected,
 }: TileCell) => {
   return (
-    <css.root
-      layoutId={String(id)}
-      layout="position"
-      data-selected={selected}
-      data-type={type}
-      title={`idx ${idx}, type ${type}, (${Object.values(
-        relationships
-      ).toString()})`}
-      onClick={onClick}
-    ></css.root>
+    <css.root layoutId={String(id)} layout="position">
+      <css.tile
+        drag
+        dragTransition={{ bounceStiffness: 50, bounceDamping: 10 }}
+        dragDirectionLock
+        dragSnapToOrigin
+        dragConstraints={{ top: 16, left: 16, right: 16, bottom: 16 }}
+        onDragStart={(_, info) => onDrag(info)}
+        dragElastic={0.05}
+        data-selected={selected}
+        data-type={type}
+        title={`idx ${idx}, type ${type}, (${Object.values(
+          relationships
+        ).toString()})`}
+      ></css.tile>
+    </css.root>
   );
 };

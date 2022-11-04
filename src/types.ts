@@ -1,3 +1,4 @@
+import { PanInfo } from "framer-motion";
 import { CONSTANTS } from "./constants";
 
 export type Relationships = {
@@ -18,6 +19,7 @@ export type Tile = {
 
 export type TileCell = Tile & {
   onClick?: () => void;
+  onDrag: (info: PanInfo) => void;
   selected?: boolean;
 };
 

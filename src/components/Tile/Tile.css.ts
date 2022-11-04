@@ -6,7 +6,9 @@ const YELLOW = { light: "#ffca3a", medium: "#CB9D00" };
 const GREEN = { light: "#8ac926", medium: "#60A000" };
 const BLUE = { light: "#1982c4", medium: "#004F8C" };
 
-export const root = styled(motion.div)({
+export const root = styled(motion.div)({});
+
+export const tile = styled(motion.div)({
   width: 48,
   height: 48,
   borderRadius: 4,
