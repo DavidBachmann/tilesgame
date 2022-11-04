@@ -23,18 +23,20 @@ const initialState: State = {
   selection: [],
 };
 
-const prepare = (unsolved: Tile[]) => {
-  // Bubbling up, after deleting matches, and solving a grid
-  // can leave behind new matches. Can I do this without doing the work twice?
-  const once = bubble_up(delete_matches(solve(unsolved)));
-  const twice = bubble_up(delete_matches(solve(once)));
-  return twice;
+const prepare = (unsolved: Tile[]): Tile[] => {
+  const { tiles, matches } = solve(unsolved);
+
+  // Deleting matches can create new matches when the tiles bubble.
+  if (matches.length) {
+    return prepare(bubble_up(delete_matches({ tiles, matches })));
+  }
+
+  return tiles;
 };
 
 export const useTileStore = create(
   combine(initialState, (set) => ({
     actions: {
-      // update: (tiles: Tile[]) => set({ tiles }),
       init: () => set({ tiles: create_grid() }),
       addToSelection: (id: number) => {
         set((state) => ({

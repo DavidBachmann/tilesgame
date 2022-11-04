@@ -14,6 +14,10 @@ export default function App() {
     init();
   }, []);
 
+  if (!tiles) {
+    return <p>wtf</p>;
+  }
+
   return (
     <Grid>
       {tiles.map((tile) => (

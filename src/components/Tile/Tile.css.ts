@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
-const GREEN = { light: "#6da776", medium: "#408a47", dark: "#265d42" };
-const YELLOW = { light: "#ffc367", medium: "#ffaf33", dark: "#f2682c" };
-const BLUE = { light: "#6b748c", medium: "#374062", dark: "#242943" };
-const BROWN = { light: "#cc937b", medium: "#b8704f", dark: "#733f39" };
+const RED = { light: "#ff595e", medium: "#D83441" };
+const YELLOW = { light: "#ffca3a", medium: "#CB9D00" };
+const GREEN = { light: "#8ac926", medium: "#60A000" };
+const BLUE = { light: "#1982c4", medium: "#004F8C" };
 
 export const root = styled(motion.div)({
   width: 48,
@@ -17,27 +17,27 @@ export const root = styled(motion.div)({
     background: "transparent",
   },
   '&[data-type="0"]': {
-    background: GREEN.medium,
+    background: RED.light,
     ":hover": {
-      background: GREEN.light,
+      background: RED.medium,
     },
   },
   '&[data-type="1"]': {
-    background: YELLOW.medium,
+    background: YELLOW.light,
     ":hover": {
-      background: YELLOW.light,
+      background: YELLOW.medium,
     },
   },
   '&[data-type="2"]': {
-    background: BLUE.medium,
+    background: GREEN.light,
     ":hover": {
-      background: BLUE.light,
+      background: GREEN.medium,
     },
   },
   '&[data-type="3"]': {
-    background: BROWN.medium,
+    background: BLUE.light,
     ":hover": {
-      background: BROWN.light,
+      background: BLUE.medium,
     },
   },
 });

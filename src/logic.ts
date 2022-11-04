@@ -192,7 +192,7 @@ export const seek = (
   const nextNode = get_tile_at_index(node.relationships[direction], tiles);
 
   // There is no next node, we're done!
-  if (nextNode === null) {
+  if (nextNode === null || nextNode.type === -1) {
     return arr;
   }
 
