@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { CONSTANTS } from "./constants";
 import { Directions, Tile, TileType } from "./types";
+import { random_between } from "./utils";
 
 export const bubble_up = (tiles: Tile[]) => {
   let t: Tile[] = [...tiles];
@@ -50,26 +51,33 @@ export const bubble_up = (tiles: Tile[]) => {
   return returned;
 };
 
-export function randomBetween(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+// Matches get turned into empty tiles
+export const create_empty_tile_at_index = (idx: number): Tile => ({
+  id: v4(),
+  idx,
+  type: -1,
+  relationships: { top: -1, right: -1, bottom: -1, left: -1 },
+});
+
+// Empty tiles get turned into random tiles
+const create_random_tile_at_index = (idx: number): Tile => ({
+  id: v4(),
+  idx: idx,
+  type: random_between(0, 3) as TileType,
+  relationships: {
+    top: -1,
+    right: -1,
+    bottom: -1,
+    left: -1,
+  },
+});
 
 export const initialize_grid = (count: number) => {
   const grid = [];
   const dimensions = count * count;
 
   for (let i = 0; i < dimensions; i++) {
-    const tile: Tile = {
-      id: v4(),
-      idx: i,
-      type: randomBetween(0, 3) as TileType,
-      relationships: {
-        top: -1,
-        right: -1,
-        bottom: -1,
-        left: -1,
-      },
-    };
+    const tile = create_random_tile_at_index(i);
 
     grid.push(tile);
   }
@@ -104,33 +112,43 @@ export const calculate_relationships = (
   return newNodes;
 };
 
-// Matches get turned into empty tiles
-export const create_empty_tile_at_index = (idx: number): Tile => ({
-  id: v4(),
-  type: -1,
-  relationships: { top: -1, right: -1, bottom: -1, left: -1 },
-  idx,
-});
-
 // Receives a list of matches and deletes them from the grid
 // by replacing them with empties.
 export const delete_matches = ({
   tiles,
   matches,
+  scoreCallback,
 }: {
   tiles: Tile[];
   matches: Tile[][];
+  scoreCallback: (score: number) => void;
 }): Tile[] => {
   const clone = [...tiles];
   const uniqueMatches = new Set<number>();
   matches.flat().forEach((obj) => uniqueMatches.add(obj.idx));
   const removedIdx = Array.from(uniqueMatches);
+  const score = removedIdx.length;
+  scoreCallback(score);
 
   for (let idx of removedIdx) {
     clone[idx] = create_empty_tile_at_index(idx);
   }
 
-  // Deleted tiles need to know their relationships, so we recalculate.
+  return clone;
+};
+
+// After every match we spawn new tiles to fill the void
+export const spawn_tiles = (tiles: Tile[]) => {
+  const clone = [...tiles];
+
+  for (let i = 0; i < tiles.length; i++) {
+    const tile = tiles[i];
+
+    if (tile.type === -1) {
+      clone[tile.idx] = create_random_tile_at_index(tile.idx);
+    }
+  }
+
   return calculate_relationships(clone, CONSTANTS.DIMENSIONS);
 };
 
