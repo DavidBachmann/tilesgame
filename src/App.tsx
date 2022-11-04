@@ -15,7 +15,7 @@ export default function App() {
   }, []);
 
   if (!tiles) {
-    return <p>wtf</p>;
+    return <p>404 tiles not found</p>;
   }
 
   return (

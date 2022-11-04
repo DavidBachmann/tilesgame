@@ -11,6 +11,7 @@ export const Tile = ({
 }: TileCell) => {
   return (
     <css.root
+      role="button"
       layoutId={String(id)}
       layout="position"
       data-selected={selected}
