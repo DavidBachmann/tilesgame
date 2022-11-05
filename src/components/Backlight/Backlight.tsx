@@ -55,7 +55,7 @@ export function Backlight({ tiles }: BacklightProps) {
       ],
     ];
     const quads = quadrants.map((q) => {
-      return q.map((tile) => tile.type);
+      return q.map((tile) => tile?.type ?? -1);
     });
 
     return quads.map((q) => mode(q));
