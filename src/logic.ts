@@ -63,7 +63,7 @@ export const create_empty_tile_at_index = (idx: number): Tile => ({
 const create_random_tile_at_index = (idx: number): Tile => ({
   id: v4(),
   idx: idx,
-  type: random_between(0, 3) as TileType,
+  type: random_between(0, CONSTANTS.TILE_TYPES) as TileType,
   relationships: {
     top: -1,
     right: -1,

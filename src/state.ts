@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import create from "zustand";
 import { combine } from "zustand/middleware";
+import { CONSTANTS } from "./constants";
 import {
   create_grid,
   check_swap,
@@ -81,7 +82,7 @@ export const useTileStore = create(
         q.delete(id);
 
         console.log("queue is now", q);
-        await delay(500);
+        await delay(CONSTANTS.TILE_ANIMATION_MS);
         set({ tiles, queue: q });
       }
 
