@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import * as styles from "./UI.styles";
+import * as styles from "./UI.css";
 
 type UIProps = {
   children: ReactNode;
