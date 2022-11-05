@@ -8,3 +8,7 @@ type UIProps = {
 export function UI({ children }: UIProps) {
   return <styles.root>{children}</styles.root>;
 }
+
+export function Area({ children }: UIProps) {
+  return <styles.area>{children}</styles.area>;
+}

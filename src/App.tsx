@@ -4,7 +4,10 @@ import { Relationships, TileType } from "./types";
 import { useTileStore } from "./state";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
-import { UI } from "./components/UI";
+import { UI, Area } from "./components/UI";
+import { Backlight } from "./components/Backlight";
+import { typeToColor } from "./utils";
+import { CONSTANTS } from "./constants";
 
 export default function App() {
   const init = useTileStore((state) => state.actions.init);
@@ -52,21 +55,24 @@ export default function App() {
 
   return (
     <UI>
-      <Grid>
-        {tiles.map((tile) => {
-          return (
-            <Tile
-              key={tile.id}
-              id={tile.id}
-              idx={tile.idx}
-              type={tile.type as TileType}
-              selected={selection.includes(tile.idx)}
-              relationships={tile.relationships}
-              onDrag={(info) => onDrag(info, tile.idx, tile.relationships)}
-            />
-          );
-        })}
-      </Grid>
+      <Area>
+        <Grid>
+          {tiles.map((tile) => {
+            return (
+              <Tile
+                key={tile.id}
+                id={tile.id}
+                idx={tile.idx}
+                type={tile.type as TileType}
+                selected={selection.includes(tile.idx)}
+                relationships={tile.relationships}
+                onDrag={(info) => onDrag(info, tile.idx, tile.relationships)}
+              />
+            );
+          })}
+        </Grid>
+        <Backlight tiles={tiles} />
+      </Area>
       <p>{score}</p>
     </UI>
   );

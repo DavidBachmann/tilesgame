@@ -8,7 +8,7 @@ export type Relationships = {
   left: number;
 };
 
-export type TileType = -1 | 0 | 1 | 2 | 3;
+export type TileType = -1 | 0 | 1 | 2 | 3 | 4;
 
 export type Tile = {
   id: string;

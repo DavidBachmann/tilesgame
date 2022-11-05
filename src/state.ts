@@ -41,7 +41,6 @@ export const useTileStore = create(
       const id = v4();
       temp.set(id, t);
 
-      console.log("queue is now", temp);
       set({ queue: temp });
       return;
     };
@@ -81,7 +80,6 @@ export const useTileStore = create(
       for (const [id, tiles] of q) {
         q.delete(id);
 
-        console.log("queue is now", q);
         await delay(CONSTANTS.TILE_ANIMATION_MS);
         set({ tiles, queue: q });
       }
@@ -107,7 +105,9 @@ export const useTileStore = create(
 
     return {
       actions: {
-        init: () => set({ tiles: create_grid() }),
+        init: () => {
+          set({ tiles: create_grid() });
+        },
         getQueue: () => {
           return get().queue;
         },

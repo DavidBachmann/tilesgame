@@ -2,12 +2,6 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { CONSTANTS } from "../../constants";
 
-const RED = { normal: "#ff595e" };
-const YELLOW = { normal: "#ffca3a" };
-const GREEN = { normal: "#8ac926" };
-const BLUE = { normal: "#1982c4" };
-const PURPLE = { normal: "#8b21aa" };
-
 export const root = styled(motion.div)({
   position: "relative",
 });
@@ -22,19 +16,19 @@ export const tile = styled(motion.div)({
     background: "transparent",
   },
   '&[data-type="0"]': {
-    background: RED.normal,
+    background: `linear-gradient(240deg, ${CONSTANTS.COLORS.RED.normal}, ${CONSTANTS.COLORS.RED.secondary})`,
   },
   '&[data-type="1"]': {
-    background: YELLOW.normal,
+    background: `linear-gradient(240deg, ${CONSTANTS.COLORS.YELLOW.normal}, ${CONSTANTS.COLORS.YELLOW.secondary})`,
   },
   '&[data-type="2"]': {
-    background: GREEN.normal,
+    background: `linear-gradient(240deg, ${CONSTANTS.COLORS.GREEN.normal}, ${CONSTANTS.COLORS.GREEN.secondary})`,
   },
   '&[data-type="3"]': {
-    background: BLUE.normal,
+    background: `linear-gradient(240deg, ${CONSTANTS.COLORS.BLUE.normal}, ${CONSTANTS.COLORS.BLUE.secondary})`,
   },
   '&[data-type="4"]': {
-    background: PURPLE.normal,
+    background: `linear-gradient(240deg, ${CONSTANTS.COLORS.PURPLE.normal}, ${CONSTANTS.COLORS.PURPLE.secondary})`,
   },
 });
 

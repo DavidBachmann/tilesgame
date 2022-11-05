@@ -5,3 +5,7 @@ export const root = styled("div")({
   flexDirection: "column",
   rowGap: 32,
 });
+
+export const area = styled("div")({
+  position: "relative",
+});
