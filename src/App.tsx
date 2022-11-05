@@ -53,9 +53,10 @@ export default function App() {
   return (
     <UI>
       <Grid>
-        {tiles.map((tile) => (
-          <div key={tile.id}>
+        {tiles.map((tile) => {
+          return (
             <Tile
+              key={tile.id}
               id={tile.id}
               idx={tile.idx}
               type={tile.type as TileType}
@@ -63,8 +64,8 @@ export default function App() {
               relationships={tile.relationships}
               onDrag={(info) => onDrag(info, tile.idx, tile.relationships)}
             />
-          </div>
-        ))}
+          );
+        })}
       </Grid>
       <p>{score}</p>
     </UI>

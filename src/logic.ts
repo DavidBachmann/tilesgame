@@ -23,7 +23,7 @@ export const bubble_up = (tiles: Tile[]) => {
       for (let j = 0; j <= indicesAbove.length; j++) {
         // Walk through
         const nextIdx = indicesAbove[j];
-        const nextTile = get_tile_at_index(nextIdx, t);
+        let nextTile = get_tile_at_index(nextIdx, t);
 
         if (nextTile) {
           // Clones the nodes

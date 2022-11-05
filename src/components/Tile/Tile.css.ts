@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import { CONSTANTS } from "../../constants";
 
 const RED = { light: "#ff595e", medium: "#D83441" };
 const YELLOW = { light: "#ffca3a", medium: "#CB9D00" };
@@ -9,8 +10,8 @@ const BLUE = { light: "#1982c4", medium: "#004F8C" };
 export const root = styled(motion.div)({});
 
 export const tile = styled(motion.div)({
-  width: 48,
-  height: 48,
+  width: CONSTANTS.TILE_SIZE,
+  height: CONSTANTS.TILE_SIZE,
   borderRadius: 4,
   background: "blue",
   transition: "opacity 0.1s",
