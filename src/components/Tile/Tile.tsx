@@ -16,6 +16,7 @@ export const Tile = ({
         dragTransition={{ bounceStiffness: 50, bounceDamping: 10 }}
         dragDirectionLock
         dragSnapToOrigin
+        dragMomentum={false}
         dragConstraints={{ top: 16, left: 16, right: 16, bottom: 16 }}
         onDragStart={(_, info) => onDrag(info)}
         dragElastic={0.05}

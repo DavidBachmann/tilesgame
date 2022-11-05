@@ -89,11 +89,12 @@ export const calculate_relationships = (
   nodes: Tile[],
   dimension: number
 ): Tile[] => {
+  const tiles = [...nodes];
   const newNodes = [];
 
   // Go through each node in the grid and figure out their positional relationship
-  for (let i = 0; i < nodes.length; i++) {
-    let node = nodes[i];
+  for (let i = 0; i < tiles.length; i++) {
+    let node = tiles[i];
     newNodes[i] = {
       ...node,
       relationships: {
@@ -102,7 +103,7 @@ export const calculate_relationships = (
         // Is there anyone to the right?
         right: i % dimension === dimension - 1 ? -1 : i + 1,
         // Is there anyone below?
-        bottom: i + dimension >= nodes.length ? -1 : i + dimension,
+        bottom: i + dimension >= tiles.length ? -1 : i + dimension,
         // Is there anyone to the left?
         left: i % dimension === 0 ? -1 : i - 1,
       },
@@ -215,7 +216,7 @@ export const seek = (
   }
 
   if (node.idx === nextNode.idx) {
-    throw new Error("node.idx === nextNode.idx, game will crash");
+    return arr;
   }
 
   // Next node is of another type, we're not interested in exploring further.
@@ -230,7 +231,9 @@ export const get_tile_at_index = (index: number, tiles: Tile[]) => {
   const found = tiles[index];
 
   if (found) {
-    return found;
+    // Return a copy of the tile since we want to be able to perform dry runs
+    // without mutating tiles.
+    return { ...found };
   }
 
   return null;
@@ -268,7 +271,10 @@ export const swap_two_tiles = (
   return tiles;
 };
 
-export const queue = (insert: number, arr: number[]): number[] => {
+export const push_tile_selection = (
+  insert: number,
+  arr: number[]
+): number[] => {
   let a = [...arr];
 
   a.push(insert);
@@ -280,23 +286,36 @@ export const queue = (insert: number, arr: number[]): number[] => {
   return a;
 };
 
-export const check_swap = (idx1: number, idx2: number, tiles: Tile[]) => {
+export const check_swap = (
+  idx1: number,
+  idx2: number,
+  tiles: Tile[]
+): boolean => {
   const tile1 = get_tile_at_index(idx1, tiles);
   const tile2 = get_tile_at_index(idx2, tiles);
 
-  // TODO: This allows too much
-  if (
-    tile1 &&
-    tile2 &&
-    Object.values(tile1.relationships).includes(tile2.idx) &&
-    Object.values(tile2.relationships).includes(tile1.idx) &&
-    tile1.type !== -1 &&
-    tile2.type !== -1
-  ) {
-    console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);
-    return true;
+  if (!tile1 || !tile2) {
+    return false;
   }
 
-  console.log(`Can't swap ${idx1} and ${idx2}`);
+  if (tile1.type === -1 || tile2.type === -1) {
+    return false;
+  }
+
+  if (
+    Object.values(tile1.relationships).includes(tile2.idx) &&
+    Object.values(tile2.relationships).includes(tile1.idx)
+  ) {
+    const t = [...tiles];
+
+    // dry run
+    const { matches } = solve(swap_two_tiles(idx1, idx2, t));
+
+    if (matches.length) {
+      console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);
+      return true;
+    }
+  }
+
   return false;
 };

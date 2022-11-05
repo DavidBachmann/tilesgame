@@ -3,7 +3,7 @@ import { combine } from "zustand/middleware";
 import {
   create_grid,
   check_swap,
-  queue,
+  push_tile_selection,
   swap_two_tiles,
   bubble_up,
   delete_matches,
@@ -55,7 +55,7 @@ export const useTileStore = create(
           set((state) => ({ tiles: prepare(spawn_tiles(state.tiles)) })),
         addToSelection: (id: number) => {
           set((state) => ({
-            selection: queue(id, state.selection),
+            selection: push_tile_selection(id, state.selection),
           }));
           set((state) => {
             const [idx1, idx2] = state.selection;
