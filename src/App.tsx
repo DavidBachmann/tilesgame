@@ -2,7 +2,6 @@ import { useCallback, useMemo } from "react";
 import { PanInfo } from "framer-motion";
 import { Relationships, TileType } from "./types";
 import { useTileStore } from "./state";
-import { delay } from "./utils";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
 import { UI } from "./components/UI";
@@ -14,20 +13,14 @@ export default function App() {
   const score = useTileStore((state) => state.score);
 
   const addToSelection = useTileStore((state) => state.actions.addToSelection);
-  const spawnTiles = useTileStore((state) => state.actions.spawnTiles);
-  const lock = useTileStore((state) => state.actions.lock);
-  const unlock = useTileStore((state) => state.actions.unlock);
 
   useMemo(() => {
+    window.DEBUG_MESSAGES = true;
     init();
   }, []);
 
   if (!tiles) {
     return <p>404 tiles not found</p>;
-  }
-
-  if (tiles.some((tile) => tile.type === -1)) {
-    delay(500).then(spawnTiles);
   }
 
   const onDrag = useCallback(
