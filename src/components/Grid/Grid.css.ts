@@ -11,4 +11,15 @@ export const root = styled("div")({
   borderRadius: 16,
   position: "relative",
   boxShadow: "0px 8px 20px rgba(0,0,0,0.4)",
+  overflow: "hidden",
+  "&::before": {
+    content: "''",
+    zIndex: -1,
+    position: "absolute",
+    background: "transparent",
+    borderRadius: "50%",
+    right: "0",
+    top: "0",
+    boxShadow: "0px 0px 100px 200px rgba(255, 255, 255, 0.1)",
+  },
 });

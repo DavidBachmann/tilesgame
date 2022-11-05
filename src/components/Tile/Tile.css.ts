@@ -25,7 +25,7 @@ export const tile = styled(motion.div)({
     borderRadius: "50%",
     right: "10px",
     top: "10px",
-    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.12)",
+    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.08)",
   },
   '&[data-type="-1"]': {
     "&::before": {
