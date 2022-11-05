@@ -5,7 +5,7 @@ import * as css from "./Tile.css";
 
 const explosion: Variants = {
   animate: {
-    opacity: [1, 0, 1, 0],
+    opacity: 0,
     transition: {
       duration: CONSTANTS.TILE_ANIMATION_MS / 1000,
     },
@@ -49,11 +49,16 @@ export const Tile = ({
       )}
       <css.tile
         drag
-        dragTransition={{ bounceStiffness: 50, bounceDamping: 10 }}
+        dragTransition={{ bounceStiffness: 100, bounceDamping: 10 }}
         dragDirectionLock
         dragSnapToOrigin
         dragMomentum={false}
-        dragConstraints={{ top: -16, left: -16, right: 16, bottom: 16 }}
+        dragConstraints={{
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
         onDragStart={(_, info) => onDrag(info)}
         dragElastic={0.05}
         data-selected={selected}

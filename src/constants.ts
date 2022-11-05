@@ -1,9 +1,14 @@
 const colors = {
-  RED: { secondary: "#d0321e", normal: "#f71919" },
-  YELLOW: { normal: "#ffca3a", secondary: "#ffba00" },
-  GREEN: { normal: "#8ac926", secondary: "#78a432" },
-  BLUE: { secondary: "#33859c", normal: "#27b2da" },
-  PURPLE: { secondary: "#8b21aa", normal: "#bc1cea" },
+  RED: { secondary: "#d0321e", normal: "#f71919", shadow: "#8b2626" },
+  YELLOW: { normal: "#ffca3a", secondary: "#ffba00", shadow: "#d1ab17" },
+  GREEN: { normal: "#8ac926", secondary: "#78a432", shadow: "#54810e" },
+  BLUE: { secondary: "#33859c", normal: "#27b2da", shadow: "#156a84" },
+  PURPLE: { secondary: "#8b21aa", normal: "#bc1cea", shadow: "#680a82" },
+  WHITE: {
+    normal: "#efe2e1",
+    secondary: "#f7f0ef",
+    shadow: "#d6d6d2",
+  },
 };
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,

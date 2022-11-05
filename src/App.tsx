@@ -6,8 +6,6 @@ import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
 import { UI, Area } from "./components/UI";
 import { Backlight } from "./components/Backlight";
-import { typeToColor } from "./utils";
-import { CONSTANTS } from "./constants";
 
 export default function App() {
   const init = useTileStore((state) => state.actions.init);
