@@ -11,9 +11,12 @@ export default function App() {
   const init = useTileStore((state) => state.actions.init);
   const tiles = useTileStore((state) => state.tiles);
   const selection = useTileStore((state) => state.selection);
+  const score = useTileStore((state) => state.score);
+
   const addToSelection = useTileStore((state) => state.actions.addToSelection);
   const spawnTiles = useTileStore((state) => state.actions.spawnTiles);
-  const score = useTileStore((state) => state.score);
+  const lock = useTileStore((state) => state.actions.lock);
+  const unlock = useTileStore((state) => state.actions.unlock);
 
   useMemo(() => {
     init();

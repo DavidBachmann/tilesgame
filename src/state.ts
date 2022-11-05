@@ -17,6 +17,7 @@ type State = {
   selectedTiles: [Tile | null, Tile | null];
   selection: number[];
   score: number;
+  interactive: boolean;
 };
 
 const initialState: State = {
@@ -24,10 +25,11 @@ const initialState: State = {
   selectedTiles: [null, null],
   selection: [],
   score: 0,
+  interactive: true,
 };
 
 export const useTileStore = create(
-  combine(initialState, (set) => {
+  combine(initialState, (set, get) => {
     const prepare = (unsolved: Tile[]): Tile[] => {
       const { tiles, matches } = solve(unsolved);
 
@@ -54,6 +56,11 @@ export const useTileStore = create(
         spawnTiles: () =>
           set((state) => ({ tiles: prepare(spawn_tiles(state.tiles)) })),
         addToSelection: (id: number) => {
+          if (!get().interactive) {
+            // If the board isn't interactive we ignore the selection
+            return;
+          }
+
           set((state) => ({
             selection: push_tile_selection(id, state.selection),
           }));
@@ -74,9 +81,9 @@ export const useTileStore = create(
             };
           });
         },
+        lock: () => set({ interactive: false }),
+        unlock: () => set({ interactive: true }),
       },
     };
   })
 );
-
-// queue(tile.idx, prev));
