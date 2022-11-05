@@ -7,6 +7,7 @@ import { Tile } from "./components/Tile";
 import { UI, Area } from "./components/UI";
 import { Backlight } from "./components/Backlight";
 import { Score } from "./components/UI/Score";
+import { Header } from "./components/UI/UI";
 
 export default function App() {
   const init = useTileStore((state) => state.actions.init);
@@ -54,6 +55,7 @@ export default function App() {
 
   return (
     <UI>
+      <Header />
       <Area>
         <Grid>
           {tiles.map((tile) => {

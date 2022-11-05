@@ -19,6 +19,7 @@ a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
+  outline: 0;
 }
 
 a:hover {
@@ -34,9 +35,17 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 button {
