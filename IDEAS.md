@@ -2,6 +2,7 @@
 
 - Control grid dimensions and total tile types with query params.
 
-## Look and feel
+## Gameplay
 
-- Glow tiles before they pop
+- A square (2x2) is a match.
+- Matching 5 turns a tile into a special tile with super powers.
