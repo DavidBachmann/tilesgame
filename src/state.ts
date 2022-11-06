@@ -19,6 +19,9 @@ type State = {
   tiles: Tile[];
   selection: number[];
   score: number;
+  comboScore: number;
+  comboMessage: string | null;
+  comboCount: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
 };
@@ -27,6 +30,9 @@ const initialState: State = {
   tiles: [],
   selection: [],
   score: 0,
+  comboScore: 0,
+  comboMessage: null,
+  comboCount: 0,
   interactive: true,
   queue: new Map(),
 };
@@ -51,9 +57,12 @@ export const useTileStore = create(
           tiles,
           matches,
           scoreCallback: (score) => {
-            set((prev) => ({ score: score + prev.score }));
+            set((prev) => ({ comboScore: score + prev.comboScore }));
           },
         });
+        set((prev) => ({
+          comboCount: prev.comboCount + 1,
+        }));
         enqueue(deleted);
         const bubbled = bubble_up(deleted);
         enqueue(bubbled);
@@ -70,12 +79,21 @@ export const useTileStore = create(
 
     const solveQueue = async () => {
       const q = get().queue;
-      const length = q.size;
+      const comboCount = get().comboCount;
+      const scoreToAdd = get().comboScore;
+      const multiplier = Math.min(
+        CONSTANTS.MAX_MULTIPLIER,
+        Math.floor(Math.max(1, comboCount + 1) / 2)
+      );
 
       debug_message("LOCKED", "red");
+      // Lock user interactions
       set({ interactive: false });
 
+      // Wait a while for the player to see both selections.
       await delay(500);
+
+      // Clear selection
       set({ selection: [] });
       let i = 0;
 
@@ -84,7 +102,7 @@ export const useTileStore = create(
 
         if (i > 0) {
           const speedUp = 0.01 * i;
-          // Speed up the waiting duration during long combos
+          // Speed up the waiting duration during long streaks
           const wait = Math.max(
             ~~(CONSTANTS.TILE_ANIMATION_MS * (1 - speedUp)),
             CONSTANTS.TILE_ANIMATION_MS / 2
@@ -96,23 +114,22 @@ export const useTileStore = create(
         i++;
       }
 
-      debug_message("UNLOCKED", "green");
-      set({ interactive: true });
+      set((state) => ({ score: state.score + scoreToAdd * multiplier }));
 
-      if (length >= 7 && length < 10) {
-        debug_message("Nice.", "green");
-        debug_message(
-          "You should have gotten a 2x score multiplier for that.",
-          "green"
-        );
+      if (multiplier > 1) {
+        set({ comboMessage: `${multiplier}x multiplier!` });
       }
-      if (length >= 10) {
-        debug_message("WOW!", "green");
-        debug_message(
-          "You should have gotten a 3x score multiplier for that!",
-          "green"
-        );
-      }
+
+      await delay(multiplier > 1 ? 1000 : 0);
+
+      // Reset interactivity state
+      set({
+        comboScore: 0,
+        comboMessage: null,
+        comboCount: 0,
+        interactive: true,
+      });
+      debug_message("UNLOCKED", "green");
     };
 
     return {

@@ -1,9 +1,41 @@
+import { useEffect, useRef, useState } from "react";
+import { animate } from "framer-motion";
+import { useTileStore } from "../../state";
 import * as css from "./Score.css";
 
-type ScoreProps = {
-  score: number;
-};
+export function Score() {
+  const score = useTileStore((state) => state.score);
+  const [val, setVal] = useState(0);
+  const [_, setPlaying] = useState(false);
+  const lastScore = useRef(score);
+  const foo = useRef(1);
 
-export function Score({ score }: ScoreProps) {
-  return <css.text>{score}</css.text>;
+  useEffect(() => {
+    const scoreDiff = score - lastScore.current;
+    const controls = animate(lastScore.current, score, {
+      duration: scoreDiff >= 10 ? 1 : 0.5,
+      ease: "easeOut",
+      onPlay() {
+        setPlaying(true);
+      },
+      onUpdate(value) {
+        const v = parseInt(value.toFixed(2), 10);
+        setVal(v);
+        lastScore.current = v;
+        foo.current = 1.2;
+      },
+      onComplete() {
+        foo.current = 1;
+        setPlaying(false);
+      },
+    });
+
+    return () => controls.stop();
+  }, [score]);
+
+  return (
+    <css.root>
+      <css.text animate={{ scale: foo.current }}>{val}</css.text>
+    </css.root>
+  );
 }

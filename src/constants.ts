@@ -19,4 +19,5 @@ export const CONSTANTS = {
   TILE_TYPES: 4,
   TILE_ANIMATION_MS: 300,
   COLORS: colors,
+  MAX_MULTIPLIER: 3,
 };

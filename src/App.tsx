@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Relationships, TileType } from "./types";
 import { useTileStore } from "./state";
 import isMobile from "is-mobile";
@@ -8,6 +9,7 @@ import { UI, Area } from "./components/UI";
 import { Backlight } from "./components/Backlight";
 import { Score } from "./components/UI/Score";
 import { Header } from "./components/UI/UI";
+import { Wow } from "./components/UI/Wow";
 
 export default function App() {
   const init = useTileStore((state) => state.actions.init);
@@ -15,8 +17,8 @@ export default function App() {
 
   const tiles = useTileStore((state) => state.tiles);
   const selection = useTileStore((state) => state.selection);
-  const score = useTileStore((state) => state.score);
-  const interactive = useTileStore((state) => state.interactive);
+  const comboMessage = useTileStore((state) => state.comboMessage);
+  const comboScore = useTileStore((state) => state.comboScore);
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
@@ -87,8 +89,12 @@ export default function App() {
           })}
         </Grid>
         {!isMobile() && <Backlight tiles={tiles} />}
+
+        <AnimatePresence mode="wait">
+          {comboMessage && <Wow message={comboMessage} score={comboScore} />}
+        </AnimatePresence>
       </Area>
-      <Score score={score} />
+      <Score />
     </UI>
   );
 }

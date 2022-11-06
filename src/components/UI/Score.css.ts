@@ -1,8 +1,14 @@
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
-export const text = styled("p")({
+export const root = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  padding: 24,
+});
+
+export const text = styled(motion.span)({
   fontSize: 32,
   margin: 0,
-  padding: 24,
   textAlign: "center",
 });
