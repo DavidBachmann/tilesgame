@@ -12,6 +12,7 @@ const colors = {
 };
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
+  DRAG_THRESHOLD: 1,
   REGULAR_HIT: 3,
   DIMENSIONS: 6,
   TILE_SIZE: 48,

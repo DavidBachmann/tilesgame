@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 import { CONSTANTS } from "../../constants";
 
@@ -13,10 +14,10 @@ export const tile = styled(motion.div)({
   boxShadow: "0 4px 0 var(--color-shadow, transparent)",
   cursor: "pointer",
   height: CONSTANTS.TILE_SIZE,
+  width: CONSTANTS.TILE_SIZE,
   overflow: "hidden",
   position: "relative",
   transition: "opacity 0.1s",
-  width: CONSTANTS.TILE_SIZE,
   "&::before": {
     background: "transparent",
     borderRadius: "50%",
@@ -65,4 +66,12 @@ export const explosion = styled(motion.div)({
   boxShadow: `0 4px 0 ${CONSTANTS.COLORS.WHITE.shadow}`,
   inset: 0,
   position: "absolute",
+});
+
+export const draggable = styled(animated.div)({
+  userSelect: "none",
+  touchAction: "none",
+  height: CONSTANTS.TILE_SIZE,
+  width: CONSTANTS.TILE_SIZE,
+  willChange: "transform",
 });

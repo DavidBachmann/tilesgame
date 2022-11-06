@@ -17,6 +17,7 @@ export default function App() {
   const score = useTileStore((state) => state.score);
 
   const addToSelection = useTileStore((state) => state.actions.addToSelection);
+
   const bigScreen = useMediaQuery("(min-width: 1024px)");
 
   useMemo(() => {
@@ -28,28 +29,31 @@ export default function App() {
     return <p>404 tiles not found</p>;
   }
 
-  const onDrag = useCallback(
-    (info: PanInfo, idx: number, relationships: Relationships) => {
-      const xOrY = info.offset.x === 0 && info.offset.y !== 0 ? "y" : "x";
-      const direction = Math.sign(info.offset[xOrY]);
+  const handleMovement = useCallback(
+    (
+      direction: [x: number, y: number],
+      idx: number,
+      relationships: Relationships
+    ) => {
+      const [x, y] = direction;
+
+      if (x === 0 && y === 0) {
+        return;
+      }
 
       addToSelection(idx);
 
-      if (xOrY === "x") {
-        if (direction === -1) {
-          addToSelection(relationships.left);
-        }
-        if (direction === 1) {
-          addToSelection(relationships.right);
-        }
+      if (x === -1) {
+        return addToSelection(relationships.left);
       }
-      if (xOrY === "y") {
-        if (direction === -1) {
-          addToSelection(relationships.top);
-        }
-        if (direction === 1) {
-          addToSelection(relationships.bottom);
-        }
+      if (x === 1) {
+        return addToSelection(relationships.right);
+      }
+      if (y === -1) {
+        return addToSelection(relationships.top);
+      }
+      if (y === 1) {
+        return addToSelection(relationships.bottom);
       }
     },
     [addToSelection]
@@ -69,7 +73,9 @@ export default function App() {
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
                 relationships={tile.relationships}
-                onDrag={(info) => onDrag(info, tile.idx, tile.relationships)}
+                onDrag={(direction) => {
+                  handleMovement(direction, tile.idx, tile.relationships);
+                }}
               />
             );
           })}

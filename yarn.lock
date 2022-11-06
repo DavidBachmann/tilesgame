@@ -487,6 +487,16 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.5.5.tgz#c8e94f1b9232ca7cb9d860ea67762ec401b1de14"
   integrity sha512-7I/qY8H7Enwasxr4jU6WmtNK+RZ4Z/XvSlDvjXFVe7ii1x0MoSlkw6pD7xuac8qrHQRm9BTcbZNyeeKApYsvCg==
 
+"@react-spring/web@^9.5.5":
+  version "9.5.5"
+  resolved "https://registry.yarnpkg.com/@react-spring/web/-/web-9.5.5.tgz#d416abc591aaed930401f0c98a991a8c5b90c382"
+  integrity sha512-+moT8aDX/ho/XAhU+HRY9m0LVV9y9CK6NjSRaI+30Re150pB3iEip6QfnF4qnhSCQ5drpMF0XRXHgOTY/xbtFw==
+  dependencies:
+    "@react-spring/animated" "~9.5.5"
+    "@react-spring/core" "~9.5.5"
+    "@react-spring/shared" "~9.5.5"
+    "@react-spring/types" "~9.5.5"
+
 "@react-three/drei@^9.38.2":
   version "9.38.2"
   resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-9.38.2.tgz#0c94e5e095fa9990c6935656730c5d5e704a7c14"
@@ -609,12 +619,24 @@
   resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.2.20.tgz#b29e0aadd5e90336e599d849e50eef0e06aa28bf"
   integrity sha512-4lFhHc8so4yIHkBEs641DnEsBxPyhJ5GEjB4PURFDH4p/FcZriH6w99knZgI63zN/MBFfylMyb8+PDuj6RIXKQ==
 
+"@use-gesture/core@10.2.22":
+  version "10.2.22"
+  resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.2.22.tgz#90bd543b042e6c3a40a69ce8c2c38ecb67f43a2f"
+  integrity sha512-Ek0JZFYfk+hicLmoG094gm3YOuDMBNckHb988e59YOZoAkETT8dQSzT+g3QkSHSiP1m5wFXAGPSgxvOuwvGKHQ==
+
 "@use-gesture/react@^10.2.0":
   version "10.2.20"
   resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.2.20.tgz#2d556a62c22200507b9d478ce7159057004acb8d"
   integrity sha512-KnJq9ZSqprWA6uNhWTUHZqTCh+rfa0j8ehTzqeBhktUPrmTj7yVOBvEQ/vSFU/7d72cGgWSsJ0f5T6GQCHXnvg==
   dependencies:
     "@use-gesture/core" "10.2.20"
+
+"@use-gesture/react@^10.2.22":
+  version "10.2.22"
+  resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.2.22.tgz#2b8a39fe9bab83d73b112c8a5248b95099672c84"
+  integrity sha512-ECo7ig16SxBE06ENIURO1woKEB6TC8qY3a0rugJjQ2f1o0Tj28xS/eYNyJuqzQB5YT0q5IrF7ZFpbx1p/5ohYA==
+  dependencies:
+    "@use-gesture/core" "10.2.22"
 
 "@vitejs/plugin-react@^2.2.0":
   version "2.2.0"

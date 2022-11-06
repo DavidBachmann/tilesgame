@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/web": "^9.5.5",
     "@react-three/drei": "^9.38.2",
     "@react-three/fiber": "^8.8.10",
     "@types/three": "^0.144.0",
+    "@use-gesture/react": "^10.2.22",
     "framer-motion": "^7.6.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

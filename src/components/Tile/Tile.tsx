@@ -1,6 +1,9 @@
 import { Variants } from "framer-motion";
+import { animated, easings, useSpring } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
+import { throttle } from "../../utils";
 import * as css from "./Tile.css";
 
 const explosion: Variants = {
@@ -29,6 +32,55 @@ export const Tile = ({
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
 
+  const cb = throttle((dir) => {
+    onDrag(dir);
+  }, 100);
+
+  const [style, api] = useSpring(() => ({
+    y: 0,
+    x: 0,
+  }));
+
+  const bind = useDrag(
+    ({ offset: [x, y], axis }) => {
+      api.start(() => {
+        return {
+          x: axis === "x" ? x : 0,
+          y: axis === "y" ? y : 0,
+          config: {
+            mass: 0.3,
+            friction: 20,
+            tension: 100,
+          },
+          onChange: ({ value: { x = 0, y = 0 } }) => {
+            const _x =
+              axis === "x" && Math.abs(x) >= CONSTANTS.DRAG_THRESHOLD
+                ? Math.sign(x) * 1
+                : 0;
+            const _y =
+              axis === "y" && Math.abs(y) >= CONSTANTS.DRAG_THRESHOLD
+                ? Math.sign(y) * 1
+                : 0;
+
+            const directions = [_x, _y];
+
+            return cb(directions);
+          },
+        };
+      });
+    },
+    {
+      bounds: {
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+      },
+      rubberband: true,
+      filterTaps: true,
+    }
+  );
+
   return (
     <css.root
       layoutId={String(id)}
@@ -47,26 +99,15 @@ export const Tile = ({
           exit="exit"
         ></css.explosion>
       )}
-      <css.tile
-        drag
-        dragTransition={{ bounceStiffness: 100, bounceDamping: 10 }}
-        dragDirectionLock
-        dragSnapToOrigin
-        dragMomentum={false}
-        dragConstraints={{
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-        onDragStart={(_, info) => onDrag(info)}
-        dragElastic={0.05}
-        data-selected={selected}
-        data-type={type}
-        title={`idx ${idx}, type ${type}, (${Object.values(
-          relationships
-        ).toString()})`}
-      ></css.tile>
+      <css.draggable {...bind()} style={style}>
+        <css.tile
+          data-selected={selected}
+          data-type={type}
+          title={`idx ${idx}, type ${type}, (${Object.values(
+            relationships
+          ).toString()})`}
+        ></css.tile>
+      </css.draggable>
     </css.root>
   );
 };
