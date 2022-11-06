@@ -18,21 +18,44 @@ export const tile = styled(motion.div)({
   overflow: "hidden",
   position: "relative",
   transition: "opacity 0.1s",
-  "&::before": {
+  border: "2px solid transparent",
+  boxSizing: "border-box",
+  "@media (pointer: fine)": {
+    "&:hover": {
+      borderColor: "rgba(255,255,255,0.1)",
+    },
+    "&:hover::after": {
+      opacity: 0.6,
+    },
+  },
+  "&::after": {
     background: "transparent",
     borderRadius: "50%",
-    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.08)",
+    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.2)",
+    opacity: 0.4,
     content: "''",
     position: "absolute",
     right: "10px",
     top: "10px",
     zIndex: 1,
+    transition: "opacity 0.2s",
   },
-  '&[data-selected="true"]': {
-    background: "blue",
+  "&::before": {
+    background: "white",
+    borderRadius: 10,
+    boxShadow: "0px 1px 0px var(--color-shadow)",
+    content: "''",
+    inset: 2,
+    opacity: 0,
+    position: "absolute",
+    transition: "opacity 0.2s",
+    zIndex: 1,
+  },
+  '&[data-selected="true"]:not([data-type="-1"])::before': {
+    opacity: 0.2,
   },
   '&[data-type="-1"]': {
-    "&::before": {
+    "&::before, &::after": {
       content: "initial",
     },
   },

@@ -23,54 +23,18 @@ const explosion: Variants = {
   },
 };
 
-export const BaseTile = ({
+export const Tile = ({
   id,
   type,
   idx,
   relationships,
   selected,
   onClick,
-}: Omit<TileCell, "onDrag">) => {
+  onDrag,
+}: TileCell) => {
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
 
-  return (
-    <css.root
-      onClick={onClick}
-      layoutId={String(id)}
-      layout="position"
-      animate={{ y, opacity }}
-      transition={{
-        opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
-        default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
-      }}
-    >
-      {type === -1 && (
-        <css.explosion
-          variants={explosion}
-          animate="animate"
-          initial="initial"
-          exit="exit"
-        ></css.explosion>
-      )}
-      <css.tile
-        data-selected={selected}
-        data-type={type}
-        title={`idx ${idx}, type ${type}, (${Object.values(
-          relationships
-        ).toString()})`}
-      ></css.tile>
-    </css.root>
-  );
-};
-
-export const MobileTile = ({
-  onDrag,
-  children,
-}: {
-  children: ReactNode;
-  onDrag: (direction: [x: number, y: number]) => void;
-}) => {
   const cb = throttle((dir) => {
     onDrag(dir);
   }, 100);
@@ -122,42 +86,32 @@ export const MobileTile = ({
 
   return (
     <css.draggable {...bind()} style={style}>
-      {children}
+      <css.root
+        onClick={onClick}
+        layoutId={String(id)}
+        layout="position"
+        animate={{ y, opacity }}
+        transition={{
+          opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
+          default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
+        }}
+      >
+        {type === -1 && (
+          <css.explosion
+            variants={explosion}
+            animate="animate"
+            initial="initial"
+            exit="exit"
+          ></css.explosion>
+        )}
+        <css.tile
+          data-selected={selected}
+          data-type={type}
+          title={`idx ${idx}, type ${type}, (${Object.values(
+            relationships
+          ).toString()})`}
+        ></css.tile>
+      </css.root>
     </css.draggable>
   );
-};
-
-export const Tile = ({
-  id,
-  type,
-  idx,
-  relationships,
-  onDrag,
-  onClick,
-  selected,
-}: TileCell) => {
-  const mobile = isMobile();
-
-  const baseTile = useMemo(() => {
-    return (
-      <BaseTile
-        onClick={onClick}
-        id={id}
-        type={type}
-        idx={idx}
-        relationships={relationships}
-        selected={selected}
-      />
-    );
-  }, [id, type, idx, relationships, selected]);
-
-  const tile = useMemo(() => {
-    if (mobile) {
-      return <MobileTile onDrag={onDrag}>{baseTile}</MobileTile>;
-    }
-
-    return baseTile;
-  }, [mobile, selected]);
-
-  return <>{tile}</>;
 };

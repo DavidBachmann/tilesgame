@@ -16,6 +16,7 @@ export default function App() {
   const tiles = useTileStore((state) => state.tiles);
   const selection = useTileStore((state) => state.selection);
   const score = useTileStore((state) => state.score);
+  const interactive = useTileStore((state) => state.interactive);
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
@@ -62,8 +63,6 @@ export default function App() {
     },
     [addToSelection]
   );
-
-  console.log(selection);
 
   return (
     <UI>
