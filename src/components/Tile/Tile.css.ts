@@ -7,25 +7,25 @@ export const root = styled(motion.div)({
 });
 
 export const tile = styled(motion.div)({
-  width: CONSTANTS.TILE_SIZE,
-  height: CONSTANTS.TILE_SIZE,
-  borderRadius: 10,
-  transition: "opacity 0.1s",
-  cursor: "pointer",
-  boxShadow: "0 4px 0 var(--color-shadow, transparent)",
-  overflow: "hidden",
-  position: "relative",
   background:
     "linear-gradient(240deg, var(--color-bg-from, transparent), var(--color-bg-to, transparent))",
+  borderRadius: 10,
+  boxShadow: "0 4px 0 var(--color-shadow, transparent)",
+  cursor: "pointer",
+  height: CONSTANTS.TILE_SIZE,
+  overflow: "hidden",
+  position: "relative",
+  transition: "opacity 0.1s",
+  width: CONSTANTS.TILE_SIZE,
   "&::before": {
-    content: "''",
-    zIndex: 1,
-    position: "absolute",
     background: "transparent",
     borderRadius: "50%",
+    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.08)",
+    content: "''",
+    position: "absolute",
     right: "10px",
     top: "10px",
-    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.08)",
+    zIndex: 1,
   },
   '&[data-type="-1"]': {
     "&::before": {
@@ -60,9 +60,9 @@ export const tile = styled(motion.div)({
 });
 
 export const explosion = styled(motion.div)({
-  position: "absolute",
-  inset: 0,
-  borderRadius: 10,
   background: CONSTANTS.COLORS.WHITE.normal,
+  borderRadius: 10,
   boxShadow: `0 4px 0 ${CONSTANTS.COLORS.WHITE.shadow}`,
+  inset: 0,
+  position: "absolute",
 });
