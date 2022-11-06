@@ -22,7 +22,7 @@ export function Score() {
         const v = parseInt(value.toFixed(2), 10);
         setVal(v);
         lastScore.current = v;
-        foo.current = 1.2;
+        foo.current = scoreDiff >= 10 ? 1.2 : 1.1;
       },
       onComplete() {
         foo.current = 1;
