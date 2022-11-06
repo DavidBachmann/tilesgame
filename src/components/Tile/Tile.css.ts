@@ -10,16 +10,17 @@ export const root = styled(motion.div)({
 export const tile = styled(motion.div)({
   background:
     "linear-gradient(240deg, var(--color-bg-from, transparent), var(--color-bg-to, transparent))",
+  backgroundOrigin: "border-box",
+  border: "2px solid transparent",
   borderRadius: 10,
   boxShadow: "0 4px 0 var(--color-shadow, transparent)",
+  boxSizing: "border-box",
   cursor: "pointer",
   height: CONSTANTS.TILE_SIZE,
-  width: CONSTANTS.TILE_SIZE,
   overflow: "hidden",
   position: "relative",
   transition: "opacity 0.1s",
-  border: "2px solid transparent",
-  boxSizing: "border-box",
+  width: CONSTANTS.TILE_SIZE,
   "@media (pointer: fine)": {
     "&:hover": {
       borderColor: "rgba(255,255,255,0.1)",

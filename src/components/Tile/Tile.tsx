@@ -1,12 +1,10 @@
 import { Variants } from "framer-motion";
 import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import isMobile from "is-mobile";
 import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
 import { throttle } from "../../utils";
 import * as css from "./Tile.css";
-import { ReactNode, useMemo } from "react";
 
 const explosion: Variants = {
   animate: {
