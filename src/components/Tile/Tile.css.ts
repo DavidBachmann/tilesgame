@@ -28,6 +28,9 @@ export const tile = styled(motion.div)({
     top: "10px",
     zIndex: 1,
   },
+  '&[data-selected="true"]': {
+    background: "blue",
+  },
   '&[data-type="-1"]': {
     "&::before": {
       content: "initial",

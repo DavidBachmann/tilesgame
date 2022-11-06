@@ -1,10 +1,12 @@
 import { Variants } from "framer-motion";
 import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
+import isMobile from "is-mobile";
 import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
 import { throttle } from "../../utils";
 import * as css from "./Tile.css";
+import { ReactNode, useMemo } from "react";
 
 const explosion: Variants = {
   animate: {
@@ -21,17 +23,54 @@ const explosion: Variants = {
   },
 };
 
-export const Tile = ({
+export const BaseTile = ({
   id,
   type,
   idx,
   relationships,
-  onDrag,
   selected,
-}: TileCell) => {
+  onClick,
+}: Omit<TileCell, "onDrag">) => {
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
 
+  return (
+    <css.root
+      onClick={onClick}
+      layoutId={String(id)}
+      layout="position"
+      animate={{ y, opacity }}
+      transition={{
+        opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
+        default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
+      }}
+    >
+      {type === -1 && (
+        <css.explosion
+          variants={explosion}
+          animate="animate"
+          initial="initial"
+          exit="exit"
+        ></css.explosion>
+      )}
+      <css.tile
+        data-selected={selected}
+        data-type={type}
+        title={`idx ${idx}, type ${type}, (${Object.values(
+          relationships
+        ).toString()})`}
+      ></css.tile>
+    </css.root>
+  );
+};
+
+export const MobileTile = ({
+  onDrag,
+  children,
+}: {
+  children: ReactNode;
+  onDrag: (direction: [x: number, y: number]) => void;
+}) => {
   const cb = throttle((dir) => {
     onDrag(dir);
   }, 100);
@@ -82,32 +121,43 @@ export const Tile = ({
   );
 
   return (
-    <css.root
-      layoutId={String(id)}
-      layout="position"
-      animate={{ y, opacity }}
-      transition={{
-        opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
-        default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
-      }}
-    >
-      {type === -1 && (
-        <css.explosion
-          variants={explosion}
-          animate="animate"
-          initial="initial"
-          exit="exit"
-        ></css.explosion>
-      )}
-      <css.draggable {...bind()} style={style}>
-        <css.tile
-          data-selected={selected}
-          data-type={type}
-          title={`idx ${idx}, type ${type}, (${Object.values(
-            relationships
-          ).toString()})`}
-        ></css.tile>
-      </css.draggable>
-    </css.root>
+    <css.draggable {...bind()} style={style}>
+      {children}
+    </css.draggable>
   );
+};
+
+export const Tile = ({
+  id,
+  type,
+  idx,
+  relationships,
+  onDrag,
+  onClick,
+  selected,
+}: TileCell) => {
+  const mobile = isMobile();
+
+  const baseTile = useMemo(() => {
+    return (
+      <BaseTile
+        onClick={onClick}
+        id={id}
+        type={type}
+        idx={idx}
+        relationships={relationships}
+        selected={selected}
+      />
+    );
+  }, [id, type, idx, relationships, selected]);
+
+  const tile = useMemo(() => {
+    if (mobile) {
+      return <MobileTile onDrag={onDrag}>{baseTile}</MobileTile>;
+    }
+
+    return baseTile;
+  }, [mobile, selected]);
+
+  return <>{tile}</>;
 };
