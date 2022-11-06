@@ -11,11 +11,12 @@ import { Header } from "./components/UI/UI";
 
 export default function App() {
   const init = useTileStore((state) => state.actions.init);
+  const addToSelection = useTileStore((state) => state.actions.addToSelection);
+
   const tiles = useTileStore((state) => state.tiles);
   const selection = useTileStore((state) => state.selection);
   const score = useTileStore((state) => state.score);
-
-  const addToSelection = useTileStore((state) => state.actions.addToSelection);
+  const interactive = useTileStore((state) => state.interactive);
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
@@ -26,7 +27,7 @@ export default function App() {
     return <p>404 tiles not found</p>;
   }
 
-  const handleMovement = useCallback(
+  const handleSwipeSwap = useCallback(
     (
       direction: [x: number, y: number],
       idx: number,
@@ -56,6 +57,13 @@ export default function App() {
     [addToSelection]
   );
 
+  const handleClick = useCallback(
+    (idx: number) => {
+      addToSelection(idx);
+    },
+    [addToSelection]
+  );
+
   return (
     <UI>
       <Header />
@@ -70,8 +78,9 @@ export default function App() {
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
                 relationships={tile.relationships}
+                onClick={() => handleClick(tile.idx)}
                 onDrag={(direction) => {
-                  handleMovement(direction, tile.idx, tile.relationships);
+                  handleSwipeSwap(direction, tile.idx, tile.relationships);
                 }}
               />
             );

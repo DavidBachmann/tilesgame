@@ -17,7 +17,6 @@ import { debug_message, delay } from "./utils";
 
 type State = {
   tiles: Tile[];
-  selectedTiles: [Tile | null, Tile | null];
   selection: number[];
   score: number;
   interactive: boolean;
@@ -26,7 +25,6 @@ type State = {
 
 const initialState: State = {
   tiles: [],
-  selectedTiles: [null, null],
   selection: [],
   score: 0,
   interactive: true,
@@ -77,11 +75,25 @@ export const useTileStore = create(
       debug_message("LOCKED", "red");
       set({ interactive: false });
 
+      await delay(500);
+      set({ selection: [] });
+      let i = 0;
+
       for (const [id, tiles] of q) {
         q.delete(id);
 
-        await delay(CONSTANTS.TILE_ANIMATION_MS);
+        if (i > 0) {
+          const speedUp = 0.01 * i;
+          // Speed up the waiting duration during long combos
+          const wait = Math.max(
+            ~~(CONSTANTS.TILE_ANIMATION_MS * (1 - speedUp)),
+            CONSTANTS.TILE_ANIMATION_MS / 2
+          );
+          await delay(wait);
+        }
+
         set({ tiles, queue: q });
+        i++;
       }
 
       debug_message("UNLOCKED", "green");
@@ -134,8 +146,8 @@ export const useTileStore = create(
 
           return prepare_and_add_to_queue(swap_two_tiles(idx1, idx2, tiles));
         },
-        lock: () => set({ interactive: false }),
-        unlock: () => set({ interactive: true }),
+        lock: () => set({ interactive: false, selection: [] }),
+        unlock: () => set({ interactive: true, selection: [] }),
       },
     };
   })

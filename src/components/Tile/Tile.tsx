@@ -1,10 +1,12 @@
 import { Variants } from "framer-motion";
 import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
+import isMobile from "is-mobile";
 import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
 import { throttle } from "../../utils";
 import * as css from "./Tile.css";
+import { ReactNode, useMemo } from "react";
 
 const explosion: Variants = {
   animate: {
@@ -26,8 +28,9 @@ export const Tile = ({
   type,
   idx,
   relationships,
-  onDrag,
   selected,
+  onClick,
+  onDrag,
 }: TileCell) => {
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
@@ -82,24 +85,25 @@ export const Tile = ({
   );
 
   return (
-    <css.root
-      layoutId={String(id)}
-      layout="position"
-      animate={{ y, opacity }}
-      transition={{
-        opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
-        default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
-      }}
-    >
-      {type === -1 && (
-        <css.explosion
-          variants={explosion}
-          animate="animate"
-          initial="initial"
-          exit="exit"
-        ></css.explosion>
-      )}
-      <css.draggable {...bind()} style={style}>
+    <css.draggable {...bind()} style={style}>
+      <css.root
+        onClick={onClick}
+        layoutId={String(id)}
+        layout="position"
+        animate={{ y, opacity }}
+        transition={{
+          opacity: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 / 5 },
+          default: { duration: CONSTANTS.TILE_ANIMATION_MS / 1000 },
+        }}
+      >
+        {type === -1 && (
+          <css.explosion
+            variants={explosion}
+            animate="animate"
+            initial="initial"
+            exit="exit"
+          ></css.explosion>
+        )}
         <css.tile
           data-selected={selected}
           data-type={type}
@@ -107,7 +111,7 @@ export const Tile = ({
             relationships
           ).toString()})`}
         ></css.tile>
-      </css.draggable>
-    </css.root>
+      </css.root>
+    </css.draggable>
   );
 };

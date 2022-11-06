@@ -277,7 +277,7 @@ export const push_tile_selection = (
 ): number[] => {
   let a = [...arr];
 
-  a.push(insert);
+  a.unshift(insert);
 
   if (a.length > 2) {
     a = [insert];
