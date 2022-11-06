@@ -1,5 +1,5 @@
 import { Variants } from "framer-motion";
-import { animated, easings, useSpring } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";

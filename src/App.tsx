@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { PanInfo } from "framer-motion";
-import { useMediaQuery } from "usehooks-ts";
 import { Relationships, TileType } from "./types";
 import { useTileStore } from "./state";
+import isMobile from "is-mobile";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
 import { UI, Area } from "./components/UI";
@@ -17,8 +16,6 @@ export default function App() {
   const score = useTileStore((state) => state.score);
 
   const addToSelection = useTileStore((state) => state.actions.addToSelection);
-
-  const bigScreen = useMediaQuery("(min-width: 1024px)");
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
@@ -80,7 +77,7 @@ export default function App() {
             );
           })}
         </Grid>
-        {bigScreen && <Backlight tiles={tiles} />}
+        {!isMobile() && <Backlight tiles={tiles} />}
       </Area>
       <Score score={score} />
     </UI>
