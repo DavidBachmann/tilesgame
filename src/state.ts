@@ -30,7 +30,7 @@ const initialState: State = {
   },
 };
 
-export const useTileStore = (config: Config) =>
+export const store = (config: Config) =>
   create(
     combine(initialState, (set, get) => {
       const enqueue = (t: Tile[]) => {
