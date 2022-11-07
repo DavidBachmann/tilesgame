@@ -18,8 +18,7 @@ export const box = styled("div")({
 export const message = styled("span")({
   fontSize: 32,
   fontWeight: 600,
-  letterSpacing: "-1px",
-  lineHeight: 1.1,
+  lineHeight: 1.2,
   textShadow: "0 2px 4px rgba(0,0,0,0.24)",
   "@media (min-width: 429px)": {
     fontSize: 48,
@@ -29,6 +28,7 @@ export const small = styled("span")({
   textShadow: "0 2px 4px rgba(0,0,0,0.25)",
   lineHeight: 1.2,
   fontWeight: 600,
+  padding: "8px 0",
   fontSize: 24,
   "@media (min-width: 429px)": {
     fontSize: 32,

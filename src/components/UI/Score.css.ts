@@ -8,7 +8,7 @@ export const root = styled("div")({
 });
 
 export const text = styled(motion.span)({
-  fontSize: 32,
+  fontSize: 40,
   margin: 0,
   textAlign: "center",
 });

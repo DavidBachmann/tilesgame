@@ -13,7 +13,7 @@ export function Score() {
   useEffect(() => {
     const scoreDiff = score - lastScore.current;
     const controls = animate(lastScore.current, score, {
-      duration: scoreDiff >= 10 ? 1 : 0.5,
+      duration: scoreDiff >= 20 ? 1.6 : 0.8,
       ease: "easeOut",
       onPlay() {
         setPlaying(true);

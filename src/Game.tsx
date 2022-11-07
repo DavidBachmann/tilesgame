@@ -9,8 +9,8 @@ import { Backlight } from "./components/Backlight";
 import { Score } from "./components/UI/Score";
 import { Header } from "./components/UI/UI";
 import { Wow } from "./components/UI/Wow";
-
 import { useStore } from "./StoreCreator";
+import { combo_counter } from "./utils";
 
 export function Game() {
   const init = useStore((state) => state.actions.init);
@@ -18,8 +18,10 @@ export function Game() {
 
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
-  const comboMessage = useStore((state) => state.combo.message);
   const comboScore = useStore((state) => state.combo.score);
+  const comboMessage = useStore((state) => state.combo.message);
+  const comboCount = useStore((state) => state.combo.count);
+  const multiplier = combo_counter(comboCount);
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
@@ -77,10 +79,10 @@ export function Game() {
               <Tile
                 key={tile.id}
                 id={tile.id}
+                relationships={tile.relationships}
                 idx={tile.idx}
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
-                relationships={tile.relationships}
                 onClick={() => handleClick(tile.idx)}
                 onDrag={(direction) => {
                   handleSwipeSwap(direction, tile.idx, tile.relationships);
@@ -90,9 +92,10 @@ export function Game() {
           })}
         </Grid>
         {!isMobile() && <Backlight tiles={tiles} />}
-
         <AnimatePresence mode="wait">
-          {comboMessage && <Wow message={comboMessage} score={comboScore} />}
+          {comboMessage && (
+            <Wow message={comboMessage} score={comboScore * multiplier} />
+          )}
         </AnimatePresence>
       </Area>
       <Score />

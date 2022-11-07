@@ -1,5 +1,5 @@
 :root {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Barlow, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +65,41 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* barlow-regular - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("/fonts/barlow-v12-latin-regular.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-regular.woff") format("woff");
+}
+
+/* barlow-italic - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: italic;
+  font-weight: 400;
+  src: local(""), url("/fonts/barlow-v12-latin-italic.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-italic.woff");
+}
+
+/* barlow-500 - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 500;
+  src: local(""), url("/fonts/barlow-v12-latin-500.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-500.woff") format("woff");
+}
+
+/* barlow-600 - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  src: url("/fonts/barlow-v12-latin-600.eot"); /* IE9 Compat Modes */
+  src: local(""), url("../fonts/barlow-v12-latin-600.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-600.woff") format("woff");
 }

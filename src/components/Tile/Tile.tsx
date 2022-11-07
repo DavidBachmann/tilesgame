@@ -21,15 +21,7 @@ const explosion: Variants = {
   },
 };
 
-export const Tile = ({
-  id,
-  type,
-  idx,
-  relationships,
-  selected,
-  onClick,
-  onDrag,
-}: TileCell) => {
+export const Tile = ({ id, type, selected, onClick, onDrag }: TileCell) => {
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
 
@@ -100,15 +92,9 @@ export const Tile = ({
             animate="animate"
             initial="initial"
             exit="exit"
-          ></css.explosion>
+          />
         )}
-        <css.tile
-          data-selected={selected}
-          data-type={type}
-          title={`idx ${idx}, type ${type}, (${Object.values(
-            relationships
-          ).toString()})`}
-        ></css.tile>
+        <css.tile data-selected={selected} data-type={type} />
       </css.root>
     </css.draggable>
   );

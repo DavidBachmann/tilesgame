@@ -15,7 +15,7 @@ import {
   get_quint_matches,
 } from "./logic";
 import { Config, State, Tile } from "./types";
-import { debug_message, delay } from "./utils";
+import { combo_counter, debug_message, delay } from "./utils";
 
 const initialState: State = {
   tiles: [],
@@ -103,10 +103,7 @@ export const store = (config: Config) =>
         const q = get().queue;
         const comboCount = get().combo.count;
         const scoreToAdd = get().combo.score;
-        const multiplier = Math.min(
-          CONSTANTS.MAX_MULTIPLIER,
-          Math.floor(Math.max(1, comboCount + 1) / 2)
-        );
+        const multiplier = combo_counter(comboCount);
 
         debug_message("LOCKED", "red");
         // Lock user interactions
@@ -147,7 +144,7 @@ export const store = (config: Config) =>
           }));
         }
 
-        await delay(multiplier > 1 ? 1000 : 0);
+        await delay(multiplier > 1 ? 2000 : 0);
 
         // Reset interactivity state
         set({

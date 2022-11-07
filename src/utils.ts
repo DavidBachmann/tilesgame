@@ -92,3 +92,10 @@ export const throttle = <F extends (...args: any[]) => any>(
 
 export const clamp = (num: number, min: number, max: number) =>
   Math.min(Math.max(num, min), max);
+
+export const combo_counter = (combo: number) => {
+  return Math.min(
+    CONSTANTS.MAX_MULTIPLIER,
+    Math.floor(Math.max(1, combo + 1) / 2)
+  );
+};
