@@ -4,11 +4,13 @@ export type State = {
   tiles: Tile[];
   selection: number[];
   score: number;
-  comboScore: number;
-  comboMessage: string | null;
-  comboCount: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
+  combo: {
+    count: number;
+    message: string | null;
+    score: number;
+  };
   actions: {
     init: () => void;
     addToSelection: (id: number) => void;

@@ -18,8 +18,8 @@ export function Game() {
 
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
-  const comboMessage = useStore((state) => state.comboMessage);
-  const comboScore = useStore((state) => state.comboScore);
+  const comboMessage = useStore((state) => state.combo.message);
+  const comboScore = useStore((state) => state.combo.score);
 
   useMemo(() => {
     window.DEBUG_MESSAGES = true;

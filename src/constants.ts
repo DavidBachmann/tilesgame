@@ -12,7 +12,7 @@ const colors = {
 };
 
 const POINTS_BONUS = {
-  QUAD: 5,
+  QUAD: 6,
   QUINT: 15,
 };
 
@@ -23,6 +23,6 @@ export const CONSTANTS = {
   TILE_SIZE: 48,
   TILE_ANIMATION_MS: 300,
   COLORS: colors,
-  MAX_MULTIPLIER: 3,
+  MAX_MULTIPLIER: 5,
   POINTS_BONUS,
 };

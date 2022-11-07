@@ -21,9 +21,11 @@ const initialState: State = {
   tiles: [],
   selection: [],
   score: 0,
-  comboScore: 0,
-  comboMessage: null,
-  comboCount: 0,
+  combo: {
+    count: 0,
+    message: null,
+    score: 0,
+  },
   interactive: true,
   queue: new Map(),
   actions: {
@@ -70,12 +72,18 @@ export const store = (config: Config) =>
             matches,
             scoreCallback: (score) => {
               set((prev) => ({
-                comboScore: score + prev.comboScore + quadPoints + quintPoints,
+                combo: {
+                  ...prev.combo,
+                  score: score + prev.combo.score + quadPoints + quintPoints,
+                },
               }));
             },
           });
           set((prev) => ({
-            comboCount: prev.comboCount + 1,
+            combo: {
+              ...prev.combo,
+              count: prev.combo.count + 1,
+            },
           }));
           enqueue(deleted);
           const bubbled = bubble_up(deleted, config);
@@ -93,8 +101,8 @@ export const store = (config: Config) =>
 
       const solveQueue = async () => {
         const q = get().queue;
-        const comboCount = get().comboCount;
-        const scoreToAdd = get().comboScore;
+        const comboCount = get().combo.count;
+        const scoreToAdd = get().combo.score;
         const multiplier = Math.min(
           CONSTANTS.MAX_MULTIPLIER,
           Math.floor(Math.max(1, comboCount + 1) / 2)
@@ -131,16 +139,23 @@ export const store = (config: Config) =>
         set((state) => ({ score: state.score + scoreToAdd * multiplier }));
 
         if (multiplier > 1) {
-          set({ comboMessage: `${multiplier}x multiplier!` });
+          set((prev) => ({
+            combo: {
+              ...prev.combo,
+              message: `${multiplier}x multiplier!`,
+            },
+          }));
         }
 
         await delay(multiplier > 1 ? 1000 : 0);
 
         // Reset interactivity state
         set({
-          comboScore: 0,
-          comboMessage: null,
-          comboCount: 0,
+          combo: {
+            score: 0,
+            message: null,
+            count: 0,
+          },
           interactive: true,
         });
         debug_message("UNLOCKED", "green");
