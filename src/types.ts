@@ -1,5 +1,21 @@
 import { CONSTANTS } from "./constants";
 
+export type State = {
+  tiles: Tile[];
+  selection: number[];
+  score: number;
+  comboScore: number;
+  comboMessage: string | null;
+  comboCount: number;
+  interactive: boolean;
+  queue: Map<string, Tile[]>;
+};
+
+export type Config = {
+  gridSize: number;
+  tileTypes: number;
+};
+
 export type Relationships = {
   top: number;
   right: number;

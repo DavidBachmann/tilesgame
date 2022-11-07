@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { animate } from "framer-motion";
-import { useTileStore } from "../../state";
+import { useStore } from "../../StoreCreator";
 import * as css from "./Score.css";
 
 export function Score() {
-  const score = useTileStore((state) => state.score);
+  const score = useStore((state) => state.score);
   const [val, setVal] = useState(0);
   const [_, setPlaying] = useState(false);
   const lastScore = useRef(score);
