@@ -10,6 +10,12 @@ const colors = {
     shadow: "#d6d6d2",
   },
 };
+
+const POINTS_BONUS = {
+  QUAD: 5,
+  QUINT: 15,
+};
+
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
   DRAG_THRESHOLD: 1,
@@ -18,4 +24,5 @@ export const CONSTANTS = {
   TILE_ANIMATION_MS: 300,
   COLORS: colors,
   MAX_MULTIPLIER: 3,
+  POINTS_BONUS,
 };

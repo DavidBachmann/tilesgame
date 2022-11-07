@@ -11,6 +11,8 @@ import {
   delete_matches,
   solve,
   spawn_tiles,
+  get_quad_matches,
+  get_quint_matches,
 } from "./logic";
 import { Config, State, Tile } from "./types";
 import { debug_message, delay } from "./utils";
@@ -46,12 +48,30 @@ export const store = (config: Config) =>
       const prepare_and_add_to_queue = (unsolved: Tile[]): void => {
         const { tiles, matches } = solve(unsolved);
 
+        const totalQuadMatches = get_quad_matches(matches);
+        const totalQuintMatches = get_quint_matches(matches);
+
+        let quadPoints = 0;
+        let quintPoints = 0;
+
+        // Apply bonus points for matching 4 in a row
+        if (totalQuadMatches) {
+          quadPoints = CONSTANTS.POINTS_BONUS.QUAD * totalQuadMatches;
+        }
+
+        // Apply bonus points for matching 5 in a row
+        if (totalQuintMatches) {
+          quintPoints = CONSTANTS.POINTS_BONUS.QUINT * totalQuintMatches;
+        }
+
         if (matches.length) {
           const deleted = delete_matches({
             tiles,
             matches,
             scoreCallback: (score) => {
-              set((prev) => ({ comboScore: score + prev.comboScore }));
+              set((prev) => ({
+                comboScore: score + prev.comboScore + quadPoints + quintPoints,
+              }));
             },
           });
           set((prev) => ({

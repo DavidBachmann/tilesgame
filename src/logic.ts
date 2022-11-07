@@ -154,7 +154,7 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
   return calculate_relationships(clone, config.gridSize);
 };
 
-// `Solve` takes a grid and finds matches
+// Takes a grid and finds matches
 export const solve = (tiles: Tile[]) => {
   const m = [];
 
@@ -216,6 +216,7 @@ export const seek = (
     return arr;
   }
 
+  // Here we be dragons
   if (node.idx === nextNode.idx) {
     return arr;
   }
@@ -321,4 +322,32 @@ export const check_swap = (
   }
 
   return false;
+};
+
+export const get_quad_matches = (matches: Tile[][]) => {
+  // Quad matches look like [arr[4], arr[4]] (length 2)
+  const quads = get_x_matches(matches, 4);
+
+  // Make sure it's not a quint...
+  const quints = get_x_matches(matches, 5);
+
+  if (quints) {
+    return 0;
+  }
+
+  return quads;
+};
+
+export const get_quint_matches = (matches: Tile[][]) => {
+  // Quint matches look like [arr[5], arr[5]] (length 2)
+  return get_x_matches(matches, 5);
+};
+
+export const get_x_matches = (matches: Tile[][], x: number) => {
+  const hits = matches.filter((match) => match.length === x);
+  if (hits.length) {
+    return Math.max(hits.length / 2, 0);
+  }
+
+  return 0;
 };
