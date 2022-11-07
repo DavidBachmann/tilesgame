@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
 import { CONSTANTS } from "./constants";
-import { Directions, Tile, TileType } from "./types";
+import { Config, Directions, Tile, TileType } from "./types";
 import { random_between } from "./utils";
 
-export const bubble_up = (tiles: Tile[]) => {
+export const bubble_up = (tiles: Tile[], config: Config) => {
   let t: Tile[] = [...tiles];
   let returned = t;
 
@@ -13,11 +13,11 @@ export const bubble_up = (tiles: Tile[]) => {
     // This tile has been deleted and it should bubble up
     if (tile.type === -1) {
       // Figure out how many tiles are above this one.
-      const totalAbove = Math.floor(tile.idx / CONSTANTS.DIMENSIONS) ?? 0;
+      const totalAbove = Math.floor(tile.idx / config.gridSize) ?? 0;
 
       const indicesAbove = Array.from(
         { length: totalAbove },
-        (_, index) => tile.idx - (index + 1) * CONSTANTS.DIMENSIONS
+        (_, index) => tile.idx - (index + 1) * config.gridSize
       );
 
       for (let j = 0; j <= indicesAbove.length; j++) {
@@ -38,9 +38,7 @@ export const bubble_up = (tiles: Tile[]) => {
           t[tmp1.idx] = nextTile;
           t[tmp2.idx] = tile;
 
-          const { tiles } = solve(
-            calculate_relationships(t, CONSTANTS.DIMENSIONS)
-          );
+          const { tiles } = solve(calculate_relationships(t, config.gridSize));
 
           returned = tiles;
         }
@@ -60,10 +58,13 @@ export const create_empty_tile_at_index = (idx: number): Tile => ({
 });
 
 // Empty tiles get turned into random tiles
-const create_random_tile_at_index = (idx: number): Tile => ({
+const create_random_tile_at_index = (
+  idx: number,
+  totalTileTypes: number
+): Tile => ({
   id: v4(),
   idx: idx,
-  type: random_between(0, CONSTANTS.TILE_TYPES) as TileType,
+  type: random_between(0, totalTileTypes) as TileType,
   relationships: {
     top: -1,
     right: -1,
@@ -72,12 +73,12 @@ const create_random_tile_at_index = (idx: number): Tile => ({
   },
 });
 
-export const initialize_grid = (count: number) => {
+export const initialize_grid = (count: number, totalTileTypes: number) => {
   const grid = [];
   const dimensions = count * count;
 
   for (let i = 0; i < dimensions; i++) {
-    const tile = create_random_tile_at_index(i);
+    const tile = create_random_tile_at_index(i, totalTileTypes);
 
     grid.push(tile);
   }
@@ -139,18 +140,18 @@ export const delete_matches = ({
 };
 
 // After every match we spawn new tiles to fill the void
-export const spawn_tiles = (tiles: Tile[]) => {
+export const spawn_tiles = (tiles: Tile[], config: Config) => {
   const clone = [...tiles];
 
   for (let i = 0; i < tiles.length; i++) {
     const tile = tiles[i];
 
     if (tile.type === -1) {
-      clone[tile.idx] = create_random_tile_at_index(tile.idx);
+      clone[tile.idx] = create_random_tile_at_index(tile.idx, config.tileTypes);
     }
   }
 
-  return calculate_relationships(clone, CONSTANTS.DIMENSIONS);
+  return calculate_relationships(clone, config.gridSize);
 };
 
 // `Solve` takes a grid and finds matches
@@ -172,8 +173,8 @@ export const solve = (tiles: Tile[]) => {
 };
 
 // `create_grid` tries to generate a grid without any matches
-export const create_grid = (): Tile[] => {
-  const new_grid = initialize_grid(CONSTANTS.DIMENSIONS);
+export const create_grid = (config: Config): Tile[] => {
+  const new_grid = initialize_grid(config.gridSize, config.tileTypes);
 
   const m = [];
 
@@ -190,7 +191,7 @@ export const create_grid = (): Tile[] => {
 
   // We created some matches, try again.
   if (matches.length) {
-    return create_grid();
+    return create_grid(config);
   }
 
   // That's better
@@ -242,7 +243,8 @@ export const get_tile_at_index = (index: number, tiles: Tile[]) => {
 export const swap_two_tiles = (
   idx1: number,
   idx2: number,
-  tiles: Tile[]
+  tiles: Tile[],
+  config: Config
 ): Tile[] => {
   const firstTile = get_tile_at_index(idx1, tiles);
   const secondTile = get_tile_at_index(idx2, tiles);
@@ -263,7 +265,7 @@ export const swap_two_tiles = (
     tiles[tmpIdx1] = secondTile;
     tiles[tmpIdx2] = firstTile;
 
-    const unsolved = calculate_relationships(tiles, CONSTANTS.DIMENSIONS);
+    const unsolved = calculate_relationships(tiles, config.gridSize);
 
     return unsolved;
   }
@@ -289,7 +291,8 @@ export const push_tile_selection = (
 export const check_swap = (
   idx1: number,
   idx2: number,
-  tiles: Tile[]
+  tiles: Tile[],
+  config: Config
 ): boolean => {
   const tile1 = get_tile_at_index(idx1, tiles);
   const tile2 = get_tile_at_index(idx2, tiles);
@@ -309,7 +312,7 @@ export const check_swap = (
     const t = [...tiles];
 
     // dry run
-    const { matches } = solve(swap_two_tiles(idx1, idx2, t));
+    const { matches } = solve(swap_two_tiles(idx1, idx2, t, config));
 
     if (matches.length) {
       console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);

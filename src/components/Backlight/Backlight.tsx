@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CONSTANTS } from "../../constants";
+import { useConfig } from "../../context/ConfigContext";
 import { Tile } from "../../types";
 import { typeToColor } from "../../utils";
 import * as css from "./Backlight.css";
@@ -22,36 +22,29 @@ export function Backlight({ tiles }: BacklightProps) {
     return null;
   }
 
+  const config = useConfig();
+
   const dominant = useMemo(() => {
     const quadrants = [
+      [tiles[0], tiles[1], tiles[config.gridSize], tiles[config.gridSize + 1]],
       [
-        tiles[0],
-        tiles[1],
-        tiles[CONSTANTS.DIMENSIONS],
-        tiles[CONSTANTS.DIMENSIONS + 1],
-      ],
-      [
-        tiles[CONSTANTS.DIMENSIONS * 4],
-        tiles[CONSTANTS.DIMENSIONS * 4 + 1],
+        tiles[config.gridSize * 4],
+        tiles[config.gridSize * 4 + 1],
 
-        tiles[CONSTANTS.DIMENSIONS * 5],
-        tiles[CONSTANTS.DIMENSIONS * 5 + 1],
+        tiles[config.gridSize * 5],
+        tiles[config.gridSize * 5 + 1],
       ],
       [
-        tiles[CONSTANTS.DIMENSIONS - 2],
-        tiles[CONSTANTS.DIMENSIONS - 1],
-        tiles[CONSTANTS.DIMENSIONS * 2 - 2],
-        tiles[CONSTANTS.DIMENSIONS * 2 - 1],
+        tiles[config.gridSize - 2],
+        tiles[config.gridSize - 1],
+        tiles[config.gridSize * 2 - 2],
+        tiles[config.gridSize * 2 - 1],
       ],
       [
-        tiles[
-          CONSTANTS.DIMENSIONS * CONSTANTS.DIMENSIONS - 2 - CONSTANTS.DIMENSIONS
-        ],
-        tiles[
-          CONSTANTS.DIMENSIONS * CONSTANTS.DIMENSIONS - 1 - CONSTANTS.DIMENSIONS
-        ],
-        tiles[CONSTANTS.DIMENSIONS * CONSTANTS.DIMENSIONS - 2],
-        tiles[CONSTANTS.DIMENSIONS * CONSTANTS.DIMENSIONS - 1],
+        tiles[config.gridSize * config.gridSize - 2 - config.gridSize],
+        tiles[config.gridSize * config.gridSize - 1 - config.gridSize],
+        tiles[config.gridSize * config.gridSize - 2],
+        tiles[config.gridSize * config.gridSize - 1],
       ],
     ];
     const quads = quadrants.map((q) => {

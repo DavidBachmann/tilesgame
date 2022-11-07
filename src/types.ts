@@ -9,6 +9,10 @@ export type State = {
   comboCount: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
+  actions: {
+    init: () => void;
+    addToSelection: (id: number) => void;
+  };
 };
 
 export type Config = {

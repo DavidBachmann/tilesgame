@@ -24,6 +24,10 @@ const initialState: State = {
   comboCount: 0,
   interactive: true,
   queue: new Map(),
+  actions: {
+    init: () => {},
+    addToSelection: () => {},
+  },
 };
 
 export const useTileStore = (config: Config) =>
@@ -54,9 +58,9 @@ export const useTileStore = (config: Config) =>
             comboCount: prev.comboCount + 1,
           }));
           enqueue(deleted);
-          const bubbled = bubble_up(deleted);
+          const bubbled = bubble_up(deleted, config);
           enqueue(bubbled);
-          const spawned = spawn_tiles(bubbled);
+          const spawned = spawn_tiles(bubbled, config);
           enqueue(spawned);
 
           prepare_and_add_to_queue(spawned);
@@ -125,10 +129,7 @@ export const useTileStore = (config: Config) =>
       return {
         actions: {
           init: () => {
-            set({ tiles: create_grid() });
-          },
-          getQueue: () => {
-            return get().queue;
+            set({ tiles: create_grid(config) });
           },
           addToSelection: (id: number) => {
             if (!get().interactive) {
@@ -147,11 +148,13 @@ export const useTileStore = (config: Config) =>
               return;
             }
 
-            if (!check_swap(idx1, idx2, tiles)) {
+            if (!check_swap(idx1, idx2, tiles, config)) {
               return;
             }
 
-            return prepare_and_add_to_queue(swap_two_tiles(idx1, idx2, tiles));
+            return prepare_and_add_to_queue(
+              swap_two_tiles(idx1, idx2, tiles, config)
+            );
           },
         },
       };

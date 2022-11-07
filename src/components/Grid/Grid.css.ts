@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import { CONSTANTS } from "../../constants";
 
-export const root = styled("div")({
+export const root = styled("div")<{ gridSize: number }>(({ gridSize }) => ({
   display: "grid",
-  gridTemplate: `repeat(${CONSTANTS.DIMENSIONS}, 1fr) / repeat(${CONSTANTS.DIMENSIONS}, 1fr)`,
+  gridTemplate: `repeat(${gridSize}, 1fr) / repeat(${gridSize}, 1fr)`,
   gap: 6,
   background: "rgba(7,14,23,0.6)",
   padding: 12,
@@ -22,4 +21,4 @@ export const root = styled("div")({
     top: "0",
     boxShadow: "0px 0px 100px 200px rgba(255, 255, 255, 0.1)",
   },
-});
+}));
