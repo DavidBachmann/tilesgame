@@ -21,7 +21,14 @@ const explosion: Variants = {
   },
 };
 
-export const Tile = ({ id, type, selected, onClick, onDrag }: TileCell) => {
+export const Tile = ({
+  id,
+  type,
+  selected,
+  onClick,
+  onDrag,
+  visuallyDisabled,
+}: TileCell) => {
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
   const opacity = [0, 1];
 
@@ -94,7 +101,11 @@ export const Tile = ({ id, type, selected, onClick, onDrag }: TileCell) => {
             exit="exit"
           />
         )}
-        <css.tile data-selected={selected} data-type={type} />
+        <css.tile
+          data-selected={selected}
+          data-type={type}
+          style={{ opacity: visuallyDisabled ? 0.8 : 1 }}
+        />
       </css.root>
     </css.draggable>
   );

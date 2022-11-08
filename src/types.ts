@@ -42,6 +42,7 @@ export type TileCell = Tile & {
   onClick?: () => void;
   onDrag: (direction: [x: number, y: number]) => void;
   selected?: boolean;
+  visuallyDisabled?: boolean;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];

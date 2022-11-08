@@ -7,6 +7,7 @@ export const root = styled(motion.div)({
   placeItems: "center",
   position: "absolute",
   transformOrigin: "center",
+  pointerEvents: "none",
 });
 
 export const box = styled("div")({
