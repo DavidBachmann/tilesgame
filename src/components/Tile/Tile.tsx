@@ -58,9 +58,9 @@ export const Tile = ({
           x: _x,
           y: _y,
           onChange: () => {
-            if (_x !== 0) {
+            if (_x !== 0 && Math.abs(_x) >= 2) {
               cb(["x", Math.sign(_x)]);
-            } else if (_y !== 0) {
+            } else if (_y !== 0 && Math.abs(_y) >= 2) {
               cb(["y", Math.sign(_y)]);
             }
           },

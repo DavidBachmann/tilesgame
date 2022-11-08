@@ -18,7 +18,6 @@ const POINTS_BONUS = {
 
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
-  DRAG_THRESHOLD: 1,
   REGULAR_HIT: 3,
   TILE_SIZE: 48,
   TILE_ANIMATION_MS: 300,
