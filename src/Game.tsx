@@ -18,6 +18,8 @@ export function Game() {
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
   const message = useStore((state) => state.message);
+  const showPlayerMessage = !!message.current.heading;
+
   useMemo(() => {
     window.DEBUG_MESSAGES = true;
     init();
@@ -69,7 +71,7 @@ export function Game() {
                 idx={tile.idx}
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
-                visuallyDisabled={!!message.current}
+                visuallyDisabled={showPlayerMessage}
                 onDrag={(direction) => {
                   handleSwipeSwap(direction, tile.idx, tile.relationships);
                 }}
@@ -79,7 +81,7 @@ export function Game() {
         </Grid>
         {!isMobile() && <Backlight tiles={tiles} />}
         <AnimatePresence mode="wait">
-          {message.current.heading && (
+          {showPlayerMessage && (
             <PlayerMessage
               key={message.uuid}
               heading={message.current.heading}
