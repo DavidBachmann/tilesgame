@@ -40,7 +40,9 @@ export type Tile = {
 
 export type TileCell = Tile & {
   onClick?: () => void;
-  onDrag: (direction: [x: number, y: number]) => void;
+  onDrag: (direction: [axis: "x" | "y", dir: number]) => void;
+  idx: number;
+  relationships: Relationships;
   selected?: boolean;
   visuallyDisabled?: boolean;
 };
