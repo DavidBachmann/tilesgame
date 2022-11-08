@@ -34,29 +34,27 @@ export function Game() {
 
   const handleSwipeSwap = useCallback(
     (
-      direction: [x: number, y: number],
+      [axis, dir]: [axis: "x" | "y", dir: number],
       idx: number,
       relationships: Relationships
     ) => {
-      const [x, y] = direction;
-
-      if (x === 0 && y === 0) {
-        return;
-      }
-
       addToSelection(idx);
 
-      if (x === -1) {
-        return addToSelection(relationships.left);
+      if (axis === "x") {
+        if (dir === -1) {
+          return addToSelection(relationships.left);
+        }
+        if (dir === 1) {
+          return addToSelection(relationships.right);
+        }
       }
-      if (x === 1) {
-        return addToSelection(relationships.right);
-      }
-      if (y === -1) {
-        return addToSelection(relationships.top);
-      }
-      if (y === 1) {
-        return addToSelection(relationships.bottom);
+      if (axis === "y") {
+        if (dir === -1) {
+          return addToSelection(relationships.top);
+        }
+        if (dir === 1) {
+          return addToSelection(relationships.bottom);
+        }
       }
     },
     [addToSelection]

@@ -29,7 +29,7 @@ export const Tile = ({
   onDrag,
   visuallyDisabled,
 }: TileCell) => {
-  const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -1, 0];
+  const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -2, 0];
   const opacity = [0, 1];
 
   const cb = throttle((dir) => {
@@ -39,42 +39,41 @@ export const Tile = ({
   const [style, api] = useSpring(() => ({
     y: 0,
     x: 0,
+    config: {
+      duration: 150,
+      bounce: 1,
+    },
   }));
 
   const bind = useDrag(
-    ({ offset: [x, y], axis }) => {
+    ({ offset, down }) => {
+      const [x, y] = offset;
+      const absolute = offset.map((m) => Math.abs(m));
+      const larger = absolute.indexOf(Math.max(...absolute));
+
+      const _x = down && larger === 0 ? x : 0;
+      const _y = down && larger === 1 ? y : 0;
+
       api.start(() => {
         return {
-          x: axis === "x" ? x : 0,
-          y: axis === "y" ? y : 0,
-          config: {
-            mass: 0.3,
-            friction: 20,
-            tension: 100,
-          },
-          onChange: ({ value: { x = 0, y = 0 } }) => {
-            const _x =
-              axis === "x" && Math.abs(x) >= CONSTANTS.DRAG_THRESHOLD
-                ? Math.sign(x) * 1
-                : 0;
-            const _y =
-              axis === "y" && Math.abs(y) >= CONSTANTS.DRAG_THRESHOLD
-                ? Math.sign(y) * 1
-                : 0;
-
-            const directions = [_x, _y];
-
-            return cb(directions);
+          x: _x,
+          y: _y,
+          onChange: () => {
+            if (_x !== 0) {
+              cb(["x", Math.sign(_x)]);
+            } else if (_y !== 0) {
+              cb(["y", Math.sign(_y)]);
+            }
           },
         };
       });
     },
     {
       bounds: {
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
+        top: -1,
+        left: -1,
+        bottom: 1,
+        right: 1,
       },
       rubberband: true,
       filterTaps: true,
