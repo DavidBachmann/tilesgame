@@ -25,7 +25,6 @@ export const Tile = ({
   id,
   type,
   selected,
-  onClick,
   onDrag,
   visuallyDisabled,
 }: TileCell) => {
@@ -83,7 +82,6 @@ export const Tile = ({
   return (
     <css.draggable {...bind()} style={style}>
       <css.root
-        onClick={onClick}
         layoutId={String(id)}
         layout="position"
         animate={{ y, opacity }}

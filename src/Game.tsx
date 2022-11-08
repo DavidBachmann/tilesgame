@@ -60,13 +60,6 @@ export function Game() {
     [addToSelection]
   );
 
-  const handleClick = useCallback(
-    (idx: number) => {
-      addToSelection(idx);
-    },
-    [addToSelection]
-  );
-
   return (
     <UI>
       <Header />
@@ -82,7 +75,6 @@ export function Game() {
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
                 visuallyDisabled={!!comboMessage}
-                onClick={() => handleClick(tile.idx)}
                 onDrag={(direction) => {
                   handleSwipeSwap(direction, tile.idx, tile.relationships);
                 }}
