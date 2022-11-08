@@ -5,6 +5,7 @@ import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
 import { throttle } from "../../utils";
 import * as css from "./Tile.css";
+import { useState } from "react";
 
 const explosion: Variants = {
   animate: {
@@ -28,6 +29,7 @@ export const Tile = ({
   onDrag,
   visuallyDisabled,
 }: TileCell) => {
+  const [down, set] = useState(false);
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -2, 0];
   const opacity = [0, 1];
 
@@ -62,6 +64,12 @@ export const Tile = ({
               cb(["x", Math.sign(_x)]);
             } else if (_y !== 0 && Math.abs(_y) >= 2) {
               cb(["y", Math.sign(_y)]);
+            }
+
+            if (down) {
+              set(true);
+            } else {
+              set(false);
             }
           },
         };
@@ -101,7 +109,8 @@ export const Tile = ({
         <css.tile
           data-selected={selected}
           data-type={type}
-          style={{ opacity: visuallyDisabled ? 0.8 : 1 }}
+          data-visually-disabled={visuallyDisabled}
+          data-focus={down}
         />
       </css.root>
     </css.draggable>

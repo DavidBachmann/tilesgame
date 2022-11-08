@@ -15,10 +15,10 @@ export const tile = styled(motion.div)({
   borderRadius: 10,
   boxShadow: "0 4px 0 var(--color-shadow, transparent)",
   boxSizing: "border-box",
-  cursor: "pointer",
   height: CONSTANTS.TILE_SIZE,
   overflow: "hidden",
   position: "relative",
+  cursor: "grab",
   transition: "opacity 0.1s",
   width: CONSTANTS.TILE_SIZE,
   "@media (pointer: fine)": {
@@ -51,6 +51,13 @@ export const tile = styled(motion.div)({
     position: "absolute",
     transition: "opacity 0.2s",
     zIndex: 1,
+  },
+  '&[data-visually-disabled="true"]': {
+    opacity: 0.9,
+    cursor: "unset",
+  },
+  '&[data-focus="true"]:not([data-visually-disabled="true"])': {
+    cursor: "grabbing",
   },
   '&[data-selected="true"]::before': {
     opacity: 0.2,
