@@ -26,6 +26,14 @@ const initialState: State = {
     message: null,
     score: 0,
   },
+  message: {
+    queue: new Set(),
+    current: {
+      heading: "",
+      subtitle: "",
+    },
+    uuid: "",
+  },
   interactive: true,
   queue: new Map(),
   actions: {
@@ -37,6 +45,45 @@ const initialState: State = {
 export const store = (config: Config) =>
   create(
     combine(initialState, (set, get) => {
+      function prepare_next_state() {
+        // Reset state that might have been set during the last move.
+        set({
+          combo: {
+            score: 0,
+            message: null,
+            count: 0,
+          },
+        });
+      }
+
+      async function empty_message_queue() {
+        const queue = get().message.queue;
+        for await (const message of queue) {
+          set((state) => ({
+            message: {
+              ...state.message,
+              current: message,
+              uuid: v4(),
+            },
+          }));
+          await delay(CONSTANTS.MESSAGE_ANIMATION_MS);
+        }
+
+        await delay(CONSTANTS.MESSAGE_ANIMATION_MS);
+
+        // Clean up
+        set({
+          message: {
+            queue: new Set(),
+            current: {
+              heading: "",
+              subtitle: "",
+            },
+            uuid: v4(),
+          },
+        });
+      }
+
       const enqueue = (t: Tile[]) => {
         const q = get().queue;
         const temp = new Map(q);
@@ -71,20 +118,22 @@ export const store = (config: Config) =>
             tiles,
             matches,
             scoreCallback: (score) => {
-              set((prev) => ({
+              set((state) => ({
                 combo: {
-                  ...prev.combo,
-                  score: score + prev.combo.score + quadPoints + quintPoints,
+                  ...state.combo,
+                  score: score + state.combo.score + quadPoints + quintPoints,
                 },
               }));
             },
           });
-          set((prev) => ({
+
+          set((state) => ({
             combo: {
-              ...prev.combo,
-              count: prev.combo.count + 1,
+              ...state.combo,
+              count: state.combo.count + 1,
             },
           }));
+
           enqueue(deleted);
           const bubbled = bubble_up(deleted, config);
           enqueue(bubbled);
@@ -106,55 +155,55 @@ export const store = (config: Config) =>
         const multiplier = combo_counter(comboCount);
 
         debug_message("LOCKED", "red");
+
         // Lock user interactions
         set({ interactive: false });
 
         // Wait a while for the player to see both selections.
-        await delay(500);
+        await delay(CONSTANTS.TILE_ANIMATION_MS);
 
         // Clear selection
         set({ selection: [] });
-        let i = 0;
 
         for (const [id, tiles] of q) {
           q.delete(id);
 
-          if (i > 0) {
-            const speedUp = 0.01 * i;
-            // Speed up the waiting duration during long streaks
-            const wait = Math.max(
-              ~~(CONSTANTS.TILE_ANIMATION_MS * (1 - speedUp)),
-              CONSTANTS.TILE_ANIMATION_MS / 2
-            );
-            await delay(wait);
-          }
+          await delay(CONSTANTS.TILE_ANIMATION_MS);
 
           set({ tiles, queue: q });
-          i++;
         }
 
-        set((state) => ({ score: state.score + scoreToAdd * multiplier }));
+        set((state) => ({
+          score: state.score + scoreToAdd * multiplier,
+        }));
 
-        if (multiplier > 1) {
-          set((prev) => ({
-            combo: {
-              ...prev.combo,
-              message: `${multiplier}x multiplier!`,
+        if (multiplier >= 2) {
+          set((state) => ({
+            message: {
+              ...state.message,
+              queue: state.message.queue.add({
+                heading: `${multiplier} x multiplier`,
+                subtitle: `${state.combo.score * multiplier} points`,
+              }),
+            },
+          }));
+        }
+        if (multiplier >= 4) {
+          set((state) => ({
+            message: {
+              ...state.message,
+              queue: state.message.queue.add({
+                heading: "Awesome!",
+              }),
             },
           }));
         }
 
-        await delay(multiplier > 1 ? 2000 : 0);
+        // Post all messages we have for the player
+        empty_message_queue();
 
         // Reset interactivity state
-        set({
-          combo: {
-            score: 0,
-            message: null,
-            count: 0,
-          },
-          interactive: true,
-        });
+        set({ interactive: true });
         debug_message("UNLOCKED", "green");
       };
 
@@ -168,6 +217,8 @@ export const store = (config: Config) =>
               // If the board isn't interactive we ignore the selection
               return;
             }
+
+            prepare_next_state();
 
             set((state) => ({
               selection: push_tile_selection(id, state.selection),

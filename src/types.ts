@@ -6,6 +6,11 @@ export type State = {
   score: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
+  message: {
+    queue: Set<EndGameMessage>;
+    current: EndGameMessage;
+    uuid: string;
+  };
   combo: {
     count: number;
     message: string | null;
@@ -15,6 +20,11 @@ export type State = {
     init: () => void;
     addToSelection: (id: number) => void;
   };
+};
+
+type EndGameMessage = {
+  heading: string;
+  subtitle?: string;
 };
 
 export type Config = {

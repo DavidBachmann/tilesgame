@@ -316,7 +316,6 @@ export const check_swap = (
     const { matches } = solve(swap_two_tiles(idx1, idx2, t, config));
 
     if (matches.length) {
-      console.log(`Swapping ${tile1.idx} and ${tile2.idx}`);
       return true;
     }
   }
