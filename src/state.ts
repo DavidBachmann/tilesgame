@@ -69,7 +69,7 @@ export const store = (config: Config) =>
           await delay(CONSTANTS.MESSAGE_ANIMATION_MS);
         }
 
-        await delay(CONSTANTS.MESSAGE_ANIMATION_MS);
+        await delay(CONSTANTS.MESSAGE_ANIMATION_MS / 2);
 
         // Clean up
         set({
