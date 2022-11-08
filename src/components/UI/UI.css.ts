@@ -3,7 +3,11 @@ import styled from "styled-components";
 export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
-  rowGap: 32,
+  rowGap: 24,
+
+  "@media (min-width: 429px)": {
+    rowGap: 32,
+  },
 });
 
 export const area = styled("div")({
@@ -11,10 +15,11 @@ export const area = styled("div")({
 });
 
 export const header = styled("header")({
-  display: "flex",
+  display: "none",
   flexDirection: "column",
   alignItems: "center",
-  padding: 24,
+  padding: 8,
+
   svg: {
     opacity: 0.9,
     transition: "opacity 200ms",
@@ -24,5 +29,9 @@ export const header = styled("header")({
   },
   "a:hover svg, a:focus-visible svg": {
     opacity: 1,
+  },
+  "@media (min-width: 429px)": {
+    padding: 24,
+    display: "flex",
   },
 });
