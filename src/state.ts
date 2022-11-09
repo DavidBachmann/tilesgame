@@ -67,10 +67,10 @@ export const store = (config: Config) =>
               uuid: v4(),
             },
           }));
-          await delay(CONSTANTS.MESSAGE_ANIMATION_MS);
+          await delay(CONSTANTS.MESSAGE_ANIMATION.ms);
         }
 
-        await delay(CONSTANTS.MESSAGE_ANIMATION_MS / 2);
+        await delay(CONSTANTS.MESSAGE_ANIMATION.ms / 2);
 
         // Clean up
         set({
@@ -161,7 +161,7 @@ export const store = (config: Config) =>
         set({ interactive: false });
 
         // Wait a while for the player to see both selections.
-        await delay(CONSTANTS.TILE_ANIMATION_MS);
+        await delay(CONSTANTS.TILE_ANIMATION.ms);
 
         // Clear selection
         set({ selection: [] });
@@ -169,7 +169,7 @@ export const store = (config: Config) =>
         for (const [id, tiles] of q) {
           q.delete(id);
 
-          await delay(CONSTANTS.TILE_ANIMATION_MS);
+          await delay(CONSTANTS.TILE_ANIMATION.ms);
 
           set({ tiles, queue: q });
         }

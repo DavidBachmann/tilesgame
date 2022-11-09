@@ -25,8 +25,12 @@ export function PlayerMessage({
         },
         default: {
           type: "spring",
-          stiffness: 80,
-          mass: 0.8,
+          // Mass of the moving object. Higher values will result in more lethargic movement. Set to 1 by default.
+          mass: 1,
+          // Stiffness of the spring. Higher values will create more sudden movement. Set to 100 by default.
+          stiffness: 200,
+          // Strength of opposing force. If set to 0, spring will oscillate indefinitely. Set to 10 by default.
+          damping: 25,
         },
       }}
     >

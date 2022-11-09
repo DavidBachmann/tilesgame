@@ -48,12 +48,13 @@ export type Tile = {
   idx: number;
 };
 
-export type TileCell = Tile & {
+export type TileElement = Tile & {
   onClick?: () => void;
   onDrag: (direction: [axis: "x" | "y", dir: number]) => void;
   idx: number;
   relationships: Relationships;
   selected?: boolean;
+  destroyed?: boolean;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];

@@ -98,8 +98,10 @@ export const explosion = styled(motion.div)({
   background: CONSTANTS.COLORS.WHITE.normal,
   borderRadius: 10,
   boxShadow: `0 4px 0 ${CONSTANTS.COLORS.WHITE.shadow}`,
+  height: CONSTANTS.TILE_SIZE,
   inset: 0,
   position: "absolute",
+  width: CONSTANTS.TILE_SIZE,
 });
 
 export const draggable = styled(animated.div)({

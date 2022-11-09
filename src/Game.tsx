@@ -70,6 +70,7 @@ export function Game() {
                 relationships={tile.relationships}
                 idx={tile.idx}
                 type={tile.type as TileType}
+                destroyed={tile.type === -1}
                 selected={selection.includes(tile.idx)}
                 onDrag={(direction) => {
                   handleSwipeSwap(direction, tile.idx, tile.relationships);
