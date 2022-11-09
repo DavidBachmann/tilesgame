@@ -162,7 +162,7 @@ export const solve = (tiles: Tile[]) => {
     const node = tiles[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
       seek(node, direction, tiles)
-    ).filter((arr) => arr.length >= CONSTANTS.REGULAR_HIT);
+    ).filter((arr) => arr.length >= 3);
 
     m.push(hits);
   }
@@ -182,7 +182,7 @@ export const create_grid = (config: Config): Tile[] => {
     const node = new_grid[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
       seek(node, direction, new_grid)
-    ).filter((arr) => arr.length >= CONSTANTS.REGULAR_HIT);
+    ).filter((arr) => arr.length >= 3);
 
     m.push(hits);
   }
