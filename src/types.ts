@@ -54,7 +54,6 @@ export type TileCell = Tile & {
   idx: number;
   relationships: Relationships;
   selected?: boolean;
-  visuallyDisabled?: boolean;
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];

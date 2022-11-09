@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Variants } from "framer-motion";
 import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
@@ -5,7 +6,6 @@ import { CONSTANTS } from "../../constants";
 import { TileCell } from "../../types";
 import { throttle } from "../../utils";
 import * as css from "./Tile.css";
-import { useState } from "react";
 
 const explosion: Variants = {
   animate: {
@@ -22,13 +22,7 @@ const explosion: Variants = {
   },
 };
 
-export const Tile = ({
-  id,
-  type,
-  selected,
-  onDrag,
-  visuallyDisabled,
-}: TileCell) => {
+export const Tile = ({ id, type, selected, onDrag }: TileCell) => {
   const [down, set] = useState(false);
   const y = type == -1 ? [1, 0] : [CONSTANTS.TILE_SIZE * -2, 0];
   const opacity = [0, 1];
@@ -106,12 +100,7 @@ export const Tile = ({
             exit="exit"
           />
         )}
-        <css.tile
-          data-selected={selected}
-          data-type={type}
-          data-visually-disabled={visuallyDisabled}
-          data-focus={down}
-        />
+        <css.tile data-selected={selected} data-type={type} data-focus={down} />
       </css.root>
     </css.draggable>
   );

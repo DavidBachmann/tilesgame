@@ -154,57 +154,65 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
   return calculate_relationships(clone, config.gridSize);
 };
 
-const game_over_check = (
+const solvable_check = (
   grid: Tile[],
   searchIndex = 0,
   config: Config
 ): boolean | null => {
-  // Unsolvable
   if (!grid[searchIndex]) {
+    // Grid is unsolvable.
+    // Returning null terminates the search.
     return null;
   }
 
-  const swapped = swap_two_tiles(
-    grid[searchIndex].idx,
-    grid[searchIndex].relationships.right,
-    grid,
-    config
-  );
+  let found = 0;
 
-  const { matches } = solve(swapped);
+  for (let i = 0; i < CONSTANTS.DIRECTIONS.length; i++) {
+    const unsolved = swap_two_tiles(
+      grid[searchIndex].idx,
+      grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
+      grid,
+      config
+    );
 
-  if (matches.length > 0) {
-    console.log(matches);
-  }
+    const { matches } = solve(unsolved);
 
-  return matches.length > 0;
-};
+    found = matches.length;
 
-export const game_over = (tiles: Tile[], config: Config) => {
-  const grid = [...tiles];
-  let solved: boolean | null = false;
-  let curr = -1;
-
-  while (solved === false) {
-    curr++;
-    solved = game_over_check(grid, curr, config);
-
-    if (solved === null) {
-      return true;
+    if (found > 0) {
+      break;
     }
   }
 
-  return false;
+  return found > 0;
+};
+
+export const is_grid_solvable = (grid: Tile[], config: Config) => {
+  let solvable: boolean | null = false;
+  let curr = -1;
+
+  while (!solvable) {
+    let newCopy = [...grid];
+    curr++;
+    solvable = solvable_check(newCopy, curr, config);
+
+    if (solvable === null) {
+      break;
+    }
+  }
+
+  return solvable;
 };
 
 // Takes a grid and finds matches
 export const solve = (tiles: Tile[]) => {
+  const copy = [...tiles];
   const m = [];
 
-  for (let i = 0; i < tiles.length; i++) {
-    const node = tiles[i];
+  for (let i = 0; i < copy.length; i++) {
+    const node = copy[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
-      seek(node, direction, tiles)
+      seek(node, direction, copy)
     ).filter((arr) => arr.length >= 3);
 
     m.push(hits);
@@ -215,7 +223,7 @@ export const solve = (tiles: Tile[]) => {
   return { tiles, matches };
 };
 
-// `create_grid` tries to generate a grid without any matches
+// Tries to generate a solvable grid without any matches
 export const create_grid = (config: Config): Tile[] => {
   const new_grid = initialize_grid(config.gridSize, config.tileTypes);
 
@@ -237,7 +245,11 @@ export const create_grid = (config: Config): Tile[] => {
     return create_grid(config);
   }
 
-  // That's better
+  // We created an unsolvable grid, those are no fun.
+  if (!is_grid_solvable(new_grid, config)) {
+    return create_grid(config);
+  }
+
   return new_grid;
 };
 
@@ -311,10 +323,10 @@ export const swap_two_tiles = (
 
     const unsolved = calculate_relationships(tiles, config.gridSize);
 
-    return unsolved;
+    return [...unsolved];
   }
 
-  return tiles;
+  return [...tiles];
 };
 
 export const push_tile_selection = (

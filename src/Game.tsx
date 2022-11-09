@@ -71,7 +71,6 @@ export function Game() {
                 idx={tile.idx}
                 type={tile.type as TileType}
                 selected={selection.includes(tile.idx)}
-                visuallyDisabled={showPlayerMessage}
                 onDrag={(direction) => {
                   handleSwipeSwap(direction, tile.idx, tile.relationships);
                 }}

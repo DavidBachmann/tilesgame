@@ -13,7 +13,7 @@ import {
   spawn_tiles,
   get_quad_matches,
   get_quint_matches,
-  game_over,
+  is_grid_solvable,
 } from "./logic";
 import { Config, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
@@ -200,16 +200,27 @@ export const store = (config: Config) =>
           }));
         }
 
+        // Check if grid is solvable
+        const solvable = is_grid_solvable(get().tiles, config);
+
+        if (!solvable) {
+          debug_message("GAME OVER", "red");
+          set((state) => ({
+            message: {
+              ...state.message,
+              queue: state.message.queue.add({
+                heading: "Game over",
+              }),
+            },
+          }));
+        }
+
         // Post all messages we have for the player
         empty_message_queue();
 
-        // Check if game over
-        const x = game_over(get().tiles, config);
-        console.log(x);
-
         // Reset interactivity state
         set({ interactive: true });
-        debug_message("UNLOCKED", "green");
+        debug_message("unlocked", "green");
       };
 
       return {
