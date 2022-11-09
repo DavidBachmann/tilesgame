@@ -154,6 +154,49 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
   return calculate_relationships(clone, config.gridSize);
 };
 
+const game_over_check = (
+  grid: Tile[],
+  searchIndex = 0,
+  config: Config
+): boolean | null => {
+  // Unsolvable
+  if (!grid[searchIndex]) {
+    return null;
+  }
+
+  const swapped = swap_two_tiles(
+    grid[searchIndex].idx,
+    grid[searchIndex].relationships.right,
+    grid,
+    config
+  );
+
+  const { matches } = solve(swapped);
+
+  if (matches.length > 0) {
+    console.log(matches);
+  }
+
+  return matches.length > 0;
+};
+
+export const game_over = (tiles: Tile[], config: Config) => {
+  const grid = [...tiles];
+  let solved: boolean | null = false;
+  let curr = -1;
+
+  while (solved === false) {
+    curr++;
+    solved = game_over_check(grid, curr, config);
+
+    if (solved === null) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 // Takes a grid and finds matches
 export const solve = (tiles: Tile[]) => {
   const m = [];

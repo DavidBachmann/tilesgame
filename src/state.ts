@@ -13,6 +13,7 @@ import {
   spawn_tiles,
   get_quad_matches,
   get_quint_matches,
+  game_over,
 } from "./logic";
 import { Config, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
@@ -201,6 +202,10 @@ export const store = (config: Config) =>
 
         // Post all messages we have for the player
         empty_message_queue();
+
+        // Check if game over
+        const x = game_over(get().tiles, config);
+        console.log(x);
 
         // Reset interactivity state
         set({ interactive: true });
