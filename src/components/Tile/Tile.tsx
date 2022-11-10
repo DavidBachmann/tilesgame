@@ -69,12 +69,6 @@ export const Tile = ({
               set(false);
             }
           },
-          // config: {
-          //   mass: 1,
-          //   tension: 1,
-          //   friction: 100,
-          //   damping: 100,
-          // },
         };
       });
     },
