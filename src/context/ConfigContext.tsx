@@ -4,7 +4,7 @@ import { clamp } from "../utils";
 
 const defaultValue = {
   gridSize: 6,
-  tileTypes: 4,
+  tileTypes: 5,
 };
 
 const ConfigContext = createContext<Config>({
