@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import isMobile from "is-mobile";
 import { Relationships, TileType } from "./types";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
@@ -81,12 +80,10 @@ export function Game() {
             );
           })}
         </Grid>
-        {!isMobile() && (
-          <Backlight
-            tiles={tiles}
-            party={tiles.some((tile) => tile.type === -1)}
-          />
-        )}
+        <Backlight
+          tiles={tiles}
+          party={tiles.some((tile) => tile.type === -1)}
+        />
         <AnimatePresence mode="wait">
           {showPlayerMessage && (
             <PlayerMessage

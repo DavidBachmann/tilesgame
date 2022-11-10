@@ -14,6 +14,7 @@ export const backlight = styled("div")({
     bottom: "5%",
     content: "''",
     filter: "blur(75px)",
+    transform: "translate3d(0, 0, 0)",
     margin: "0 auto",
     position: "absolute",
     top: "5%",
