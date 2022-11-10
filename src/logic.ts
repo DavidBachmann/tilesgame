@@ -155,11 +155,10 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
 };
 
 const solvable_check = (
-  tiles: Tile[],
+  grid: Tile[],
   searchIndex = 0,
   config: Config
 ): boolean | null => {
-  const grid = [...tiles];
   if (!grid[searchIndex]) {
     // Grid is unsolvable.
     // Returning null terminates the search.
@@ -169,16 +168,17 @@ const solvable_check = (
   let found = 0;
 
   for (let i = 0; i < CONSTANTS.DIRECTIONS.length; i++) {
-    const unsolved = swap_two_tiles(
-      grid[searchIndex].idx,
-      grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
-      grid,
-      config
+    const foo = solve(
+      swap_two_tiles(
+        grid[searchIndex].idx,
+        grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
+        grid,
+        config,
+        false
+      )
     );
 
-    const { matches } = solve(unsolved);
-
-    found = matches.length;
+    found = foo.matches.length;
 
     if (found > 0) {
       break;
@@ -186,6 +186,22 @@ const solvable_check = (
   }
 
   return found > 0;
+};
+
+export const is_grid_solvable2 = (grid: Tile[], config: Config) => {
+  let solvable: boolean | null = false;
+  let curr = -1;
+
+  while (!solvable) {
+    curr++;
+    solvable = solvable_check(grid, curr, config);
+
+    if (solvable === null) {
+      break;
+    }
+  }
+
+  return solvable;
 };
 
 export const is_grid_solvable = (grid: Tile[], config: Config) => {
@@ -301,10 +317,12 @@ export const swap_two_tiles = (
   idx1: number,
   idx2: number,
   tiles: Tile[],
-  config: Config
+  config: Config,
+  mutate?: boolean
 ): Tile[] => {
-  const firstTile = get_tile_at_index(idx1, tiles);
-  const secondTile = get_tile_at_index(idx2, tiles);
+  const grid = mutate ? tiles : [...tiles];
+  const firstTile = get_tile_at_index(idx1, grid);
+  const secondTile = get_tile_at_index(idx2, grid);
 
   if (firstTile && secondTile) {
     // Clones the nodes
@@ -319,15 +337,15 @@ export const swap_two_tiles = (
     firstTile.idx = tmpIdx2;
 
     // Swap positions
-    tiles[tmpIdx1] = secondTile;
-    tiles[tmpIdx2] = firstTile;
+    grid[tmpIdx1] = secondTile;
+    grid[tmpIdx2] = firstTile;
 
-    const unsolved = calculate_relationships(tiles, config.gridSize);
+    const unsolved = calculate_relationships(grid, config.gridSize);
 
-    return [...unsolved];
+    return unsolved;
   }
 
-  return [...tiles];
+  return grid;
 };
 
 export const push_tile_selection = (
@@ -369,7 +387,7 @@ export const check_swap = (
     const t = [...tiles];
 
     // dry run
-    const { matches } = solve(swap_two_tiles(idx1, idx2, t, config));
+    const { matches } = solve(swap_two_tiles(idx1, idx2, t, config, false));
 
     if (matches.length) {
       return true;

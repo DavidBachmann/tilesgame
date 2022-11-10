@@ -246,7 +246,7 @@ export const store = (config: Config) =>
             }
 
             return prepare_and_add_to_queue(
-              swap_two_tiles(idx1, idx2, tiles, config)
+              swap_two_tiles(idx1, idx2, tiles, config, true)
             );
           },
         },
