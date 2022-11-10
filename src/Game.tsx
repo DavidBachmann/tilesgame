@@ -21,7 +21,9 @@ export function Game() {
   const showPlayerMessage = !!message.current.heading;
 
   useMemo(() => {
-    window.DEBUG_MESSAGES = true;
+    if (!import.meta.env.PROD) {
+      window.DEBUG_MESSAGES = true;
+    }
     init();
   }, []);
 
@@ -79,7 +81,12 @@ export function Game() {
             );
           })}
         </Grid>
-        {!isMobile() && <Backlight tiles={tiles} />}
+        {!isMobile() && (
+          <Backlight
+            tiles={tiles}
+            party={tiles.some((tile) => tile.type === -1)}
+          />
+        )}
         <AnimatePresence mode="wait">
           {showPlayerMessage && (
             <PlayerMessage

@@ -6,6 +6,7 @@ import * as css from "./Backlight.css";
 
 type BacklightProps = {
   tiles: Tile[];
+  party?: boolean;
 };
 
 function mode(arr: Array<any>) {
@@ -17,7 +18,7 @@ function mode(arr: Array<any>) {
     .pop();
 }
 
-export function Backlight({ tiles }: BacklightProps) {
+export function Backlight({ tiles, party }: BacklightProps) {
   if (!tiles) {
     return null;
   }
@@ -55,7 +56,7 @@ export function Backlight({ tiles }: BacklightProps) {
   }, [tiles]);
 
   return (
-    <css.root>
+    <css.root style={{ opacity: party ? 0.8 : 0.65 }}>
       <css.backlight
         style={
           {

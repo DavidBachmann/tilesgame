@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const root = styled("div")({
   inset: 0,
-  opacity: 0.75,
+  transition: "opacity 300ms",
   position: "absolute",
   zIndex: -1,
 });
