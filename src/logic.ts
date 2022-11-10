@@ -155,10 +155,11 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
 };
 
 const solvable_check = (
-  grid: Tile[],
+  tiles: Tile[],
   searchIndex = 0,
   config: Config
 ): boolean | null => {
+  const grid = [...tiles];
   if (!grid[searchIndex]) {
     // Grid is unsolvable.
     // Returning null terminates the search.
@@ -220,7 +221,7 @@ export const solve = (tiles: Tile[]) => {
 
   const matches = m.filter((arr) => arr.some(Boolean)).flat();
 
-  return { tiles, matches };
+  return { tiles: copy, matches };
 };
 
 // Tries to generate a solvable grid without any matches
