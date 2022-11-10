@@ -155,11 +155,10 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
 };
 
 const solvable_check = (
-  tiles: Tile[],
+  grid: Tile[],
   searchIndex = 0,
   config: Config
 ): boolean | null => {
-  const grid = [...tiles];
   if (!grid[searchIndex]) {
     // Grid is unsolvable.
     // Returning null terminates the search.
@@ -169,16 +168,16 @@ const solvable_check = (
   let found = 0;
 
   for (let i = 0; i < CONSTANTS.DIRECTIONS.length; i++) {
-    const unsolved = swap_two_tiles(
-      grid[searchIndex].idx,
-      grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
-      grid,
-      config
+    const foo = solve(
+      swap_two_tiles(
+        grid[searchIndex].idx,
+        grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
+        grid,
+        config
+      )
     );
 
-    const { matches } = solve(unsolved);
-
-    found = matches.length;
+    found = foo.matches.length;
 
     if (found > 0) {
       break;
@@ -186,6 +185,22 @@ const solvable_check = (
   }
 
   return found > 0;
+};
+
+export const is_grid_solvable2 = (grid: Tile[], config: Config) => {
+  let solvable: boolean | null = false;
+  let curr = -1;
+
+  while (!solvable) {
+    curr++;
+    solvable = solvable_check(grid, curr, config);
+
+    if (solvable === null) {
+      break;
+    }
+  }
+
+  return solvable;
 };
 
 export const is_grid_solvable = (grid: Tile[], config: Config) => {
@@ -303,8 +318,9 @@ export const swap_two_tiles = (
   tiles: Tile[],
   config: Config
 ): Tile[] => {
-  const firstTile = get_tile_at_index(idx1, tiles);
-  const secondTile = get_tile_at_index(idx2, tiles);
+  const copy = [...tiles];
+  const firstTile = get_tile_at_index(idx1, copy);
+  const secondTile = get_tile_at_index(idx2, copy);
 
   if (firstTile && secondTile) {
     // Clones the nodes
@@ -319,15 +335,15 @@ export const swap_two_tiles = (
     firstTile.idx = tmpIdx2;
 
     // Swap positions
-    tiles[tmpIdx1] = secondTile;
-    tiles[tmpIdx2] = firstTile;
+    copy[tmpIdx1] = secondTile;
+    copy[tmpIdx2] = firstTile;
 
-    const unsolved = calculate_relationships(tiles, config.gridSize);
+    const unsolved = calculate_relationships(copy, config.gridSize);
 
-    return [...unsolved];
+    return unsolved;
   }
 
-  return [...tiles];
+  return copy;
 };
 
 export const push_tile_selection = (
