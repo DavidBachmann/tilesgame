@@ -22,6 +22,8 @@ const initialState: State = {
   tiles: [],
   selection: [],
   score: 0,
+  interactive: true,
+  queue: new Map(),
   combo: {
     count: 0,
     message: null,
@@ -35,8 +37,6 @@ const initialState: State = {
     },
     uuid: "",
   },
-  interactive: true,
-  queue: new Map(),
   actions: {
     init: () => {},
     addToSelection: () => {},
@@ -157,14 +157,8 @@ export const store = (config: Config) =>
 
         debug_message("LOCKED", "red");
 
-        // Lock user interactions
-        set({ interactive: false });
-
-        // Wait a while for the player to see both selections.
-        await delay(CONSTANTS.TILE_ANIMATION.ms);
-
-        // Clear selection
-        set({ selection: [] });
+        // Lock user interactions, clear selection
+        set({ interactive: false, selection: [] });
 
         for (const [id, tiles] of q) {
           q.delete(id);
@@ -178,7 +172,7 @@ export const store = (config: Config) =>
           score: state.score + scoreToAdd * multiplier,
         }));
 
-        if (multiplier >= 2) {
+        if (multiplier > 2) {
           set((state) => ({
             message: {
               ...state.message,

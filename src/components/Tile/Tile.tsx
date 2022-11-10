@@ -41,10 +41,6 @@ export const Tile = ({
   const [style, api] = useSpring(() => ({
     y: 0,
     x: 0,
-    config: {
-      duration: 150,
-      bounce: 1,
-    },
   }));
 
   const bind = useDrag(
@@ -73,6 +69,12 @@ export const Tile = ({
               set(false);
             }
           },
+          config: {
+            mass: 1,
+            tension: 1,
+            friction: 100,
+            damping: 100,
+          },
         };
       });
     },
@@ -91,7 +93,7 @@ export const Tile = ({
   return (
     <css.draggable {...bind()} style={style}>
       <css.root layoutId={String(id)} layout="position">
-        {type === -1 && (
+        {destroyed && (
           <css.explosion
             variants={explosion}
             animate="animate"
@@ -99,7 +101,7 @@ export const Tile = ({
           />
         )}
         <AnimatePresence>
-          {destroyed ? null : (
+          {!destroyed && (
             <css.tile
               initial={{ y: yOffset }}
               exit={{ y: 0 }}
