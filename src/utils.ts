@@ -7,10 +7,6 @@ declare global {
   }
 }
 
-export function random_between(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
 export const delay = (t: number) => {
   return new Promise((resolve) => setTimeout(resolve, t));
 };

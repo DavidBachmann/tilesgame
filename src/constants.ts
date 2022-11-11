@@ -19,7 +19,7 @@ const POINTS_BONUS = {
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
   TILE_SIZE: 48,
-  TILE_ANIMATION: { ms: 350, s: 0.35 },
+  TILE_ANIMATION: { ms: 300, s: 0.3 },
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,
   MAX_MULTIPLIER: 5,

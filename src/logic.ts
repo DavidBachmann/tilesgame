@@ -1,7 +1,6 @@
 import { v4 } from "uuid";
 import { CONSTANTS } from "./constants";
 import { Config, Directions, Tile, TileType } from "./types";
-import { random_between } from "./utils";
 
 export const bubble_up = (tiles: Tile[], config: Config) => {
   let t: Tile[] = [...tiles];
@@ -60,25 +59,32 @@ export const create_empty_tile_at_index = (idx: number): Tile => ({
 // Empty tiles get turned into random tiles
 const create_random_tile_at_index = (
   idx: number,
-  totalTileTypes: number
-): Tile => ({
-  id: v4(),
-  idx: idx,
-  type: random_between(0, totalTileTypes) as TileType,
-  relationships: {
-    top: -1,
-    right: -1,
-    bottom: -1,
-    left: -1,
-  },
-});
+  totalTileTypes: number,
+  random: () => number
+): Tile => {
+  return {
+    id: v4(),
+    idx: idx,
+    type: Math.floor(random() * (totalTileTypes - 0) + 0) as TileType,
+    relationships: {
+      top: -1,
+      right: -1,
+      bottom: -1,
+      left: -1,
+    },
+  };
+};
 
-export const initialize_grid = (count: number, totalTileTypes: number) => {
+export const initialize_grid = (
+  count: number,
+  totalTileTypes: number,
+  random: () => number
+) => {
   const grid = [];
   const dimensions = count * count;
 
   for (let i = 0; i < dimensions; i++) {
-    const tile = create_random_tile_at_index(i, totalTileTypes);
+    const tile = create_random_tile_at_index(i, totalTileTypes, random);
 
     grid.push(tile);
   }
@@ -147,7 +153,11 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
     const tile = tiles[i];
 
     if (tile.type === -1) {
-      clone[tile.idx] = create_random_tile_at_index(tile.idx, config.tileTypes);
+      clone[tile.idx] = create_random_tile_at_index(
+        tile.idx,
+        config.tileTypes,
+        config.random
+      );
     }
   }
 
@@ -188,22 +198,6 @@ const solvable_check = (
   return found > 0;
 };
 
-export const is_grid_solvable2 = (grid: Tile[], config: Config) => {
-  let solvable: boolean | null = false;
-  let curr = -1;
-
-  while (!solvable) {
-    curr++;
-    solvable = solvable_check(grid, curr, config);
-
-    if (solvable === null) {
-      break;
-    }
-  }
-
-  return solvable;
-};
-
 export const is_grid_solvable = (grid: Tile[], config: Config) => {
   let solvable: boolean | null = false;
   let curr = -1;
@@ -242,7 +236,11 @@ export const solve = (tiles: Tile[]) => {
 
 // Tries to generate a solvable grid without any matches
 export const create_grid = (config: Config): Tile[] => {
-  const new_grid = initialize_grid(config.gridSize, config.tileTypes);
+  const new_grid = initialize_grid(
+    config.gridSize,
+    config.tileTypes,
+    config.random
+  );
 
   const m = [];
 

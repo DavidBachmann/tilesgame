@@ -30,6 +30,7 @@ type EndGameMessage = {
 export type Config = {
   gridSize: number;
   tileTypes: number;
+  random: () => number;
 };
 
 export type Relationships = {
