@@ -1,8 +1,6 @@
 # Match-3 tiles game.
 
-Available to play at https://tilegame.com
-
-Available to play at [tilegame.com](https://www.tilesgame.com)
+Available to play at [tilesgame.com](https://www.tilesgame.com)
 
 <img width="696" alt="image" src="https://user-images.githubusercontent.com/8494120/200178374-42b6e8ea-9b24-4b49-b992-a3ebacb0bbdf.png">
 
