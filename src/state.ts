@@ -14,6 +14,7 @@ import {
   get_quad_matches,
   get_quint_matches,
   is_grid_solvable,
+  delete_all,
 } from "./logic";
 import { Config, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
@@ -98,7 +99,9 @@ export const store = (config: Config) =>
       };
 
       const prepare_and_add_to_queue = (unsolved: Tile[]): void => {
-        const { tiles, matches } = solve(unsolved);
+        let matches: Tile[][] = [];
+        const { tiles, matches: _matches } = solve(unsolved);
+        matches = _matches;
 
         const totalQuadMatches = get_quad_matches(matches);
         const totalQuintMatches = get_quint_matches(matches);
@@ -117,25 +120,48 @@ export const store = (config: Config) =>
         }
 
         if (matches.length) {
-          const deleted = delete_matches({
-            tiles,
-            matches,
-            scoreCallback: (score) => {
-              set((state) => ({
-                combo: {
-                  ...state.combo,
-                  score: score + state.combo.score + quadPoints + quintPoints,
-                },
-              }));
-            },
-          });
+          let deleted: Tile[] = [];
 
-          set((state) => ({
-            combo: {
-              ...state.combo,
-              count: state.combo.count + 1,
-            },
-          }));
+          if (totalQuintMatches) {
+            deleted = delete_all({
+              tiles,
+              scoreCallback: (score) => {
+                set((state) => ({
+                  message: {
+                    ...state.message,
+                    queue: state.message.queue.add({
+                      heading: `QUINTUPLE`,
+                      subtitle: `BOARD CLEARED`,
+                    }),
+                  },
+                  combo: {
+                    ...state.combo,
+                    score: score + state.combo.score + quadPoints + quintPoints,
+                  },
+                }));
+              },
+            });
+          } else {
+            deleted = delete_matches({
+              tiles,
+              matches,
+              scoreCallback: (score) => {
+                set((state) => ({
+                  combo: {
+                    ...state.combo,
+                    score: score + state.combo.score + quadPoints + quintPoints,
+                  },
+                }));
+              },
+            });
+
+            set((state) => ({
+              combo: {
+                ...state.combo,
+                count: state.combo.count + 1,
+              },
+            }));
+          }
 
           enqueue(deleted);
           const bubbled = bubble_up(deleted, config);

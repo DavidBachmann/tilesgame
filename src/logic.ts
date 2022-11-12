@@ -145,6 +145,24 @@ export const delete_matches = ({
   return clone;
 };
 
+export const delete_all = ({
+  tiles,
+  scoreCallback,
+}: {
+  tiles: Tile[];
+  scoreCallback: (score: number) => void;
+}): Tile[] => {
+  const clone = [...tiles];
+  const score = clone.length;
+  scoreCallback(score);
+
+  for (let i = 0; i < clone.length; i++) {
+    clone[clone[i].idx] = create_empty_tile_at_index(i);
+  }
+
+  return clone;
+};
+
 // After every match we spawn new tiles to fill the void
 export const spawn_tiles = (tiles: Tile[], config: Config) => {
   const clone = [...tiles];
