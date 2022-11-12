@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
-import * as css from "./UI.css";
-import { Octocat } from "./artwork/Octocat";
 import { Nav } from "./Nav";
+import * as css from "./UI.css";
 
 type UIProps = {
   children: ReactNode;
@@ -19,14 +18,6 @@ export function Header() {
   return (
     <css.header>
       <Nav />
-      {/* <a */}
-      {/*   href="//github.com/DavidBachmann/tilesgame" */}
-      {/*   target="_blank" */}
-      {/*   rel="noopener noreferrer" */}
-      {/* > */}
-      {/*   <span className="visually-hidden">View the source on Github</span> */}
-      {/*   <Octocat /> */}
-      {/* </a> */}
     </css.header>
   );
 }

@@ -13,12 +13,13 @@ export const root = styled("div")({
 
 export const area = styled("div")({
   position: "relative",
+  marginTop: 80,
 });
 
 export const header = styled("header")({
   flexDirection: "column",
   alignItems: "center",
-  position: "fixed",
+  position: "absolute",
   top: 0,
   left: 0,
   right: 0,

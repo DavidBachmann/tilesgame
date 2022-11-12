@@ -29,7 +29,17 @@ export const button = styled("button")({
 export const title = styled("div")({
   fontSize: 20,
 });
+
 export const content = styled("div")({
   display: "flex",
+  alignItems: "center",
   columnGap: 16,
+});
+
+export const os = styled("div")({
+  display: "flex",
+  svg: {
+    width: 20,
+    height: "auto",
+  },
 });

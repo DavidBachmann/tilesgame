@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext } from "react";
 import { v4 } from "uuid";
 import Prando from "prando";
-import { Config } from "../types";
+import { Config, GameMode } from "../types";
 import { clamp, convert_date_to_UTC } from "../utils";
 
 function seed_from_v4(v4str: string) {
@@ -13,14 +13,23 @@ function seed_from_v4(v4str: string) {
   return v4str;
 }
 
+function validate_game_mode(gameMode: string) {
+  const gameModes = ["casual", "time-attack"];
+
+  if (!gameModes.includes(gameMode)) {
+    return "casual";
+  }
+
+  return gameMode;
+}
+
 const defaultValue = {
   gridSize: 6,
   tileTypes: 5,
   random: () => Math.random(),
   seed: seed_from_v4(v4()),
+  gameMode: "casual" as const,
 };
-
-seed_from_v4(v4());
 
 const ConfigContext = createContext<Config>({
   ...defaultValue,
@@ -95,12 +104,14 @@ export function ConfigProvider({
   const gridSize = get_from_query("gridSize", true) as number;
   const tileTypes = get_from_query("tileTypes", true) as number;
   const seed = (get_from_query("seed") as string) || seed_from_v4(v4());
+  const gameMode = get_from_query("gameMode") as string;
   const prando = new Prando(seed);
   const random = () => prando.next();
 
   const merged = {
     ...value,
     seed: parse_seed(seed),
+    gameMode: validate_game_mode(gameMode) as GameMode,
     random,
     gridSize: gridSize
       ? clamp(gridSize, MIN_GRID_SIZE, MAX_GRID_SIZE)
