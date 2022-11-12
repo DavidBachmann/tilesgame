@@ -22,7 +22,6 @@ const initialState: State = {
   tiles: [],
   selection: [],
   score: 0,
-  roundScores: [],
   interactive: true,
   queue: new Map(),
   gameOver: false,

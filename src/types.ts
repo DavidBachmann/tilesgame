@@ -6,7 +6,6 @@ export type State = {
   tiles: Tile[];
   selection: number[];
   score: number;
-  roundScores: number[];
   interactive: boolean;
   queue: Map<string, Tile[]>;
   gameOver: boolean;
