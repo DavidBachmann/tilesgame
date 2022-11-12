@@ -39,7 +39,7 @@ const initialState: State = {
   },
   actions: {
     init: () => {},
-    addToSelection: () => {},
+    add_to_selection: () => {},
   },
 };
 
@@ -146,10 +146,10 @@ export const store = (config: Config) =>
         }
 
         enqueue(tiles);
-        solveQueue();
+        solve_queue();
       };
 
-      const solveQueue = async () => {
+      const solve_queue = async () => {
         const q = get().queue;
         const comboCount = get().combo.count;
         const scoreToAdd = get().combo.score;
@@ -222,7 +222,7 @@ export const store = (config: Config) =>
           init: () => {
             set({ tiles: create_grid(config) });
           },
-          addToSelection: (id: number) => {
+          add_to_selection: (id: number) => {
             if (!get().interactive) {
               // If the board isn't interactive we ignore the selection
               return;

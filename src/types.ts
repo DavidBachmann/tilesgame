@@ -18,7 +18,7 @@ export type State = {
   };
   actions: {
     init: () => void;
-    addToSelection: (id: number) => void;
+    add_to_selection: (id: number) => void;
   };
 };
 

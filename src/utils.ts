@@ -95,3 +95,7 @@ export const combo_counter = (combo: number) => {
     Math.floor(Math.max(1, combo + 1) / 2)
   );
 };
+
+export function convert_date_to_UTC(date: Date) {
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}

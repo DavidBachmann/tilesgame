@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext } from "react";
 import { v4 } from "uuid";
 import Prando from "prando";
 import { Config } from "../types";
-import { clamp } from "../utils";
+import { clamp, convert_date_to_UTC } from "../utils";
 
 const defaultValue = {
   gridSize: 6,
@@ -26,7 +26,7 @@ const parse = (value: string) => {
   return result;
 };
 
-function getFromQuery(query: string, cast = false) {
+function get_from_query(query: string, cast = false) {
   const queryString = window.location.search;
   const params = new URLSearchParams(queryString);
   const value = params.get(query);
@@ -38,6 +38,33 @@ function getFromQuery(query: string, cast = false) {
   const returned = cast ? parse(value) : value;
 
   return returned;
+}
+
+const specialSeeds = ["today", "yesterday"] as const;
+type SpecialSeed = typeof specialSeeds[number];
+
+function handle_special_seed(seed: SpecialSeed) {
+  switch (seed) {
+    case "today": {
+      return convert_date_to_UTC(new Date()).toISOString();
+    }
+    case "yesterday": {
+      const d = new Date();
+      const yd = d.setDate(d.getDate() - 1);
+      return convert_date_to_UTC(new Date(yd)).toISOString();
+    }
+    default: {
+      return v4();
+    }
+  }
+}
+
+function parse_seed(seed: string) {
+  if (specialSeeds.includes(seed as SpecialSeed)) {
+    return handle_special_seed(seed as SpecialSeed);
+  }
+
+  return seed;
 }
 
 const MIN_GRID_SIZE = 3;
@@ -53,14 +80,15 @@ export function ConfigProvider({
   children: ReactNode;
   value?: Config;
 }) {
-  const gridSize = getFromQuery("gridSize", true) as number;
-  const tileTypes = getFromQuery("tileTypes", true) as number;
-  const seed = (getFromQuery("seed") as string) || v4();
+  const gridSize = get_from_query("gridSize", true) as number;
+  const tileTypes = get_from_query("tileTypes", true) as number;
+  const seed = (get_from_query("seed") as string) || v4();
   const prando = new Prando(seed);
   const random = () => prando.next();
 
   const merged = {
     ...value,
+    seed: parse_seed(seed),
     random,
     gridSize: gridSize
       ? clamp(gridSize, MIN_GRID_SIZE, MAX_GRID_SIZE)
@@ -69,6 +97,8 @@ export function ConfigProvider({
       ? clamp(tileTypes, MIN_TILE_TYPES, MAX_TILE_TYPES)
       : value.tileTypes,
   };
+
+  console.log(merged.seed);
 
   return (
     <ConfigContext.Provider value={merged}>{children}</ConfigContext.Provider>

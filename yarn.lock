@@ -1012,11 +1012,6 @@ is-core-module@^2.9.0:
   dependencies:
     has "^1.0.3"
 
-is-mobile@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-3.1.1.tgz#3b9e48f40068e4ea2da411f5009779844ce8d6aa"
-  integrity sha512-RRoXXR2HNFxNkUnxtaBdGBXtFlUMFa06S0NUKf/LCF+MuGLu13gi9iBCkoEmc6+rpXuwi5Mso5V8Zf7mNynMBQ==
-
 its-fine@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/its-fine/-/its-fine-1.0.6.tgz#087b14d71137816dab676d8b57c35a6cd5d2b021"

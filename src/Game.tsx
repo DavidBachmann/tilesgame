@@ -12,7 +12,7 @@ import { useStore } from "./StoreCreator";
 
 export function Game() {
   const init = useStore((state) => state.actions.init);
-  const addToSelection = useStore((state) => state.actions.addToSelection);
+  const addToSelection = useStore((state) => state.actions.add_to_selection);
 
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
