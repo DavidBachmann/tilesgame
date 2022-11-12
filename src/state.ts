@@ -25,6 +25,10 @@ const initialState: State = {
   interactive: true,
   queue: new Map(),
   gameOver: false,
+  timer: {
+    count: CONSTANTS.TIMER_INITIAL_VALUE,
+  },
+
   combo: {
     count: 0,
     message: null,
@@ -41,6 +45,9 @@ const initialState: State = {
   actions: {
     init: () => {},
     add_to_selection: () => {},
+    set_game_over: () => {},
+    add_to_timer: () => {},
+    reset_game: () => {},
   },
 };
 
@@ -131,6 +138,9 @@ export const store = (config: Config) =>
           });
 
           set((state) => ({
+            timer: {
+              count: state.timer.count + 10,
+            },
             combo: {
               ...state.combo,
               count: state.combo.count + 1,
@@ -251,6 +261,25 @@ export const store = (config: Config) =>
             return prepare_and_add_to_queue(
               swap_two_tiles(idx1, idx2, tiles, config, true)
             );
+          },
+          set_game_over: () => {
+            set({ gameOver: true });
+          },
+          add_to_timer: (add: number) => {
+            set((prev) => ({
+              timer: {
+                count: prev.timer.count + add,
+              },
+            }));
+          },
+          reset_game: () => {
+            set({
+              gameOver: false,
+              timer: {
+                count: CONSTANTS.TIMER_INITIAL_VALUE,
+              },
+            });
+            get().actions.init();
           },
         },
       };

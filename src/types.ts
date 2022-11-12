@@ -1,5 +1,7 @@
 import { CONSTANTS } from "./constants";
 
+export type GameMode = "casual" | "time-attack";
+
 export type State = {
   tiles: Tile[];
   selection: number[];
@@ -7,6 +9,9 @@ export type State = {
   interactive: boolean;
   queue: Map<string, Tile[]>;
   gameOver: boolean;
+  timer: {
+    count: number;
+  };
   message: {
     queue: Set<EndGameMessage>;
     current: EndGameMessage;
@@ -20,6 +25,9 @@ export type State = {
   actions: {
     init: () => void;
     add_to_selection: (id: number) => void;
+    set_game_over: () => void;
+    add_to_timer: (add: number) => void;
+    reset_game: () => void;
   };
 };
 
@@ -31,6 +39,7 @@ type EndGameMessage = {
 export type Config = {
   gridSize: number;
   tileTypes: number;
+  gameMode: GameMode;
   random: () => number;
   seed: string;
 };

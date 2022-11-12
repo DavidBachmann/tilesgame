@@ -10,6 +10,8 @@ import { Header } from "./components/UI/UI";
 import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { useStore } from "./StoreCreator";
 import { Footer } from "./components/UI/Footer";
+import { Timer } from "./components/Timer/Timer";
+import { useConfig } from "./context/ConfigContext";
 
 export function Game() {
   const init = useStore((state) => state.actions.init);
@@ -17,8 +19,11 @@ export function Game() {
 
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
+  const gameOver = useStore((state) => state.gameOver);
   const message = useStore((state) => state.message);
   const showPlayerMessage = !!message.current.heading;
+
+  const config = useConfig();
 
   useMemo(() => {
     if (!import.meta.env.PROD) {
@@ -37,6 +42,9 @@ export function Game() {
       idx: number,
       relationships: Relationships
     ) => {
+      if (gameOver) {
+        return;
+      }
       addToSelection(idx);
 
       if (axis === "x") {
@@ -56,7 +64,7 @@ export function Game() {
         }
       }
     },
-    [addToSelection]
+    [addToSelection, gameOver]
   );
 
   return (
@@ -95,6 +103,7 @@ export function Game() {
           )}
         </AnimatePresence>
       </Area>
+      {config.gameMode === "time-attack" && <Timer />}
       <Score />
       <Footer />
     </UI>

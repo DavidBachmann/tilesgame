@@ -23,5 +23,6 @@ export const CONSTANTS = {
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,
   MAX_MULTIPLIER: 5,
+  TIMER_INITIAL_VALUE: 100,
   POINTS_BONUS,
 };
