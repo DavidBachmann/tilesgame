@@ -4,12 +4,23 @@ import Prando from "prando";
 import { Config } from "../types";
 import { clamp, convert_date_to_UTC } from "../utils";
 
+function seed_from_v4(v4str: string) {
+  // This is a v4 uuid
+  if (v4str.length === 36) {
+    return v4str.substring(0, 8);
+  }
+
+  return v4str;
+}
+
 const defaultValue = {
   gridSize: 6,
   tileTypes: 5,
   random: () => Math.random(),
-  seed: v4(),
+  seed: seed_from_v4(v4()),
 };
+
+seed_from_v4(v4());
 
 const ConfigContext = createContext<Config>({
   ...defaultValue,
@@ -55,7 +66,7 @@ function handle_special_seed(seed: SpecialSeed) {
       return convert_date_to_UTC(new Date(yd)).toISOString();
     }
     default: {
-      return v4();
+      return seed_from_v4(v4());
     }
   }
 }
@@ -83,7 +94,7 @@ export function ConfigProvider({
 }) {
   const gridSize = get_from_query("gridSize", true) as number;
   const tileTypes = get_from_query("tileTypes", true) as number;
-  const seed = (get_from_query("seed") as string) || v4();
+  const seed = (get_from_query("seed") as string) || seed_from_v4(v4());
   const prando = new Prando(seed);
   const random = () => prando.next();
 
