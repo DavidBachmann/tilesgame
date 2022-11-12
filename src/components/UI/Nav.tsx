@@ -8,7 +8,7 @@ export function Nav() {
       </css.title>
       <css.content>
         <css.button
-          data-active={location.href.includes("gameMode=casual")}
+          data-active={!location.href.includes("gameMode=time-attack")}
           onClick={() => (location.href = "/?gameMode=casual")}
         >
           Casual

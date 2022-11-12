@@ -9,25 +9,28 @@ import * as css from "./Timer.css";
 
 const MAX = CONSTANTS.TIMER_INITIAL_VALUE;
 const MIN = 0;
-const MS = 250;
+const MS = 400;
 
 export function Timer() {
   const [completed, toggle] = useToggle();
   const setGameOver = useStore((state) => state.actions.set_game_over);
   const resetGame = useStore((state) => state.actions.reset_game);
+  const setTimer = useStore((state) => state.actions.set_timer);
   const timer = useStore((state) => state.timer.count);
   const m = useMotionValue(MAX);
 
-  const [count, { startCountdown, resetCountdown, resetCountdownAtValue }] =
-    useCountdown({
-      countStart: MAX,
-      intervalMs: MS,
-      onComplete: async () => {
-        await delay(MS);
-        toggle();
-        setGameOver();
-      },
-    });
+  const { startCountdown, resetCountdownAtValue } = useCountdown({
+    countStart: MAX,
+    intervalMs: MS,
+    onUpdate: (time: number) => {
+      setTimer(time);
+    },
+    onComplete: async () => {
+      await delay(MS);
+      toggle();
+      setGameOver();
+    },
+  });
 
   useEffect(() => startCountdown(), []);
 
@@ -47,7 +50,7 @@ export function Timer() {
     toggle();
   };
 
-  m.set(count);
+  m.set(timer);
 
   return (
     <>

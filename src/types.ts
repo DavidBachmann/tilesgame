@@ -28,6 +28,7 @@ export type State = {
     set_game_over: () => void;
     add_to_timer: (add: number) => void;
     reset_game: () => void;
+    set_timer: (time: number) => void;
   };
 };
 

@@ -82,6 +82,7 @@ interface CountdownOption {
   intervalMs?: number;
   countStop?: number;
   onComplete?: () => void;
+  onUpdate?: (value: number) => void;
 }
 
 interface CountdownControllers {
@@ -93,12 +94,13 @@ interface CountdownControllers {
 
 export function useCountdown(
   countdownOption: CountdownOption
-): [number, CountdownControllers] {
+): CountdownControllers {
   const {
     countStart,
     intervalMs = 1000,
     countStop = 0,
     onComplete,
+    onUpdate,
   } = countdownOption;
 
   const {
@@ -141,19 +143,22 @@ export function useCountdown(
       return;
     }
 
+    if (typeof onUpdate === "function") {
+      onUpdate(count);
+    }
+
     decrement();
   }, [count, countStop, decrement, stopCountdown, onComplete]);
 
   useInterval(countdownCallback, isCountdownRunning ? intervalMs : null);
 
-  return [
+  return {
     count,
-    {
-      startCountdown,
-      stopCountdown,
-      resetCountdown,
-      resetCountdownAtValue,
-      onComplete,
-    } as CountdownControllers,
-  ];
+    startCountdown,
+    stopCountdown,
+    resetCountdown,
+    resetCountdownAtValue,
+    onComplete,
+    onUpdate,
+  } as CountdownControllers;
 }

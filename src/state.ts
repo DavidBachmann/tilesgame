@@ -48,6 +48,7 @@ const initialState: State = {
     set_game_over: () => {},
     add_to_timer: () => {},
     reset_game: () => {},
+    set_timer: () => {},
   },
 };
 
@@ -139,7 +140,10 @@ export const store = (config: Config) =>
 
           set((state) => ({
             timer: {
-              count: state.timer.count + 10,
+              count: Math.min(
+                CONSTANTS.TIMER_INITIAL_VALUE,
+                state.timer.count + 5
+              ),
             },
             combo: {
               ...state.combo,
@@ -271,6 +275,13 @@ export const store = (config: Config) =>
                 count: prev.timer.count + add,
               },
             }));
+          },
+          set_timer: (time: number) => {
+            set({
+              timer: {
+                count: time,
+              },
+            });
           },
           reset_game: () => {
             set({
