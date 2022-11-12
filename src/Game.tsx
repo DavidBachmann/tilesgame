@@ -9,6 +9,7 @@ import { Score } from "./components/UI/Score";
 import { Header } from "./components/UI/UI";
 import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { useStore } from "./StoreCreator";
+import { Footer } from "./components/UI/Footer";
 
 export function Game() {
   const init = useStore((state) => state.actions.init);
@@ -95,6 +96,7 @@ export function Game() {
         </AnimatePresence>
       </Area>
       <Score />
+      <Footer />
     </UI>
   );
 }

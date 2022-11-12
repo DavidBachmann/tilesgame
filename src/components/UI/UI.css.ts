@@ -7,6 +7,7 @@ export const root = styled("div")({
 
   "@media (min-width: 429px)": {
     rowGap: 32,
+    paddingTop: 80,
   },
 });
 
@@ -15,23 +16,10 @@ export const area = styled("div")({
 });
 
 export const header = styled("header")({
-  display: "none",
   flexDirection: "column",
   alignItems: "center",
-  padding: 8,
-
-  svg: {
-    opacity: 0.9,
-    transition: "opacity 200ms",
-    height: 24,
-    width: 24,
-    pointerEvents: "none",
-  },
-  "a:hover svg, a:focus-visible svg": {
-    opacity: 1,
-  },
-  "@media (min-width: 429px)": {
-    padding: 24,
-    display: "flex",
-  },
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
 });

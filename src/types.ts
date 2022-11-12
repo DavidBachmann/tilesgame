@@ -31,6 +31,7 @@ export type Config = {
   gridSize: number;
   tileTypes: number;
   random: () => number;
+  seed: string;
 };
 
 export type Relationships = {

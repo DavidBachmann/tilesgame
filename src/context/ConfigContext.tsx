@@ -8,6 +8,7 @@ const defaultValue = {
   gridSize: 6,
   tileTypes: 5,
   random: () => Math.random(),
+  seed: v4(),
 };
 
 const ConfigContext = createContext<Config>({
@@ -97,8 +98,6 @@ export function ConfigProvider({
       ? clamp(tileTypes, MIN_TILE_TYPES, MAX_TILE_TYPES)
       : value.tileTypes,
   };
-
-  console.log(merged.seed);
 
   return (
     <ConfigContext.Provider value={merged}>{children}</ConfigContext.Provider>
