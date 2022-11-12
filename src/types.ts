@@ -6,6 +6,7 @@ export type State = {
   score: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
+  gameOver: boolean;
   message: {
     queue: Set<EndGameMessage>;
     current: EndGameMessage;

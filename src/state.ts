@@ -24,6 +24,7 @@ const initialState: State = {
   score: 0,
   interactive: true,
   queue: new Map(),
+  gameOver: false,
   combo: {
     count: 0,
     message: null,
@@ -49,6 +50,7 @@ export const store = (config: Config) =>
       function prepare_next_state() {
         // Reset state that might have been set during the last move.
         set({
+          gameOver: false,
           combo: {
             score: 0,
             message: null,
@@ -200,6 +202,7 @@ export const store = (config: Config) =>
         if (!solvable) {
           debug_message("GAME OVER", "red");
           set((state) => ({
+            gameOver: true,
             message: {
               ...state.message,
               queue: state.message.queue.add({

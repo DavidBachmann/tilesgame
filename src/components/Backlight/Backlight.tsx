@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useStore } from "../../StoreCreator";
 import { useConfig } from "../../context/ConfigContext";
 import { Tile } from "../../types";
 import { typeToColor } from "../../utils";
@@ -55,15 +56,17 @@ export function Backlight({ tiles, party }: BacklightProps) {
     return quads.map((q) => mode(q));
   }, [tiles]);
 
+  const gameOver = useStore((state) => state.gameOver);
+
   return (
-    <css.root style={{ opacity: party ? 0.8 : 0.65 }}>
+    <css.root style={{ opacity: gameOver || party ? 0.8 : 0.65 }}>
       <css.backlight
         style={
           {
-            "--quadrant-1": typeToColor(dominant[0]),
-            "--quadrant-2": typeToColor(dominant[1]),
-            "--quadrant-3": typeToColor(dominant[2]),
-            "--quadrant-4": typeToColor(dominant[3]),
+            "--quadrant-1": typeToColor(gameOver ? 0 : dominant[0]),
+            "--quadrant-2": typeToColor(gameOver ? 0 : dominant[1]),
+            "--quadrant-3": typeToColor(gameOver ? 0 : dominant[2]),
+            "--quadrant-4": typeToColor(gameOver ? 0 : dominant[3]),
           } as React.CSSProperties
         }
       />
