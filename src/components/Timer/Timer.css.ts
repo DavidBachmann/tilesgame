@@ -35,7 +35,7 @@ export const meter = styled(motion.div)({
   inset: 0,
   position: "absolute",
   transformOrigin: "center left",
-  transition: "transform 380ms linear",
+  transition: "all 800ms linear",
 });
 
 export const message = styled("span")({

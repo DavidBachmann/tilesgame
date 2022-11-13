@@ -10,6 +10,8 @@ import * as css from "./Timer.css";
 const MAX = CONSTANTS.TIMER_INITIAL_VALUE;
 const MIN = 0;
 const MS = 400;
+const COLOR_FROM = "rgb(229, 45, 34)";
+const COLOR_TO = "rgb(138, 201, 38)";
 
 export function Timer() {
   const [completed, toggle] = useToggle();
@@ -26,7 +28,7 @@ export function Timer() {
       setTimer(time);
     },
     onComplete: async () => {
-      await delay(MS);
+      await delay(MS * 2);
       toggle();
       setGameOver();
     },
@@ -34,14 +36,14 @@ export function Timer() {
 
   useEffect(() => startCountdown(), []);
 
-  useEffect(() => resetCountdownAtValue(Math.min(timer, MAX)), [timer]);
+  useEffect(() => {
+    if (timer > 0) {
+      resetCountdownAtValue(Math.min(timer, MAX));
+    }
+  }, [timer]);
 
   const val = useTransform(m, [MIN, MAX], ["scaleX(0%)", "scaleX(100%)"]);
-  const color = useTransform(
-    m,
-    [MIN, MAX],
-    ["rgb(229, 45, 34)", "rgb(138, 201, 38)"]
-  );
+  const color = useTransform(m, [MIN, MAX], [COLOR_FROM, COLOR_TO]);
 
   const onClickReset = async () => {
     resetGame();

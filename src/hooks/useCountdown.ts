@@ -135,16 +135,16 @@ export function useCountdown(
   };
 
   const countdownCallback = useCallback(() => {
+    if (typeof onUpdate === "function") {
+      onUpdate(count);
+    }
+
     if (count === countStop) {
       stopCountdown();
       if (typeof onComplete === "function") {
         onComplete();
       }
       return;
-    }
-
-    if (typeof onUpdate === "function") {
-      onUpdate(count);
     }
 
     decrement();
