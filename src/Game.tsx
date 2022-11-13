@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Relationships, TileType } from "./types";
 import { Grid } from "./components/Grid";
@@ -12,6 +12,8 @@ import { useStore } from "./StoreCreator";
 import { Footer } from "./components/UI";
 import { Timer } from "./components/Timer/Timer";
 import { useConfig } from "./context/ConfigContext";
+import supabase from "./supabase";
+import { usePlayer } from "./context/PlayerContext";
 
 export function Game() {
   const init = useStore((state) => state.actions.init);
@@ -21,7 +23,35 @@ export function Game() {
   const selection = useStore((state) => state.selection);
   const gameOver = useStore((state) => state.gameOver);
   const message = useStore((state) => state.message);
+  const score = useStore((state) => state.score);
   const showPlayerMessage = !!message.current.heading;
+  const player = usePlayer();
+
+  useEffect(() => {
+    async function submitScore() {
+      const { data, error } = await supabase
+        .from("highscore")
+        .insert([{ player_alias: player.alias, score }]);
+
+      console.log(data);
+      console.log(error);
+    }
+    if (gameOver) {
+      submitScore();
+    }
+  }, [gameOver, score, player]);
+
+  useEffect(() => {
+    async function foo() {
+      const { data, error } = await supabase
+        .from("highscore")
+        .select("id, player_alias, score")
+        .order("score", { ascending: false })
+        .limit(10);
+      console.log(data);
+    }
+    foo();
+  }, []);
 
   const config = useConfig();
 

@@ -1,10 +1,13 @@
 import { ConfigProvider } from "./context/ConfigContext";
+import { PlayerProvider } from "./context/PlayerContext";
 import { StoreCreator } from "./StoreCreator";
 
 export default function App() {
   return (
-    <ConfigProvider>
-      <StoreCreator />
-    </ConfigProvider>
+    <PlayerProvider>
+      <ConfigProvider>
+        <StoreCreator />
+      </ConfigProvider>
+    </PlayerProvider>
   );
 }

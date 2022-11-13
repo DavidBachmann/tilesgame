@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { useConfig } from "../../context/ConfigContext";
+import { usePlayer } from "../../context/PlayerContext";
 import { Octocat } from "./artwork/Octocat";
 import * as css from "./UI.css";
 
@@ -49,6 +50,7 @@ function Nav() {
 
 export function Footer() {
   const config = useConfig();
+  const player = usePlayer();
   return (
     <css.footer>
       <css.os>
@@ -61,7 +63,9 @@ export function Footer() {
           <Octocat />
         </a>
       </css.os>
-      <css.text>Seed: {config.seed}</css.text>
+      <css.text>
+        {player.alias} — {config.seed}
+      </css.text>
     </css.footer>
   );
 }

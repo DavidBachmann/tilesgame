@@ -12,6 +12,7 @@
     "@react-spring/web": "^9.5.5",
     "@react-three/drei": "^9.38.2",
     "@react-three/fiber": "^8.8.10",
+    "@supabase/supabase-js": "^2.1.0",
     "@types/three": "^0.144.0",
     "@use-gesture/react": "^10.2.22",
     "framer-motion": "^7.6.4",
