@@ -17,10 +17,6 @@ function TimeAttack() {
     playerAlias: string;
     score: number;
   }) {
-    if (!playerAlias || !score) {
-      return;
-    }
-
     const { data, error } = await supabase
       .from("highscore")
       .insert([{ player_alias: playerAlias, score }]);
@@ -37,7 +33,7 @@ function TimeAttack() {
       key={v4()}
       gameMode="time-attack"
       onGameOver={(score, metadata) => {
-        if (metadata.publish) {
+        if (metadata.publish && player.alias && score) {
           submitScore({ playerAlias: player.alias, score });
         }
       }}
