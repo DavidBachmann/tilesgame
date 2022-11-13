@@ -36,7 +36,7 @@ export function Game() {
       console.log(data);
       console.log(error);
     }
-    if (gameOver) {
+    if (gameOver && score > 0) {
       submitScore();
     }
   }, [gameOver, score, player]);

@@ -1,45 +1,103 @@
 import { createContext, ReactNode, useContext } from "react";
+import { v4 } from "uuid";
 
 type Player = {
   alias: string;
 };
 
 const firstNames = [
+  "Active",
+  "Adept",
+  "Agile",
+  "Articulate",
   "Astute",
-  "Azure",
+  "Bold",
+  "Brainy",
+  "Brave",
+  "Bright",
   "Brilliant",
   "Canny",
+  "Capable",
   "Clever",
+  "Confident",
+  "Crafty",
+  "Creative",
+  "Deft",
+  "Determined",
+  "Eloquent",
+  "Energetic",
+  "Fluent",
+  "Flying",
+  "Gentle",
+  "Happy",
+  "Hasty",
+  "Helpful",
+  "Hopeful",
+  "Intelligent",
+  "Intuitive",
+  "Joyful",
   "Keen",
-  "Mighty",
-  "Playful",
+  "Lively",
+  "Logical",
+  "Loyal",
+  "Modest",
+  "Moving",
+  "Nimble",
   "Quick",
+  "Relaxed",
+  "Sassy",
+  "Savvy",
   "Sharp",
+  "Shrewd",
+  "Sincere",
+  "Slick",
+  "Smart",
+  "Snappy",
+  "Spirited",
   "Wise",
+  "Witty",
 ];
 
 const lastNames = [
-  "Artist",
-  "Hawk",
-  "Player",
-  "Snow",
-  "Traveler",
-  "Whisperer",
-  "Eagle",
-  "Raven",
-  "Lion",
+  "Bear",
+  "Bison",
   "Canine",
+  "Crow",
+  "Deer",
+  "Dolphin",
+  "Duck",
+  "Eagle",
+  "Fox",
+  "Hare",
+  "Hawk",
+  "Koala",
+  "Lion",
+  "Lobster",
+  "Octopus",
+  "Panda",
+  "Parrot",
+  "Penguin",
+  "Rabbit",
+  "Raven",
+  "Seal",
+  "Shark",
+  "Snake",
+  "Snow",
+  "Spider",
+  "Tiger",
+  "Turkey",
+  "Walrus",
   "Wolf",
-  "Driver",
-  "Gamer",
-  "Wizard",
 ];
 
 function generate_alias() {
   const first = firstNames[Math.floor(Math.random() * firstNames.length)];
   const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+  const numbers = Math.floor(Math.random() * (999 - 1) + 1);
 
-  return `${first} ${last}`;
+  return `${first.toLowerCase()}_${last.toLowerCase()}_${String(
+    numbers
+  ).padStart(3, "0")}`;
 }
 
 const defaultValue = {
