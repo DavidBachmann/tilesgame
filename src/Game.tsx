@@ -9,7 +9,7 @@ import { Score } from "./components/UI/Score";
 import { Header } from "./components/UI/UI";
 import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { useStore } from "./StoreCreator";
-import { Footer } from "./components/UI/Footer";
+import { Footer } from "./components/UI";
 import { Timer } from "./components/Timer/Timer";
 import { useConfig } from "./context/ConfigContext";
 

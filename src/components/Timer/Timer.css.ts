@@ -14,6 +14,9 @@ export const root = styled("button")({
   minHeight: 48,
   position: "relative",
   width: "calc(100% - 16px)",
+  "&[disabled]": {
+    pointerEvents: "none",
+  },
 });
 
 export const track = styled("div")({
