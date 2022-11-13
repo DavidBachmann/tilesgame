@@ -3,7 +3,7 @@ import { CONSTANTS } from "./constants";
 import { Config, Directions, Tile, TileType } from "./types";
 
 export const bubble_up = (tiles: Tile[], config: Config) => {
-  let t: Tile[] = [...tiles];
+  const t: Tile[] = [...tiles];
   let returned = t;
 
   for (let i = 0; i < t.length; i++) {
@@ -22,7 +22,7 @@ export const bubble_up = (tiles: Tile[], config: Config) => {
       for (let j = 0; j <= indicesAbove.length; j++) {
         // Walk through
         const nextIdx = indicesAbove[j];
-        let nextTile = get_tile_at_index(nextIdx, t);
+        const nextTile = get_tile_at_index(nextIdx, t);
 
         if (nextTile) {
           // Clones the nodes
@@ -101,7 +101,7 @@ export const calculate_relationships = (
 
   // Go through each node in the grid and figure out their positional relationship
   for (let i = 0; i < tiles.length; i++) {
-    let node = tiles[i];
+    const node = tiles[i];
     newNodes[i] = {
       ...node,
       relationships: {
@@ -138,7 +138,7 @@ export const delete_matches = ({
   const score = removedIdx.length;
   scoreCallback(score);
 
-  for (let idx of removedIdx) {
+  for (const idx of removedIdx) {
     clone[idx] = create_empty_tile_at_index(idx);
   }
 
@@ -203,7 +203,7 @@ export const is_grid_solvable = (grid: Tile[], config: Config) => {
   let curr = -1;
 
   while (!solvable) {
-    let newCopy = [...grid];
+    const newCopy = [...grid];
     curr++;
     solvable = solvable_check(newCopy, curr, config);
 

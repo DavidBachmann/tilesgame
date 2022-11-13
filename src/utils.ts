@@ -59,7 +59,9 @@ export const typeToColor = (type: TileType) => {
   }
 };
 
-export const throttle = <F extends (...args: any[]) => any>(
+export const throttle = <
+  F extends (...args: any[]) => ReturnType<F> | Promise<ReturnType<F>>
+>(
   func: F,
   waitFor: number
 ) => {
