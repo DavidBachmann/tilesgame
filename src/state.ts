@@ -18,7 +18,7 @@ import {
 import { Config, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
 
-const initialState: State = {
+const reset = {
   tiles: [],
   selection: [],
   score: 0,
@@ -42,6 +42,10 @@ const initialState: State = {
     },
     uuid: "",
   },
+};
+
+const initialState = {
+  ...reset,
   actions: {
     init: () => {},
     add_to_selection: () => {},
@@ -50,7 +54,7 @@ const initialState: State = {
     reset_game: () => {},
     set_timer: () => {},
   },
-};
+} as State;
 
 export const store = (config: Config) =>
   create(
@@ -58,7 +62,6 @@ export const store = (config: Config) =>
       function prepare_next_state() {
         // Reset state that might have been set during the last move.
         set({
-          gameOver: false,
           combo: {
             score: 0,
             message: null,
@@ -142,7 +145,7 @@ export const store = (config: Config) =>
             timer: {
               count: Math.min(
                 CONSTANTS.TIMER_INITIAL_VALUE,
-                state.timer.count + 5
+                state.timer.count + 2
               ),
             },
             combo: {
@@ -237,7 +240,11 @@ export const store = (config: Config) =>
       return {
         actions: {
           init: () => {
-            set({ tiles: create_grid(config) });
+            set((state) => ({
+              ...state,
+              ...(reset as Partial<State>),
+              tiles: create_grid(config),
+            }));
           },
           add_to_selection: (id: number) => {
             if (!get().interactive) {
@@ -285,10 +292,7 @@ export const store = (config: Config) =>
           },
           reset_game: () => {
             set({
-              gameOver: false,
-              timer: {
-                count: CONSTANTS.TIMER_INITIAL_VALUE,
-              },
+              ...(reset as Partial<State>),
             });
             get().actions.init();
           },

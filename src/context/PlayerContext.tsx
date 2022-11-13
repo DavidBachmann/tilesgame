@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext } from "react";
-import { v4 } from "uuid";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type Player = {
-  alias: string;
+  alias: string | null;
 };
 
 const firstNames = [
@@ -81,7 +81,6 @@ const lastNames = [
   "Raven",
   "Seal",
   "Shark",
-  "Snake",
   "Snow",
   "Spider",
   "Tiger",
@@ -93,7 +92,7 @@ const lastNames = [
 function generate_alias() {
   const first = firstNames[Math.floor(Math.random() * firstNames.length)];
   const last = lastNames[Math.floor(Math.random() * lastNames.length)];
-  const numbers = Math.floor(Math.random() * (999 - 1) + 1);
+  const numbers = Math.floor(Math.random() * (9999 - 1) + 1);
 
   return `${first.toLowerCase()}_${last.toLowerCase()}_${String(
     numbers
@@ -101,7 +100,7 @@ function generate_alias() {
 }
 
 const defaultValue = {
-  alias: generate_alias(),
+  alias: null,
 };
 
 const PlayerContext = createContext<Player>({
@@ -117,7 +116,19 @@ export function PlayerProvider({
   children: ReactNode;
   value?: Player;
 }) {
+  const [alias, setAlias] = useLocalStorage("TG_ALIAS", value.alias);
+
+  if (!alias) {
+    setAlias(generate_alias());
+  }
+
   return (
-    <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>
+    <PlayerContext.Provider
+      value={{
+        alias,
+      }}
+    >
+      {children}
+    </PlayerContext.Provider>
   );
 }

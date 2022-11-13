@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Relationships, TileType } from "./types";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
-import { UI, Area } from "./components/UI";
+import { Area } from "./components/UI";
 import { Backlight } from "./components/Backlight";
 import { Score } from "./components/UI/Score";
-import { Header } from "./components/UI/UI";
 import { PlayerMessage } from "./components/UI/PlayerMessage";
-import { useStore } from "./StoreCreator";
-import { Footer } from "./components/UI";
 import { Timer } from "./components/Timer/Timer";
-import { useConfig } from "./context/ConfigContext";
-import supabase from "./supabase";
-import { usePlayer } from "./context/PlayerContext";
+import { useStore } from "./StoreCreator";
 
-export function Game() {
+type GameProps = {
+  gameMode: "casual" | "time-attack";
+  onGameOver?: (score: number, metadata: { publish?: boolean }) => void;
+};
+
+export function Game({ gameMode, onGameOver }: GameProps) {
   const init = useStore((state) => state.actions.init);
   const addToSelection = useStore((state) => state.actions.add_to_selection);
 
@@ -25,35 +25,16 @@ export function Game() {
   const message = useStore((state) => state.message);
   const score = useStore((state) => state.score);
   const showPlayerMessage = !!message.current.heading;
-  const player = usePlayer();
 
   useEffect(() => {
-    async function submitScore() {
-      const { data, error } = await supabase
-        .from("highscore")
-        .insert([{ player_alias: player.alias, score }]);
-
-      console.log(data);
-      console.log(error);
+    if (gameOver) {
+      if (typeof onGameOver === "function") {
+        onGameOver(score, {
+          publish: true,
+        });
+      }
     }
-    if (gameOver && score > 0) {
-      submitScore();
-    }
-  }, [gameOver, score, player]);
-
-  useEffect(() => {
-    async function foo() {
-      const { data, error } = await supabase
-        .from("highscore")
-        .select("id, player_alias, score")
-        .order("score", { ascending: false })
-        .limit(10);
-      console.log(data);
-    }
-    foo();
-  }, []);
-
-  const config = useConfig();
+  }, [gameOver, score]);
 
   useMemo(() => {
     if (!import.meta.env.PROD) {
@@ -98,8 +79,7 @@ export function Game() {
   );
 
   return (
-    <UI>
-      <Header />
+    <Fragment>
       <Area>
         <Grid>
           {tiles.map((tile) => {
@@ -133,9 +113,8 @@ export function Game() {
           )}
         </AnimatePresence>
       </Area>
-      {config.gameMode === "time-attack" && <Timer />}
+      {gameMode === "time-attack" && <Timer />}
       <Score />
-      <Footer />
-    </UI>
+    </Fragment>
   );
 }
