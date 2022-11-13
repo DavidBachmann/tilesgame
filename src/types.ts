@@ -40,7 +40,6 @@ type EndGameMessage = {
 export type Config = {
   gridSize: number;
   tileTypes: number;
-  gameMode: GameMode;
   random: () => number;
   seed: string;
 };

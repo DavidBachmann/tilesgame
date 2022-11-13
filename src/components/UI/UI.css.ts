@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const green = "#14cd96";
@@ -35,14 +36,14 @@ export const nav = styled("nav")({
   padding: 16,
 });
 
-export const button = styled("button")({
+export const button = styled(NavLink)({
   borderRadius: 6,
   background: bg2,
   lineHeight: 1,
   padding: "14px 18px",
   color: "#b3b8c2",
   fontSize: 16,
-  "&[data-active='true']": {
+  "&.active": {
     background: green,
     color: "white",
   },

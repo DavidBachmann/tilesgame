@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 import { useConfig } from "../../context/ConfigContext";
+import { usePlayer } from "../../context/PlayerContext";
 import { Octocat } from "./artwork/Octocat";
 import * as css from "./UI.css";
 
@@ -7,8 +9,16 @@ type UIProps = {
   children: ReactNode;
 };
 
-export function UI({ children }: UIProps) {
-  return <css.root>{children}</css.root>;
+export function UI() {
+  return (
+    <>
+      <Header />
+      <css.root>
+        <Outlet />
+      </css.root>
+      <Footer />
+    </>
+  );
 }
 
 export function Area({ children }: UIProps) {
@@ -30,18 +40,8 @@ function Nav() {
         <span>TilesGame</span>
       </css.title>
       <css.content>
-        <css.button
-          data-active={!location.href.includes("gameMode=time-attack")}
-          onClick={() => (location.href = "/?gameMode=casual")}
-        >
-          Casual
-        </css.button>
-        <css.button
-          data-active={location.href.includes("gameMode=time-attack")}
-          onClick={() => (location.href = "/?gameMode=time-attack")}
-        >
-          Timed
-        </css.button>
+        <css.button to="/">Casual</css.button>
+        <css.button to="/time">Time</css.button>
       </css.content>
     </css.nav>
   );
@@ -49,6 +49,7 @@ function Nav() {
 
 export function Footer() {
   const config = useConfig();
+  const player = usePlayer();
   return (
     <css.footer>
       <css.os>
@@ -61,7 +62,9 @@ export function Footer() {
           <Octocat />
         </a>
       </css.os>
-      <css.text>Seed: {config.seed}</css.text>
+      <css.text>
+        {player.alias} — {config.seed}
+      </css.text>
     </css.footer>
   );
 }
