@@ -178,7 +178,7 @@ const solvable_check = (
   let found = 0;
 
   for (let i = 0; i < CONSTANTS.DIRECTIONS.length; i++) {
-    const foo = solve(
+    const solvedGrid = solve(
       swap_two_tiles(
         grid[searchIndex].idx,
         grid[searchIndex].relationships[CONSTANTS.DIRECTIONS[i]],
@@ -188,7 +188,7 @@ const solvable_check = (
       )
     );
 
-    found = foo.matches.length;
+    found = solvedGrid.matches.length;
 
     if (found > 0) {
       break;

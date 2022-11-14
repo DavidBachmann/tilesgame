@@ -56,7 +56,7 @@ export function Backlight({ tiles, party }: BacklightProps) {
     return quads.map((q) => mode(q));
   }, [tiles]);
 
-  const gameOver = useStore((state) => state.gameOver);
+  const gameOver = useStore((state) => state.game.gameOver);
 
   return (
     <css.root style={{ opacity: gameOver || party ? 0.8 : 0.65 }}>

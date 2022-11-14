@@ -16,6 +16,13 @@ const POINTS_BONUS = {
   QUINT: 15,
 };
 
+const TIME_ATTACK = {
+  TIMER_START: 25,
+  TIMER_ADD: 2,
+  TIMER_QUAD_ADD_BONUS: 1,
+  TIMER_QUINT_ADD_BONUS: 2,
+};
+
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
   TILE_SIZE: 48,
@@ -23,6 +30,6 @@ export const CONSTANTS = {
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,
   MAX_MULTIPLIER: 5,
-  TIMER_INITIAL_VALUE: 25,
   POINTS_BONUS,
+  TIME_ATTACK,
 };

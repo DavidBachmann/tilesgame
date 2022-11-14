@@ -2,13 +2,18 @@ import { CONSTANTS } from "./constants";
 
 export type GameMode = "casual" | "time-attack";
 
+export type GameState = {
+  id: string;
+  score: number;
+  gameOver: boolean;
+};
+
 export type State = {
   tiles: Tile[];
   selection: number[];
-  score: number;
   interactive: boolean;
   queue: Map<string, Tile[]>;
-  gameOver: boolean;
+  game: GameState;
   timer: {
     count: number;
   };

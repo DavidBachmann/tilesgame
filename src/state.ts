@@ -18,15 +18,18 @@ import {
 import { Config, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
 
-const reset = {
+const reset = (newGameId: string) => ({
   tiles: [],
   selection: [],
-  score: 0,
   interactive: true,
   queue: new Map(),
-  gameOver: false,
+  game: {
+    score: 0,
+    gameOver: false,
+    id: newGameId,
+  },
   timer: {
-    count: CONSTANTS.TIMER_INITIAL_VALUE,
+    count: CONSTANTS.TIME_ATTACK.TIMER_START,
   },
 
   combo: {
@@ -42,10 +45,10 @@ const reset = {
     },
     uuid: "",
   },
-};
+});
 
 const initialState = {
-  ...reset,
+  ...reset(v4()),
   actions: {
     init: () => {},
     add_to_selection: () => {},
@@ -114,18 +117,31 @@ export const store = (config: Config) =>
         const totalQuadMatches = get_quad_matches(matches);
         const totalQuintMatches = get_quint_matches(matches);
 
-        let quadPoints = 0;
-        let quintPoints = 0;
+        let quadBonusPoints = 0;
+        let quintBonusPoints = 0;
 
-        // Apply bonus points for matching 4 in a row
+        let quadBonusTime = 0;
+        let quintBonusTime = 0;
+
         if (totalQuadMatches) {
-          quadPoints = CONSTANTS.POINTS_BONUS.QUAD * totalQuadMatches;
+          // Apply bonus points for matching 4 in a row
+          quadBonusPoints = CONSTANTS.POINTS_BONUS.QUAD * totalQuadMatches;
+          // Apply bonus time for matching 4 in a row
+          quadBonusTime =
+            CONSTANTS.TIME_ATTACK.TIMER_QUAD_ADD_BONUS * totalQuadMatches;
         }
 
-        // Apply bonus points for matching 5 in a row
         if (totalQuintMatches) {
-          quintPoints = CONSTANTS.POINTS_BONUS.QUINT * totalQuintMatches;
+          // Apply bonus points for matching 5 in a row
+          quintBonusPoints = CONSTANTS.POINTS_BONUS.QUINT * totalQuintMatches;
+          // Apply bonus time for matching 5 in a row
+          quintBonusTime =
+            CONSTANTS.TIME_ATTACK.TIMER_QUINT_ADD_BONUS * totalQuintMatches;
         }
+
+        const bonusPoints = quadBonusPoints + quintBonusPoints;
+        const timeAddition =
+          CONSTANTS.TIME_ATTACK.TIMER_ADD + quadBonusTime + quintBonusTime;
 
         if (matches.length) {
           const deleted = delete_matches({
@@ -135,7 +151,7 @@ export const store = (config: Config) =>
               set((state) => ({
                 combo: {
                   ...state.combo,
-                  score: score + state.combo.score + quadPoints + quintPoints,
+                  score: score + state.combo.score + bonusPoints,
                 },
               }));
             },
@@ -144,8 +160,8 @@ export const store = (config: Config) =>
           set((state) => ({
             timer: {
               count: Math.min(
-                CONSTANTS.TIMER_INITIAL_VALUE,
-                state.timer.count + 2
+                CONSTANTS.TIME_ATTACK.TIMER_START,
+                state.timer.count + timeAddition
               ),
             },
             combo: {
@@ -188,10 +204,13 @@ export const store = (config: Config) =>
         }
 
         set((state) => ({
-          score: state.score + scoreToAdd * multiplier,
+          game: {
+            ...state.game,
+            score: state.game.score + scoreToAdd * multiplier,
+          },
         }));
 
-        if (multiplier > 2) {
+        if (multiplier >= 3) {
           set((state) => ({
             message: {
               ...state.message,
@@ -199,6 +218,9 @@ export const store = (config: Config) =>
                 heading: `${multiplier} x multiplier`,
                 subtitle: `${state.combo.score * multiplier} points`,
               }),
+            },
+            timer: {
+              count: CONSTANTS.TIME_ATTACK.TIMER_START,
             },
           }));
         }
@@ -237,12 +259,19 @@ export const store = (config: Config) =>
         debug_message("unlocked", "green");
       };
 
+      if (import.meta.hot) {
+        import.meta.hot.accept(() => {
+          // Re-initialize on HMR to prevent re-submission of high scores etc.
+          get().actions.init();
+        });
+      }
+
       return {
         actions: {
           init: () => {
             set((state) => ({
               ...state,
-              ...(reset as Partial<State>),
+              ...(reset(v4()) as Partial<State>),
               tiles: create_grid(config),
             }));
           },
@@ -274,7 +303,12 @@ export const store = (config: Config) =>
             );
           },
           set_game_over: () => {
-            set({ gameOver: true });
+            set((state) => ({
+              game: {
+                ...state.game,
+                gameOver: true,
+              },
+            }));
           },
           add_to_timer: (add: number) => {
             set((prev) => ({
@@ -291,9 +325,6 @@ export const store = (config: Config) =>
             });
           },
           reset_game: () => {
-            set({
-              ...(reset as Partial<State>),
-            });
             get().actions.init();
           },
         },

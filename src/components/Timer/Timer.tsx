@@ -7,7 +7,7 @@ import { useToggle } from "../../hooks/useToggle";
 import { CONSTANTS } from "../../constants";
 import * as css from "./Timer.css";
 
-const MAX = CONSTANTS.TIMER_INITIAL_VALUE;
+const MAX = CONSTANTS.TIME_ATTACK.TIMER_START;
 const MIN = 0;
 const MS = 400;
 const COLOR_FROM = "rgb(229, 45, 34)";
@@ -48,7 +48,7 @@ export function Timer() {
   const onClickReset = async () => {
     resetGame();
     await delay(200);
-    resetCountdownAtValue(CONSTANTS.TIMER_INITIAL_VALUE);
+    resetCountdownAtValue(CONSTANTS.TIME_ATTACK.TIMER_START);
     toggle();
   };
 

@@ -7,17 +7,12 @@ const bg2 = "#1e232f";
 export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
-  rowGap: 24,
-
-  "@media (min-width: 429px)": {
-    rowGap: 32,
-    paddingTop: 80,
-  },
+  rowGap: 8,
 });
 
 export const area = styled("div")({
   position: "relative",
-  marginTop: 80,
+  marginTop: 32,
 });
 
 export const header = styled("header")({
@@ -63,10 +58,14 @@ export const content = styled("div")({
 });
 
 export const os = styled("div")({
-  display: "flex",
+  display: "none",
   svg: {
     width: 20,
     height: "auto",
+  },
+
+  "@media (min-width: 429px)": {
+    display: "flex",
   },
 });
 

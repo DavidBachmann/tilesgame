@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { Relationships, TileType } from "./types";
+import { GameState, Relationships, TileType } from "./types";
 import { Grid } from "./components/Grid";
 import { Tile } from "./components/Tile";
 import { Area } from "./components/UI";
@@ -12,7 +12,7 @@ import { useStore } from "./StoreCreator";
 
 type GameProps = {
   gameMode: "casual" | "time-attack";
-  onGameOver?: (score: number, metadata: { publish?: boolean }) => void;
+  onGameOver?: (game: GameState, metadata: { publish?: boolean }) => void;
 };
 
 export function Game({ gameMode, onGameOver }: GameProps) {
@@ -21,20 +21,19 @@ export function Game({ gameMode, onGameOver }: GameProps) {
 
   const tiles = useStore((state) => state.tiles);
   const selection = useStore((state) => state.selection);
-  const gameOver = useStore((state) => state.gameOver);
+  const game = useStore((state) => state.game);
   const message = useStore((state) => state.message);
-  const score = useStore((state) => state.score);
   const showPlayerMessage = !!message.current.heading;
 
   useEffect(() => {
-    if (gameOver) {
+    if (game.gameOver) {
       if (typeof onGameOver === "function") {
-        onGameOver(score, {
+        onGameOver(game, {
           publish: true,
         });
       }
     }
-  }, [gameOver, score]);
+  }, [game]);
 
   useMemo(() => {
     if (!import.meta.env.PROD) {
@@ -53,7 +52,7 @@ export function Game({ gameMode, onGameOver }: GameProps) {
       idx: number,
       relationships: Relationships
     ) => {
-      if (gameOver) {
+      if (game.gameOver) {
         return;
       }
       addToSelection(idx);
@@ -75,11 +74,13 @@ export function Game({ gameMode, onGameOver }: GameProps) {
         }
       }
     },
-    [addToSelection, gameOver]
+    [addToSelection, game]
   );
 
   return (
     <Fragment>
+      <Score />
+      {gameMode === "time-attack" && <Timer />}
       <Area>
         <Grid>
           {tiles.map((tile) => {
@@ -113,8 +114,6 @@ export function Game({ gameMode, onGameOver }: GameProps) {
           )}
         </AnimatePresence>
       </Area>
-      {gameMode === "time-attack" && <Timer />}
-      <Score />
     </Fragment>
   );
 }
