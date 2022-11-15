@@ -101,3 +101,18 @@ export const combo_counter = (combo: number) => {
 export function convert_date_to_UTC(date: Date) {
   return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
+
+const pluralRules = new Intl.PluralRules("en-US", { type: "ordinal" });
+
+const suffixes = new Map([
+  ["one", "st"],
+  ["two", "nd"],
+  ["few", "rd"],
+  ["other", "th"],
+]);
+
+export const format_ordinals = (n: number) => {
+  const rule = pluralRules.select(n);
+  const suffix = suffixes.get(rule);
+  return `${n}${suffix}`;
+};

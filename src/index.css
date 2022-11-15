@@ -13,11 +13,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
   outline: 0;
 }
@@ -26,8 +34,8 @@ body {
   display: flex;
   justify-content: center;
   margin: 0;
-  min-height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   min-width: 320px;
   overflow: hidden;
   place-items: center;
@@ -55,22 +63,27 @@ body {
   overflow: hidden;
 }
 
-button {
+button,
+a[role="button"] {
+  text-align: center;
+  color: white;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background: #101017;
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+button:hover,
+a[role="button"]:hover {
   border-color: #646cff;
 }
 button:focus,
-button:focus-visible {
+button:focus-visible,
+a[role="button"]:focus a[role="button"]:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 

@@ -15,18 +15,23 @@ import {
   get_quint_matches,
   is_grid_solvable,
 } from "./logic";
-import { Config, State, Tile } from "./types";
+import { Config, GameMode, GameStatus, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
 
-const reset = (newGameId: string) => ({
+const reset = (
+  gameId: string,
+  gameMode: GameMode,
+  status: GameStatus = "pregame"
+) => ({
   tiles: [],
   selection: [],
   interactive: true,
   queue: new Map(),
   game: {
     score: 0,
-    gameOver: false,
-    id: newGameId,
+    status,
+    id: gameId,
+    gameMode,
   },
   timer: {
     count: CONSTANTS.TIME_ATTACK.TIMER_START,
@@ -48,13 +53,12 @@ const reset = (newGameId: string) => ({
 });
 
 const initialState = {
-  ...reset(v4()),
+  ...reset(v4(), "casual"),
   actions: {
     init: () => {},
     add_to_selection: () => {},
-    set_game_over: () => {},
+    set_game_status: () => {},
     add_to_timer: () => {},
-    reset_game: () => {},
     set_timer: () => {},
   },
 } as State;
@@ -140,6 +144,7 @@ export const store = (config: Config) =>
         }
 
         const bonusPoints = quadBonusPoints + quintBonusPoints;
+
         const timeAddition =
           CONSTANTS.TIME_ATTACK.TIMER_ADD + quadBonusTime + quintBonusTime;
 
@@ -158,17 +163,22 @@ export const store = (config: Config) =>
           });
 
           set((state) => ({
-            timer: {
-              count: Math.min(
-                CONSTANTS.TIME_ATTACK.TIMER_START,
-                state.timer.count + timeAddition
-              ),
-            },
             combo: {
               ...state.combo,
               count: state.combo.count + 1,
             },
           }));
+
+          if (get().game.gameMode === "time-attack") {
+            set((state) => ({
+              timer: {
+                count: Math.min(
+                  CONSTANTS.TIME_ATTACK.TIMER_START,
+                  state.timer.count + timeAddition
+                ),
+              },
+            }));
+          }
 
           enqueue(deleted);
           const bubbled = bubble_up(deleted, config);
@@ -188,6 +198,7 @@ export const store = (config: Config) =>
         const q = get().queue;
         const comboCount = get().combo.count;
         const scoreToAdd = get().combo.score;
+        const gameMode = get().game.gameMode;
         const multiplier = combo_counter(comboCount);
 
         debug_message("LOCKED", "red");
@@ -211,20 +222,27 @@ export const store = (config: Config) =>
         }));
 
         if (multiplier >= 3) {
-          set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: `${multiplier} x multiplier`,
-                subtitle: `${state.combo.score * multiplier} points`,
-              }),
-            },
-            timer: {
-              count: CONSTANTS.TIME_ATTACK.TIMER_START,
-            },
-          }));
+          if (gameMode === "time-attack") {
+            set({
+              timer: {
+                count: CONSTANTS.TIME_ATTACK.TIMER_START,
+              },
+            });
+          }
+
+          if (gameMode !== "time-attack") {
+            set((state) => ({
+              message: {
+                ...state.message,
+                queue: state.message.queue.add({
+                  heading: `${multiplier} x multiplier`,
+                  subtitle: `${state.combo.score * multiplier} points`,
+                }),
+              },
+            }));
+          }
         }
-        if (multiplier >= 4) {
+        if (multiplier >= 4 && gameMode !== "time-attack") {
           set((state) => ({
             message: {
               ...state.message,
@@ -241,7 +259,10 @@ export const store = (config: Config) =>
         if (!solvable) {
           debug_message("GAME OVER", "red");
           set((state) => ({
-            gameOver: true,
+            game: {
+              ...state.game,
+              status: "game-over",
+            },
             message: {
               ...state.message,
               queue: state.message.queue.add({
@@ -268,10 +289,15 @@ export const store = (config: Config) =>
 
       return {
         actions: {
-          init: () => {
+          init: (gameMode = "casual", status = "pregame") => {
             set((state) => ({
               ...state,
-              ...(reset(v4()) as Partial<State>),
+              ...(reset(
+                v4(),
+                gameMode as GameMode,
+                status as GameStatus
+              ) as Partial<State>),
+              gameMode,
               tiles: create_grid(config),
             }));
           },
@@ -302,11 +328,11 @@ export const store = (config: Config) =>
               swap_two_tiles(idx1, idx2, tiles, config, true)
             );
           },
-          set_game_over: () => {
+          set_game_status: (gameStatus: GameStatus) => {
             set((state) => ({
               game: {
                 ...state.game,
-                gameOver: true,
+                status: gameStatus,
               },
             }));
           },
@@ -323,9 +349,6 @@ export const store = (config: Config) =>
                 count: time,
               },
             });
-          },
-          reset_game: () => {
-            get().actions.init();
           },
         },
       };

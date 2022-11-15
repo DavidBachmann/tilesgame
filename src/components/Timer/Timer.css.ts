@@ -1,10 +1,8 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
-export const root = styled("button")({
+export const root = styled("div")({
   alignItems: "center",
-  background: "black",
-  appearance: "none",
   padding: 0,
   backgroundColor: "rgba(7,14,23,0.3)",
   borderRadius: 32,
@@ -14,9 +12,6 @@ export const root = styled("button")({
   minHeight: 48,
   position: "relative",
   width: "calc(100% - 16px)",
-  "&[disabled]": {
-    pointerEvents: "none",
-  },
 });
 
 export const track = styled("div")({

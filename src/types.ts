@@ -1,11 +1,13 @@
 import { CONSTANTS } from "./constants";
 
 export type GameMode = "casual" | "time-attack";
+export type GameStatus = "pregame" | "in-progress" | "game-over";
 
 export type GameState = {
   id: string;
   score: number;
-  gameOver: boolean;
+  status: GameStatus;
+  gameMode: GameMode;
 };
 
 export type State = {
@@ -28,11 +30,10 @@ export type State = {
     score: number;
   };
   actions: {
-    init: () => void;
+    init: (gameMode?: GameMode, status?: GameStatus) => void;
     add_to_selection: (id: number) => void;
-    set_game_over: () => void;
+    set_game_status: (gameStatus: GameStatus) => void;
     add_to_timer: (add: number) => void;
-    reset_game: () => void;
     set_timer: (time: number) => void;
   };
 };

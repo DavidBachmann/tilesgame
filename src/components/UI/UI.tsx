@@ -22,7 +22,7 @@ export function UI() {
   );
 }
 
-export function Area({ children }: UIProps) {
+export function GameArea({ children }: UIProps) {
   return <css.area>{children}</css.area>;
 }
 

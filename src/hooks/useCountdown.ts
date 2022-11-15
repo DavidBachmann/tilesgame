@@ -89,7 +89,7 @@ interface CountdownControllers {
   startCountdown: () => void;
   stopCountdown: () => void;
   resetCountdown: () => void;
-  resetCountdownAtValue: (val: number) => void;
+  setCountdownToValue: (val: number) => void;
 }
 
 export function useCountdown(
@@ -128,7 +128,7 @@ export function useCountdown(
     }
   };
 
-  const resetCountdownAtValue = (value: number) => {
+  const setCountdownToValue = (value: number) => {
     stopCountdown();
     setCount(value);
     startCountdown();
@@ -157,7 +157,7 @@ export function useCountdown(
     startCountdown,
     stopCountdown,
     resetCountdown,
-    resetCountdownAtValue,
+    setCountdownToValue,
     onComplete,
     onUpdate,
   } as CountdownControllers;

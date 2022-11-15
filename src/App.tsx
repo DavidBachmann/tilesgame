@@ -1,5 +1,7 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Outlet } from "react-router-dom";
 import { v4 } from "uuid";
+import { AnimatePresence } from "framer-motion";
+import { SwrSupabaseContext } from "supabase-swr";
 import supabase from "./supabase";
 import { UI } from "./components/UI";
 import { ConfigProvider } from "./context/ConfigContext";
@@ -8,6 +10,8 @@ import { Game } from "./Game";
 import { StoreCreator } from "./StoreCreator";
 import { GameState } from "./types";
 import { debug_message } from "./utils";
+import { LeaderboardTable } from "./components/LeaderboardTable";
+import { LeaderboardProvider } from "./context/LeaderboardContext";
 
 function TimeAttack() {
   const player = usePlayer();
@@ -39,48 +43,51 @@ function TimeAttack() {
       console.error(submissionError);
       return;
     }
-
-    const { data: topTen, error } = await supabase
-      .from("highscore")
-      .select("id, player_alias, score, game_id")
-      .order("score", { ascending: false })
-      .limit(10);
-
-    console.log({ topTen });
-
-    if (error) {
-      console.error(error);
-    }
   }
 
   return (
-    <Game
-      key={v4()}
-      gameMode="time-attack"
-      onGameOver={(game: GameState, metadata) => {
-        if (metadata.publish && player.alias && game.score) {
-          submitScore({ playerAlias: player.alias, game });
-        }
-      }}
-    />
+    <LeaderboardProvider>
+      <AnimatePresence>
+        <Outlet key="highscore-outlet" />
+        <Game
+          key={v4()}
+          gameMode="time-attack"
+          onGameOver={(game: GameState, metadata) => {
+            if (metadata.publish && player.alias && game.score) {
+              submitScore({ playerAlias: player.alias, game });
+            }
+          }}
+        />
+      </AnimatePresence>
+    </LeaderboardProvider>
   );
 }
 
 export default function App() {
   return (
-    <StoreCreator>
-      <PlayerProvider>
-        <ConfigProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<UI />}>
-                <Route index element={<Game gameMode="casual" key={v4()} />} />
-                <Route path="/time" element={<TimeAttack />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </ConfigProvider>
-      </PlayerProvider>
-    </StoreCreator>
+    <SwrSupabaseContext.Provider value={supabase}>
+      <StoreCreator>
+        <PlayerProvider>
+          <ConfigProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<UI />}>
+                  <Route
+                    index
+                    element={<Game gameMode="casual" key={v4()} />}
+                  />
+                  <Route path="/time" element={<TimeAttack />}>
+                    <Route
+                      path="/time/leaderboard"
+                      element={<LeaderboardTable />}
+                    />
+                  </Route>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ConfigProvider>
+        </PlayerProvider>
+      </StoreCreator>
+    </SwrSupabaseContext.Provider>
   );
 }

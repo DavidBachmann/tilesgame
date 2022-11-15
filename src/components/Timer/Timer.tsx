@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useStore } from "../../StoreCreator";
 import { useCountdown } from "../../hooks/useCountdown";
 import { delay } from "../../utils";
-import { useToggle } from "../../hooks/useToggle";
 import { CONSTANTS } from "../../constants";
 import * as css from "./Timer.css";
 
@@ -14,14 +13,13 @@ const COLOR_FROM = "rgb(229, 45, 34)";
 const COLOR_TO = "rgb(138, 201, 38)";
 
 export function Timer() {
-  const [completed, toggle] = useToggle();
-  const setGameOver = useStore((state) => state.actions.set_game_over);
-  const resetGame = useStore((state) => state.actions.reset_game);
+  const game = useStore((state) => state.game);
+  const setGameStatus = useStore((state) => state.actions.set_game_status);
   const setTimer = useStore((state) => state.actions.set_timer);
   const timer = useStore((state) => state.timer.count);
   const m = useMotionValue(MAX);
 
-  const { startCountdown, resetCountdownAtValue } = useCountdown({
+  const { setCountdownToValue } = useCountdown({
     countStart: MAX,
     intervalMs: MS,
     onUpdate: (time: number) => {
@@ -29,42 +27,26 @@ export function Timer() {
     },
     onComplete: async () => {
       await delay(MS * 2);
-      toggle();
-      setGameOver();
+      setGameStatus("game-over");
     },
   });
 
-  useEffect(() => startCountdown(), []);
-
   useEffect(() => {
-    if (timer > 0) {
-      resetCountdownAtValue(Math.min(timer, MAX));
+    if (game.status === "in-progress" && timer > 0) {
+      setCountdownToValue(Math.min(timer, MAX));
     }
-  }, [timer]);
+  }, [timer, game]);
 
   const val = useTransform(m, [MIN, MAX], ["scaleX(0%)", "scaleX(100%)"]);
   const color = useTransform(m, [MIN, MAX], [COLOR_FROM, COLOR_TO]);
 
-  const onClickReset = async () => {
-    resetGame();
-    await delay(200);
-    resetCountdownAtValue(CONSTANTS.TIME_ATTACK.TIMER_START);
-    toggle();
-  };
-
   m.set(timer);
 
   return (
-    <>
-      <css.root disabled={!completed} onClick={onClickReset}>
-        {completed ? (
-          <css.message>Time's up</css.message>
-        ) : (
-          <css.track>
-            <css.meter style={{ transform: val, backgroundColor: color }} />
-          </css.track>
-        )}
-      </css.root>
-    </>
+    <css.root>
+      <css.track>
+        <css.meter style={{ transform: val, backgroundColor: color }} />
+      </css.track>
+    </css.root>
   );
 }
