@@ -7,107 +7,103 @@ export const root = styled(motion.div)({
   position: "relative",
 });
 
-export const tile = styled(motion.div)({
-  background:
-    "linear-gradient(240deg, var(--color-bg-from, transparent), var(--color-bg-to, transparent))",
-  backgroundOrigin: "border-box",
-  border: "2px solid transparent",
-  borderRadius: 10,
-  boxShadow: "0 4px 0 var(--color-shadow, transparent)",
-  boxSizing: "border-box",
-  height: CONSTANTS.TILE_SIZE,
-  overflow: "hidden",
+export const tileOuter = styled(motion.div)({
+  height: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
   position: "relative",
+  width: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
+  zIndex: 1,
+});
+
+export const tile = styled("div")({
+  background:
+    "linear-gradient(to bottom, var(--color-1, #fdd94e), var(--color-2, #f5c703))",
+  width: "100%",
+  height: "100%",
+  position: "relative",
+  borderRadius: `var(--tile-radius, ${CONSTANTS.TILE_RADIUS_MAX})`,
   cursor: "grab",
   transition: "opacity 0.1s",
-  width: CONSTANTS.TILE_SIZE,
-  "@media (pointer: fine)": {
-    "&:hover": {
-      borderColor: "rgba(255,255,255,0.1)",
-    },
-    "&:hover::after": {
-      opacity: 0.6,
-    },
+  boxSizing: "content-box",
+  "&::before": {
+    borderRadius: `var(--tile-radius, ${CONSTANTS.TILE_RADIUS_MAX})`,
+    content: "''",
+    background:
+      "linear-gradient(to bottom, var(--color-2, #f4b404), var(--color-1, #f7cb76))",
+    top: 5,
+    bottom: 5,
+    left: 6,
+    right: 6,
+    position: "absolute",
+    zIndex: 1,
   },
   "&::after": {
-    background: "transparent",
-    borderRadius: "50%",
-    boxShadow: "0px 0px 10px 16px rgba(255, 255, 255, 0.2)",
     content: "''",
-    opacity: 0.4,
+    background: "var(--color-3, #bb8b00)",
     position: "absolute",
-    right: "10px",
-    top: "10px",
-    transition: "opacity 0.2s",
-    zIndex: 1,
+    top: 4,
+    bottom: -4,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+    borderRadius: `var(--tile-radius, ${CONSTANTS.TILE_RADIUS_MAX})`,
   },
-  "&::before": {
-    background: "var(--color-shadow)",
-    borderRadius: "50%",
-    boxShadow: "0px 1px 0px rgba(0,0,0,0.2)",
-    content: "''",
-    inset: 4,
-    opacity: 0,
-    position: "absolute",
-    transition: "opacity 0.2s",
-    zIndex: 1,
-  },
-  '&[data-visually-disabled="true"]': {
-    opacity: 0.9,
-    cursor: "unset",
-  },
-  '&[data-focus="true"]:not([data-visually-disabled="true"])': {
+
+  '&[data-focus="true"]': {
     cursor: "grabbing",
   },
-  '&[data-selected="true"]::before': {
-    opacity: 0.2,
-  },
+
   '&[data-type="-1"]': {
     "&::before, &::after": {
       content: "initial",
     },
   },
+
   '&[data-type="0"]': {
-    "--color-shadow": CONSTANTS.COLORS.RED.shadow,
-    "--color-bg-from": CONSTANTS.COLORS.RED.normal,
-    "--color-bg-to": CONSTANTS.COLORS.RED.secondary,
+    //red
+    "--color-1": "#ff877a",
+    "--color-2": "#fd3218",
+    "--color-3": "#c70500",
   },
+
   '&[data-type="1"]': {
-    "--color-shadow": CONSTANTS.COLORS.YELLOW.shadow,
-    "--color-bg-from": CONSTANTS.COLORS.YELLOW.normal,
-    "--color-bg-to": CONSTANTS.COLORS.YELLOW.secondary,
+    // yellow
+    "--color-1": "#fdd94e",
+    "--color-2": "#f4b404",
+    "--color-3": "#bb8b00",
   },
   '&[data-type="2"]': {
-    "--color-shadow": CONSTANTS.COLORS.GREEN.shadow,
-    "--color-bg-from": CONSTANTS.COLORS.GREEN.normal,
-    "--color-bg-to": CONSTANTS.COLORS.GREEN.secondary,
+    // green
+    "--color-1": "#7ef51c",
+    "--color-2": "#5dc903",
+    "--color-3": "#59a911",
   },
   '&[data-type="3"]': {
-    "--color-shadow": CONSTANTS.COLORS.BLUE.shadow,
-    "--color-bg-from": CONSTANTS.COLORS.BLUE.normal,
-    "--color-bg-to": CONSTANTS.COLORS.BLUE.secondary,
+    // blue
+    "--color-1": "#19f2f1",
+    "--color-2": "#1bc2d4",
+    "--color-3": "#05a3aa",
   },
   '&[data-type="4"]': {
-    "--color-shadow": CONSTANTS.COLORS.PURPLE.shadow,
-    "--color-bg-from": CONSTANTS.COLORS.PURPLE.normal,
-    "--color-bg-to": CONSTANTS.COLORS.PURPLE.secondary,
+    // purple
+    "--color-1": "#c4a3f9",
+    "--color-2": "#ac7bf8",
+    "--color-3": "#672de1",
   },
 });
 
 export const explosion = styled(motion.div)({
   background: CONSTANTS.COLORS.WHITE.normal,
-  borderRadius: 10,
-  boxShadow: `0 4px 0 ${CONSTANTS.COLORS.WHITE.shadow}`,
-  height: CONSTANTS.TILE_SIZE,
+  borderRadius: `var(--tile-radius, ${CONSTANTS.TILE_RADIUS_MAX})`,
+  height: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
   inset: 0,
   position: "absolute",
-  width: CONSTANTS.TILE_SIZE,
+  width: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
 });
 
 export const draggable = styled(animated.div)({
-  userSelect: "none",
+  height: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
   touchAction: "none",
-  height: CONSTANTS.TILE_SIZE,
-  width: CONSTANTS.TILE_SIZE,
+  userSelect: "none",
+  width: `var(--tile-size, ${CONSTANTS.TILE_SIZE_MAX}px)`,
   willChange: "transform",
 });

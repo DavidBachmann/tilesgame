@@ -116,3 +116,17 @@ export const format_ordinals = (n: number) => {
   const suffix = suffixes.get(rule);
   return `${n}${suffix}`;
 };
+
+const round = (x: number) => (x + 0.5) << 0;
+
+export function clampy(
+  from: number,
+  to: number,
+  fromWidth: number,
+  toWidth: number
+) {
+  const f = round(from);
+  const t = round(to);
+
+  return `clamp(${f}px, calc(${f}px + (${t} - ${f}) * (100vw - ${fromWidth}px) / (${toWidth} - ${fromWidth})), ${t}px)`;
+}

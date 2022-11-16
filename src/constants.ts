@@ -25,8 +25,12 @@ const TIME_ATTACK = {
 
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
-  TILE_SIZE: 48,
-  TILE_GAP: 6,
+  TILE_SIZE_MAX: 64,
+  TILE_SIZE_MIN: 52,
+  TILE_GAP_MAX: 12,
+  TILE_GAP_MIN: 7,
+  TILE_RADIUS_MAX: 16,
+  TILE_RADIUS_MIN: 10,
   TILE_ANIMATION: { ms: 300, s: 0.3 },
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,

@@ -1,13 +1,31 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-
-const green = "#14cd96";
-const bg2 = "#1e232f";
+import { CONSTANTS } from "../../constants";
+import { clampy } from "../../utils";
 
 export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
   rowGap: 8,
+
+  "--tile-size": clampy(
+    CONSTANTS.TILE_SIZE_MIN,
+    CONSTANTS.TILE_SIZE_MAX,
+    429,
+    1440
+  ),
+  "--tile-gap": clampy(
+    CONSTANTS.TILE_GAP_MIN,
+    CONSTANTS.TILE_GAP_MAX,
+    429,
+    1440
+  ),
+  "--tile-radius": clampy(
+    CONSTANTS.TILE_RADIUS_MIN,
+    CONSTANTS.TILE_RADIUS_MAX,
+    429,
+    1440
+  ),
 });
 
 export const area = styled("div")({
@@ -33,13 +51,13 @@ export const nav = styled("nav")({
 
 export const button = styled(NavLink)({
   borderRadius: 6,
-  background: bg2,
+  background: "1e232f",
   lineHeight: 1,
   padding: "14px 18px",
   color: "#b3b8c2",
   fontSize: 16,
   "&.active": {
-    background: green,
+    background: "#14cd96",
     color: "white",
   },
   "&[disabled]": {

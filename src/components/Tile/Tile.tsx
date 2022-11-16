@@ -32,7 +32,7 @@ export const Tile = ({
   const [down, set] = useState(false);
 
   const row = Math.floor(idx / gridSize) + 1;
-  const yOffset = (gridSize - (row - gridSize)) * CONSTANTS.TILE_SIZE * -1;
+  const yOffset = (gridSize - (row - gridSize)) * CONSTANTS.TILE_SIZE_MAX * -1;
 
   const cb = throttle((dir) => {
     onDrag(dir);
@@ -96,7 +96,8 @@ export const Tile = ({
         )}
         <AnimatePresence>
           {!destroyed && (
-            <css.tile
+            <css.tileOuter
+              key={id}
               initial={{ y: yOffset }}
               exit={{ y: 0 }}
               animate={{ y: 0 }}
@@ -115,11 +116,13 @@ export const Tile = ({
                 // Set to 10 by default.
                 damping: 25,
               }}
-              key={id}
-              data-selected={selected}
-              data-type={type}
-              data-focus={down}
-            />
+            >
+              <css.tile
+                data-selected={selected}
+                data-type={type}
+                data-focus={down}
+              />
+            </css.tileOuter>
           )}
         </AnimatePresence>
       </css.root>
