@@ -116,7 +116,11 @@ export const store = (config: Config) =>
         const { tiles, matches } = solve(unsolved);
 
         if (matches.length) {
-          const { tiles: deleted, score } = delete_matches({
+          const {
+            tiles: deleted,
+            score,
+            time,
+          } = delete_matches({
             tiles,
             matches,
           });
@@ -133,7 +137,7 @@ export const store = (config: Config) =>
               timer: {
                 count: Math.min(
                   CONSTANTS.TIME_ATTACK.TIMER_START,
-                  state.timer.count + 0 //timeAddition here
+                  state.timer.count + time
                 ),
               },
             }));

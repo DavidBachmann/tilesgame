@@ -167,7 +167,7 @@ export const delete_matches = ({
 }: {
   tiles: Tile[];
   matches: Tile[][];
-}): { tiles: Tile[]; score: number } => {
+}): { tiles: Tile[]; score: number; time: number } => {
   const clone = [...tiles];
   const uniqueMatches = new Set<number>();
   matches.flat().forEach((obj) => uniqueMatches.add(obj.idx));
@@ -179,7 +179,7 @@ export const delete_matches = ({
     clone[idx] = create_empty_tile_at_index(idx);
   }
 
-  return { tiles: clone, score: score + bonusScore };
+  return { tiles: clone, score: score + bonusScore, time: bonusTime };
 };
 
 // After every match we spawn new tiles to fill the void
