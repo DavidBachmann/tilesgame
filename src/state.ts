@@ -184,7 +184,9 @@ export const store = (config: Config) =>
           }));
         }
 
-        const toAdd = get().combo.score * combo_counter(get().combo.count);
+        const currentlyAdded = get().combo.score;
+        const toAdd =
+          currentlyAdded * combo_counter(get().combo.count) - currentlyAdded;
 
         set((state) => ({
           game: {
