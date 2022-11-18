@@ -2,7 +2,7 @@
 
 Available to play at [tilesgame.com](https://www.tilesgame.com)
 
-<img width="696" alt="image" src="https://user-images.githubusercontent.com/8494120/200178374-42b6e8ea-9b24-4b49-b992-a3ebacb0bbdf.png">
+<img width="637" alt="image" src="https://user-images.githubusercontent.com/8494120/202804746-ae9b47d5-8478-470d-992b-fa6c683a969f.png">
 
 > **Note**
 >
