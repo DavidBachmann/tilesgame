@@ -11,6 +11,17 @@ const colors = {
   },
 };
 
+const newColors = {
+  WHITE: "#f1f1f1",
+  SEA_GREEN: "#6dd8b9",
+  BLUE: "#6ca7fe",
+  BLUE2: "#2b60f3",
+  PURPLE: "#8850f5",
+  GRAY: "#2c2b30",
+  BLACK: "#030303",
+  DARK: "#1c1b20",
+};
+
 const POINTS_BONUS = {
   QUAD: 6,
   QUINT: 15,
@@ -25,8 +36,8 @@ const TIME_ATTACK = {
 
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
-  TILE_SIZE_MAX: 64,
-  TILE_SIZE_MIN: 52,
+  TILE_SIZE_MAX: 58,
+  TILE_SIZE_MIN: 50,
   TILE_GAP_MAX: 12,
   TILE_GAP_MIN: 7,
   TILE_RADIUS_MAX: 16,
@@ -34,6 +45,7 @@ export const CONSTANTS = {
   TILE_ANIMATION: { ms: 300, s: 0.3 },
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,
+  NEW_COLORS: newColors,
   MAX_MULTIPLIER: 5,
   POINTS_BONUS,
   TIME_ATTACK,

@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { useConfig } from "../../context/ConfigContext";
 import { usePlayer } from "../../context/PlayerContext";
 import { useStore } from "../../StoreCreator";
+import Button from "../Button";
+import { NavButton } from "../Button/Button";
 import { Octocat } from "./artwork/Octocat";
 import * as css from "./UI.css";
 
@@ -41,9 +43,19 @@ function Nav() {
         <span>TilesGame</span>
       </css.title>
       <css.content>
-        <css.button to="/">Casual</css.button>
-        <css.button to="/time">Time</css.button>
+        <css.navItem to="/">Casual</css.navItem>
+        <css.navItem to="/time">Time</css.navItem>
       </css.content>
+      <css.os>
+        <a
+          href="//github.com/DavidBachmann/tilesgame"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="visually-hidden">View the source on Github</span>
+          <Octocat />
+        </a>
+      </css.os>
     </css.nav>
   );
 }
@@ -55,16 +67,6 @@ export function Footer() {
 
   return (
     <css.footer>
-      <css.os>
-        <a
-          href="//github.com/DavidBachmann/tilesgame"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span className="visually-hidden">View the source on Github</span>
-          <Octocat />
-        </a>
-      </css.os>
       <css.text>
         {player.alias} playing {game.id} (seed {config.seed})
       </css.text>

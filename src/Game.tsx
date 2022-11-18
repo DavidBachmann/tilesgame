@@ -9,8 +9,8 @@ import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { Timer } from "./components/Timer/Timer";
 import { useStore } from "./StoreCreator";
 import { Board } from "./components/UI/Board";
-import { Pregame } from "./components/UI/Pregame";
-import { Postgame } from "./components/UI/Postgame";
+import { OutOfGame } from "./components/UI/OutOfGame";
+import { MainMenu } from "./components/UI/MainMenu";
 
 type GameProps = {
   gameMode: "casual" | "time-attack";
@@ -85,12 +85,12 @@ export function Game({ gameMode, onGameOver }: GameProps) {
       <GameArea>
         <Board>
           {gameMode === "time-attack" && game.status === "pregame" && (
-            <Pregame />
+            <MainMenu type="pregame" />
           )}
           {(gameMode === "casual" || game.status === "in-progress") && (
             <Grid tiles={tiles} onSwipe={handleSwipeSwap} />
           )}
-          {game.status === "game-over" && <Postgame />}
+          {game.status === "game-over" && <MainMenu type="postgame" />}
         </Board>
         <Backlight
           tiles={tiles}

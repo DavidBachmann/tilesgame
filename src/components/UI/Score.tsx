@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { animate } from "framer-motion";
+import { animate, transform } from "framer-motion";
 import { useStore } from "../../StoreCreator";
 import * as css from "./Score.css";
+
+const springVelocity = transform([0, 30], [100, 50]);
 
 export function Score() {
   const game = useStore((state) => state.game);
@@ -13,8 +15,11 @@ export function Score() {
   useEffect(() => {
     const scoreDiff = game.score - lastScore.current;
     const controls = animate(lastScore.current, game.score, {
-      duration: scoreDiff >= 20 ? 1.6 : 0.8,
-      ease: "easeOut",
+      type: "spring",
+      damping: 80,
+      stiffness: 500,
+      mass: 0.5,
+      velocity: springVelocity(scoreDiff),
       onPlay() {
         setPlaying(true);
       },

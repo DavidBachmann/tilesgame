@@ -5,7 +5,7 @@ export const root = styled("div")({
   alignItems: "center",
   padding: 0,
   backgroundColor: "rgba(7,14,23,0.3)",
-  borderRadius: 32,
+  borderRadius: "32px 32px 0 0",
   display: "flex",
   justifyContent: "center",
   margin: "auto",

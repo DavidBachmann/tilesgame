@@ -6,7 +6,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #1a1b28;
+  background-color: #161722;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -63,8 +63,7 @@ body {
   overflow: hidden;
 }
 
-button,
-a[role="button"] {
+button {
   text-align: center;
   color: white;
   border-radius: 8px;
@@ -77,13 +76,12 @@ a[role="button"] {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover,
-a[role="button"]:hover {
+button:hover {
   border-color: #646cff;
 }
+
 button:focus,
-button:focus-visible,
-a[role="button"]:focus a[role="button"]:focus-visible {
+button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 

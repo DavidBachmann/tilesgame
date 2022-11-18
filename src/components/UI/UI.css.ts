@@ -6,7 +6,6 @@ import { clampy } from "../../utils";
 export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
-  rowGap: 8,
 
   "--tile-size": clampy(
     CONSTANTS.TILE_SIZE_MIN,
@@ -30,7 +29,6 @@ export const root = styled("div")({
 
 export const area = styled("div")({
   position: "relative",
-  marginTop: 32,
 });
 
 export const header = styled("header")({
@@ -49,16 +47,15 @@ export const nav = styled("nav")({
   padding: 16,
 });
 
-export const button = styled(NavLink)({
-  borderRadius: 6,
-  background: "1e232f",
+export const navItem = styled(NavLink)({
   lineHeight: 1,
-  padding: "14px 18px",
-  color: "#b3b8c2",
   fontSize: 16,
+  color: CONSTANTS.NEW_COLORS.WHITE,
+  opacity: 0.7,
+  transition: "opacity 200ms",
   "&.active": {
-    background: "#14cd96",
-    color: "white",
+    color: CONSTANTS.NEW_COLORS.SEA_GREEN,
+    opacity: 1,
   },
   "&[disabled]": {
     cursor: "auto",
@@ -67,16 +64,21 @@ export const button = styled(NavLink)({
 
 export const title = styled("div")({
   fontSize: 20,
+  flex: 1,
 });
 
 export const content = styled("div")({
   display: "flex",
   alignItems: "center",
-  columnGap: 16,
+  columnGap: 32,
+  justifyContent: "center",
+  flex: 1,
 });
 
 export const os = styled("div")({
   display: "none",
+  flex: 1,
+  justifyContent: "flex-end",
   svg: {
     width: 20,
     height: "auto",

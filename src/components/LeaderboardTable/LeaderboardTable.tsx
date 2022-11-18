@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { Link } from "react-router-dom";
 import { format_ordinals } from "../../utils";
 import { usePlayer } from "../../context/PlayerContext";
 import * as css from "./LeaderboardTable.css";
 import { useLeaderboard } from "../../context/LeaderboardContext";
+import { NavButton } from "../Button";
 
 const renderPlaceholders = Array.from({ length: 10 }, (_, i) => (
   <css.row key={i}>
@@ -63,11 +63,9 @@ export function LeaderboardTable() {
             {highscores?.length ? renderHighscores : renderPlaceholders}
           </tbody>
         </css.table>
-        <css.button>
-          <Link to="/time" role="button">
-            Close
-          </Link>
-        </css.button>
+        <NavButton to="/time" spacing="small" colorScheme="white">
+          Close
+        </NavButton>
       </css.wrap>
     </css.root>
   );
