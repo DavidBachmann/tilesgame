@@ -14,7 +14,7 @@ export type State = {
   tiles: Tile[];
   selection: number[];
   interactive: boolean;
-  queue: Map<string, Tile[]>;
+  queue: Map<string, { tiles: Tile[]; score?: number }>;
   game: GameState;
   timer: {
     count: number;

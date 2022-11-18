@@ -40,7 +40,7 @@ function Nav() {
   return (
     <css.nav>
       <css.title>
-        <span>TilesGame</span>
+        <span>Tiles</span>
       </css.title>
       <css.content>
         <css.navItem to="/">Casual</css.navItem>

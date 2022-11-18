@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 export const text = styled(motion.span)({
+  fontFamily: "Barlow",
   fontSize: 54,
   fontWeight: 500,
   margin: 0,

@@ -11,8 +11,6 @@ import {
   delete_matches,
   solve,
   spawn_tiles,
-  get_quad_matches,
-  get_quint_matches,
   is_grid_solvable,
 } from "./logic";
 import { Config, GameMode, GameStatus, State, Tile } from "./types";
@@ -36,7 +34,6 @@ const reset = (
   timer: {
     count: CONSTANTS.TIME_ATTACK.TIMER_START,
   },
-
   combo: {
     count: 0,
     message: null,
@@ -105,11 +102,11 @@ export const store = (config: Config) =>
         });
       }
 
-      const enqueue = (t: Tile[]) => {
+      const enqueue = (t: Tile[], score = 0) => {
         const q = get().queue;
         const temp = new Map(q);
         const id = v4();
-        temp.set(id, t);
+        temp.set(id, { tiles: t, score });
 
         set({ queue: temp });
         return;
@@ -118,48 +115,10 @@ export const store = (config: Config) =>
       const prepare_and_add_to_queue = (unsolved: Tile[]): void => {
         const { tiles, matches } = solve(unsolved);
 
-        const totalQuadMatches = get_quad_matches(matches);
-        const totalQuintMatches = get_quint_matches(matches);
-
-        let quadBonusPoints = 0;
-        let quintBonusPoints = 0;
-
-        let quadBonusTime = 0;
-        let quintBonusTime = 0;
-
-        if (totalQuadMatches) {
-          // Apply bonus points for matching 4 in a row
-          quadBonusPoints = CONSTANTS.POINTS_BONUS.QUAD * totalQuadMatches;
-          // Apply bonus time for matching 4 in a row
-          quadBonusTime =
-            CONSTANTS.TIME_ATTACK.TIMER_QUAD_ADD_BONUS * totalQuadMatches;
-        }
-
-        if (totalQuintMatches) {
-          // Apply bonus points for matching 5 in a row
-          quintBonusPoints = CONSTANTS.POINTS_BONUS.QUINT * totalQuintMatches;
-          // Apply bonus time for matching 5 in a row
-          quintBonusTime =
-            CONSTANTS.TIME_ATTACK.TIMER_QUINT_ADD_BONUS * totalQuintMatches;
-        }
-
-        const bonusPoints = quadBonusPoints + quintBonusPoints;
-
-        const timeAddition =
-          CONSTANTS.TIME_ATTACK.TIMER_ADD + quadBonusTime + quintBonusTime;
-
         if (matches.length) {
-          const deleted = delete_matches({
+          const { tiles: deleted, score } = delete_matches({
             tiles,
             matches,
-            scoreCallback: (score) => {
-              set((state) => ({
-                combo: {
-                  ...state.combo,
-                  score: score + state.combo.score + bonusPoints,
-                },
-              }));
-            },
           });
 
           set((state) => ({
@@ -174,13 +133,13 @@ export const store = (config: Config) =>
               timer: {
                 count: Math.min(
                   CONSTANTS.TIME_ATTACK.TIMER_START,
-                  state.timer.count + timeAddition
+                  state.timer.count + 0 //timeAddition here
                 ),
               },
             }));
           }
 
-          enqueue(deleted);
+          enqueue(deleted, score);
           const bubbled = bubble_up(deleted, config);
           enqueue(bubbled);
           const spawned = spawn_tiles(bubbled, config);
@@ -197,7 +156,6 @@ export const store = (config: Config) =>
       const solve_queue = async () => {
         const q = get().queue;
         const comboCount = get().combo.count;
-        const scoreToAdd = get().combo.score;
         const gameMode = get().game.gameMode;
         const multiplier = combo_counter(comboCount);
 
@@ -206,42 +164,43 @@ export const store = (config: Config) =>
         // Lock user interactions, clear selection
         set({ interactive: false, selection: [] });
 
-        for (const [id, tiles] of q) {
+        for (const [id, entry] of q) {
           q.delete(id);
 
           await delay(CONSTANTS.TILE_ANIMATION.ms);
 
-          set({ tiles, queue: q });
+          set((prev) => ({
+            tiles: entry.tiles,
+            queue: q,
+            game: { ...prev.game, score: prev.game.score + (entry.score ?? 0) },
+            combo: {
+              ...prev.combo,
+              score: prev.combo.score + (entry.score ?? 0),
+            },
+          }));
         }
+
+        const toAdd = get().combo.score * combo_counter(get().combo.count);
 
         set((state) => ({
           game: {
             ...state.game,
-            score: state.game.score + scoreToAdd * multiplier,
+            score: state.game.score + toAdd,
           },
         }));
 
-        if (multiplier >= 3) {
-          if (gameMode === "time-attack") {
-            set({
-              timer: {
-                count: CONSTANTS.TIME_ATTACK.TIMER_START,
-              },
-            });
-          }
-
-          if (gameMode !== "time-attack") {
-            set((state) => ({
-              message: {
-                ...state.message,
-                queue: state.message.queue.add({
-                  heading: `${multiplier} x multiplier`,
-                  subtitle: `${state.combo.score * multiplier} points`,
-                }),
-              },
-            }));
-          }
+        if (gameMode !== "time-attack" && multiplier > 1) {
+          set((state) => ({
+            message: {
+              ...state.message,
+              queue: state.message.queue.add({
+                heading: `${multiplier}x multiplier`,
+                subtitle: `${toAdd} points!`,
+              }),
+            },
+          }));
         }
+
         if (multiplier >= 4 && gameMode !== "time-attack") {
           set((state) => ({
             message: {

@@ -1,5 +1,5 @@
 :root {
-  font-family: Barlow, Helvetica, Arial, sans-serif;
+  font-family: Outfit, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   font-weight: 400;
@@ -115,4 +115,27 @@ button:focus-visible {
   font-weight: 600;
   src: local(""), url("/fonts/barlow-v12-latin-600.woff2") format("woff2"),
     url("/fonts/barlow-v12-latin-600.woff") format("woff");
+}
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 300;
+  src: local(""), url("/fonts/outfit-v6-latin-300.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-300.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: italic;
+  font-weight: 400;
+  src: local(""), url("/fonts/outfit-v6-latin-regular.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: italic;
+  font-weight: 500;
+  src: local(""), url("/fonts/outfit-v6-latin-500.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-500.woff") format("woff");
 }

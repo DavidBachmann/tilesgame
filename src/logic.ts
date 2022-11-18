@@ -120,29 +120,66 @@ export const calculate_relationships = (
   return newNodes;
 };
 
+const calculate_bonus = (
+  matches: Tile[][]
+): { bonusScore: number; bonusTime: number } => {
+  const totalQuadMatches = get_quad_matches(matches);
+  const totalQuintMatches = get_quint_matches(matches);
+
+  let quadBonusPoints = 0;
+  let quintBonusPoints = 0;
+
+  let quadBonusTime = 0;
+  let quintBonusTime = 0;
+
+  if (totalQuadMatches) {
+    // Apply bonus points for matching 4 in a row
+    quadBonusPoints = CONSTANTS.POINTS_BONUS.QUAD * totalQuadMatches;
+    // Apply bonus time for matching 4 in a row
+    quadBonusTime =
+      CONSTANTS.TIME_ATTACK.TIMER_QUAD_ADD_BONUS * totalQuadMatches;
+  }
+
+  if (totalQuintMatches) {
+    // Apply bonus points for matching 5 in a row
+    quintBonusPoints = CONSTANTS.POINTS_BONUS.QUINT * totalQuintMatches;
+    // Apply bonus time for matching 5 in a row
+    quintBonusTime =
+      CONSTANTS.TIME_ATTACK.TIMER_QUINT_ADD_BONUS * totalQuintMatches;
+  }
+
+  const bonusScore = quadBonusPoints + quintBonusPoints;
+
+  const bonusTime =
+    CONSTANTS.TIME_ATTACK.TIMER_ADD + quadBonusTime + quintBonusTime;
+
+  return {
+    bonusScore,
+    bonusTime,
+  };
+};
+
 // Receives a list of matches and deletes them from the grid
 // by replacing them with empties.
 export const delete_matches = ({
   tiles,
   matches,
-  scoreCallback,
 }: {
   tiles: Tile[];
   matches: Tile[][];
-  scoreCallback: (score: number) => void;
-}): Tile[] => {
+}): { tiles: Tile[]; score: number } => {
   const clone = [...tiles];
   const uniqueMatches = new Set<number>();
   matches.flat().forEach((obj) => uniqueMatches.add(obj.idx));
   const removedIdx = Array.from(uniqueMatches);
   const score = removedIdx.length;
-  scoreCallback(score);
+  const { bonusScore, bonusTime } = calculate_bonus(matches);
 
   for (const idx of removedIdx) {
     clone[idx] = create_empty_tile_at_index(idx);
   }
 
-  return clone;
+  return { tiles: clone, score: score + bonusScore };
 };
 
 // After every match we spawn new tiles to fill the void

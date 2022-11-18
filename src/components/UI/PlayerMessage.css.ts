@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const root = styled(motion.div)({
+  fontFamily: "Barlow",
   display: "grid",
   inset: 0,
   placeItems: "center",
