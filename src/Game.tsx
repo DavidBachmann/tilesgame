@@ -9,7 +9,6 @@ import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { Timer } from "./components/Timer/Timer";
 import { useStore } from "./StoreCreator";
 import { Board } from "./components/UI/Board";
-import { OutOfGame } from "./components/UI/OutOfGame";
 import { MainMenu } from "./components/UI/MainMenu";
 
 type GameProps = {

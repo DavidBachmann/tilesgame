@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { useLeaderboard } from "../../context/LeaderboardContext";
 import { useStore } from "../../StoreCreator";
 import Button, { NavButton } from "../Button";
@@ -28,7 +27,7 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
         </css.buttons>
       </css.root>
     ),
-    [gameMode]
+    [gameMode, init]
   );
 
   const postgame = useMemo(
