@@ -66,9 +66,9 @@ function TimeAttack() {
 export default function App() {
   return (
     <SwrSupabaseContext.Provider value={supabase}>
-      <StoreCreator>
-        <PlayerProvider>
-          <ConfigProvider>
+      <ConfigProvider>
+        <StoreCreator>
+          <PlayerProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<UI />}>
@@ -85,9 +85,9 @@ export default function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-          </ConfigProvider>
-        </PlayerProvider>
-      </StoreCreator>
+          </PlayerProvider>
+        </StoreCreator>
+      </ConfigProvider>
     </SwrSupabaseContext.Provider>
   );
 }
