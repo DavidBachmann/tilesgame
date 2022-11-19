@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
 import styled from "styled-components";
 import { CONSTANTS } from "../../constants";
 import { clampy } from "../../utils";
@@ -47,7 +47,7 @@ export const nav = styled("nav")({
   padding: 16,
 });
 
-export const navItem = styled(NavLink)({
+export const navItem = styled(Link)({
   lineHeight: 1,
   fontSize: 16,
   color: CONSTANTS.NEW_COLORS.WHITE,

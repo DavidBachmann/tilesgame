@@ -1,0 +1,141 @@
+:root {
+  font-family: Outfit, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #161722;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+}
+
+a {
+  font-weight: 500;
+  text-decoration: inherit;
+  outline: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-width: 320px;
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+}
+
+@media (min-width: 429px) {
+  body {
+    overflow: visible;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+button {
+  text-align: center;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background: #101017;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("/fonts/barlow-v12-latin-regular.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Barlow";
+  font-style: italic;
+  font-weight: 400;
+  src: local(""), url("/fonts/barlow-v12-latin-italic.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-italic.woff");
+}
+
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 500;
+  src: local(""), url("/fonts/barlow-v12-latin-500.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-500.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  src: local(""), url("/fonts/barlow-v12-latin-600.woff2") format("woff2"),
+    url("/fonts/barlow-v12-latin-600.woff") format("woff");
+}
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 300;
+  src: local(""), url("/fonts/outfit-v6-latin-300.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-300.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("/fonts/outfit-v6-latin-regular.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 500;
+  src: local(""), url("/fonts/outfit-v6-latin-500.woff2") format("woff2"),
+    url("/fonts/outfit-v6-latin-500.woff") format("woff");
+}

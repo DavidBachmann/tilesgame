@@ -1,55 +1,34 @@
-# Match-3 tiles game.
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-Available to play at [tilesgame.com](https://www.tilesgame.com)
+## Getting Started
 
-<img width="637" alt="image" src="https://user-images.githubusercontent.com/8494120/202804746-ae9b47d5-8478-470d-992b-fa6c683a969f.png">
+First, run the development server:
 
-> **Note**
->
-> Work in progress :)
-
-## Installation
-
-```
-yarn
-```
-
-```
+```bash
+npm run dev
+# or
 yarn dev
 ```
 
-## Config via query params
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Seeds
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-Custom seeds
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-```
-/?seed=1337
-/?seed=tilesgame.com
-```
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-Special seeds
+## Learn More
 
-```
-/?seed=today
-/?seed=yesterday
-```
+To learn more about Next.js, take a look at the following resources:
 
-### Grid size
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-min. 3 and max. 8
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-```
-/?gridSize=3
-/?gridSize=8
-```
+## Deploy on Vercel
 
-### Tile types
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-min. 3 and max. 5
-
-```
-/?tileTypes=3
-/?tileTypes=5
-```
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

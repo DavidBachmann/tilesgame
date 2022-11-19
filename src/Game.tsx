@@ -16,7 +16,7 @@ type GameProps = {
   onGameOver?: (game: GameState, metadata: { publish?: boolean }) => void;
 };
 
-export function Game({ gameMode, onGameOver }: GameProps) {
+export default function Game({ gameMode, onGameOver }: GameProps) {
   const init = useStore((state) => state.actions.init);
   const addToSelection = useStore((state) => state.actions.add_to_selection);
   const setGameStatus = useStore((state) => state.actions.set_game_status);
@@ -35,18 +35,11 @@ export function Game({ gameMode, onGameOver }: GameProps) {
         });
       }
     }
-  }, [game]);
+  }, [game, onGameOver]);
 
   useMemo(() => {
-    if (!import.meta.env.PROD) {
-      window.DEBUG_MESSAGES = true;
-    }
     init(gameMode);
-  }, []);
-
-  if (!gameTiles) {
-    return <p>404 tiles not found</p>;
-  }
+  }, [gameMode, init]);
 
   const handleSwipeSwap = useCallback(
     (
@@ -84,7 +77,11 @@ export function Game({ gameMode, onGameOver }: GameProps) {
     if (gameMode === "casual" && game.status === "pregame") {
       setGameStatus("in-progress");
     }
-  }, [gameMode, game.status]);
+  }, [gameMode, game.status, setGameStatus]);
+
+  if (!gameTiles) {
+    return <p>404 tiles not found</p>;
+  }
 
   const tiles = game.status === "game-over" ? emptyTiles : gameTiles;
 

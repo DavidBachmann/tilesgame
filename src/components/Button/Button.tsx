@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
 import * as css from "./Button.css";
 
 type ButtonBaseProps = {
@@ -25,7 +25,7 @@ export default function Button({ children, onClick, type = 0 }: ButtonProps) {
 
 export function NavButton({ children, to, type = 0 }: NavButtonProps) {
   return (
-    <css.button as={NavLink as any} role="button" to={to} data-type={type}>
+    <css.button as={Link} role="button" to={to} data-type={type}>
       <css.buttonText>{children}</css.buttonText>
     </css.button>
   );
