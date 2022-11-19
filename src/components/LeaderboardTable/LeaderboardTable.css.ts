@@ -24,6 +24,12 @@ export const row = styled("tr")({
   "&:nth-child(2n)": {
     background: "#161722",
   },
+  td: {
+    maxWidth: 128,
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
 });
 
 export const column = styled("div")({

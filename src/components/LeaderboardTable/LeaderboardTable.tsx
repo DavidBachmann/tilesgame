@@ -36,7 +36,7 @@ export function LeaderboardTable() {
         <td>{score.player_alias}</td>
         <css.timeCell>
           {formatDistanceToNowStrict(new Date(score.created_at), {
-            addSuffix: true,
+            addSuffix: false,
           })}
         </css.timeCell>
       </css.row>

@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { useStore } from "../StoreCreator";
 import useSWR from "swr";
 
 export type LeaderboardResponse = {
@@ -31,9 +30,8 @@ const LeaderboardContext = createContext<LeaderboardContextProps>({
 
 export const useLeaderboard = () => useContext(LeaderboardContext);
 
-function fetcher(url: string) {
-  const foo = fetch(url).then((res) => res.json());
-  return foo;
+async function fetcher(url: string) {
+  return await fetch(url).then((res) => res.json());
 }
 
 export function LeaderboardProvider({
@@ -58,7 +56,7 @@ export function LeaderboardProvider({
   return (
     <LeaderboardContext.Provider
       value={{
-        highscores: data,
+        highscores: data?.highscore,
         lowestScore,
         isVisible,
         toggleLeaderboard,
