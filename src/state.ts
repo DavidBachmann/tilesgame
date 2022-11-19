@@ -10,6 +10,7 @@ import {
   bubble_up,
   delete_matches,
   solve,
+  shuffle_tiles,
   spawn_tiles,
   is_grid_solvable,
   create_empty_tiles,
@@ -215,18 +216,16 @@ export const store = (config: Config) =>
         const solvable = is_grid_solvable(get().tiles, config);
 
         if (!solvable) {
-          debug_message("GAME OVER", "red");
+          debug_message("Unsolvable", "red");
           set((state) => ({
-            game: {
-              ...state.game,
-              status: "game-over",
-            },
             message: {
               ...state.message,
               queue: state.message.queue.add({
                 heading: "No possible moves.",
+                subtitle: "Shuffling!",
               }),
             },
+            tiles: shuffle_tiles(state.tiles, config),
           }));
         }
 

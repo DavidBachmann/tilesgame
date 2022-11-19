@@ -101,6 +101,38 @@ export const initialize_grid = (
   return calculate_relationships(grid, count);
 };
 
+export const shuffle_tiles = (tiles: Tile[], config: Config): Tile[] => {
+  const copy = [...tiles];
+  const get_random_tile = () => copy[Math.floor(config.random() * copy.length)];
+
+  for (let i = 0; i < copy.length; i++) {
+    const r1 = get_random_tile();
+    const r2 = get_random_tile();
+
+    if (r1.id !== r2.id) {
+      swap_two_tiles(r1.idx, r2.idx, copy, config, true);
+    }
+  }
+
+  const { tiles: shuffled, matches: m } = solve(
+    calculate_relationships(copy, config.gridSize)
+  ); // here
+
+  const matches = m.filter((arr) => arr.some(Boolean));
+
+  // We created some matches, try again.
+  if (matches.length) {
+    return shuffle_tiles(copy, config);
+  }
+
+  // We created an unsolvable grid, those are no fun.
+  if (!is_grid_solvable(shuffled, config)) {
+    return shuffle_tiles(shuffled, config);
+  }
+
+  return shuffled;
+};
+
 export const calculate_relationships = (
   nodes: Tile[],
   dimension: number
@@ -282,7 +314,7 @@ export const solve = (tiles: Tile[]) => {
 
 // Tries to generate a solvable grid without any matches
 export const create_grid = (config: Config): Tile[] => {
-  const new_grid = initialize_grid(
+  const newGrid = initialize_grid(
     config.gridSize,
     config.tileTypes,
     config.random
@@ -290,10 +322,10 @@ export const create_grid = (config: Config): Tile[] => {
 
   const m = [];
 
-  for (let i = 0; i < new_grid.length; i++) {
-    const node = new_grid[i];
+  for (let i = 0; i < newGrid.length; i++) {
+    const node = newGrid[i];
     const hits = CONSTANTS.DIRECTIONS.map((direction) =>
-      seek(node, direction, new_grid)
+      seek(node, direction, newGrid)
     ).filter((arr) => arr.length >= 3);
 
     m.push(hits);
@@ -307,11 +339,11 @@ export const create_grid = (config: Config): Tile[] => {
   }
 
   // We created an unsolvable grid, those are no fun.
-  if (!is_grid_solvable(new_grid, config)) {
+  if (!is_grid_solvable(newGrid, config)) {
     return create_grid(config);
   }
 
-  return new_grid;
+  return newGrid;
 };
 
 export const seek = (
