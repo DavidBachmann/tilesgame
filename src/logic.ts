@@ -48,6 +48,15 @@ export const bubble_up = (tiles: Tile[], config: Config) => {
   return returned;
 };
 
+export const create_empty_tiles = (config: Config): Tile[] => {
+  return Array.from({ length: config.gridSize * config.gridSize }, (_, i) => ({
+    id: v4(),
+    idx: i,
+    type: -1,
+    relationships: { top: -1, right: -1, bottom: -1, left: -1 },
+  }));
+};
+
 // Matches get turned into empty tiles
 export const create_empty_tile_at_index = (idx: number): Tile => ({
   id: v4(),

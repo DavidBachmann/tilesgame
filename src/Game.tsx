@@ -19,8 +19,10 @@ type GameProps = {
 export function Game({ gameMode, onGameOver }: GameProps) {
   const init = useStore((state) => state.actions.init);
   const addToSelection = useStore((state) => state.actions.add_to_selection);
+  const setGameStatus = useStore((state) => state.actions.set_game_status);
 
-  const tiles = useStore((state) => state.tiles);
+  const gameTiles = useStore((state) => state.tiles);
+  const emptyTiles = useStore((state) => state.empties);
   const game = useStore((state) => state.game);
   const message = useStore((state) => state.message);
   const showPlayerMessage = !!message.current.heading;
@@ -42,7 +44,7 @@ export function Game({ gameMode, onGameOver }: GameProps) {
     init(gameMode);
   }, []);
 
-  if (!tiles) {
+  if (!gameTiles) {
     return <p>404 tiles not found</p>;
   }
 
@@ -77,6 +79,18 @@ export function Game({ gameMode, onGameOver }: GameProps) {
     [addToSelection, game]
   );
 
+  useEffect(() => {
+    // Auto start the game in casual mode
+    if (gameMode === "casual" && game.status === "pregame") {
+      setGameStatus("in-progress");
+    }
+  }, [gameMode, game.status]);
+
+  const tiles =
+    game.status === "game-over" || game.status === "time-limit"
+      ? emptyTiles
+      : gameTiles;
+
   return (
     <Fragment>
       <Score />
@@ -86,7 +100,7 @@ export function Game({ gameMode, onGameOver }: GameProps) {
           {gameMode === "time-attack" && game.status === "pregame" && (
             <MainMenu type="pregame" />
           )}
-          {(gameMode === "casual" || game.status === "in-progress") && (
+          {game.status === "in-progress" && (
             <Grid tiles={tiles} onSwipe={handleSwipeSwap} />
           )}
           {game.status === "game-over" && <MainMenu type="postgame" />}

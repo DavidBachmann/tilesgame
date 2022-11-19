@@ -1,7 +1,7 @@
 import { CONSTANTS } from "./constants";
 
 export type GameMode = "casual" | "time-attack";
-export type GameStatus = "pregame" | "in-progress" | "game-over";
+export type GameStatus = "pregame" | "in-progress" | "game-over" | "time-limit";
 
 export type GameState = {
   id: string;
@@ -12,6 +12,7 @@ export type GameState = {
 
 export type State = {
   tiles: Tile[];
+  empties: Tile[];
   selection: number[];
   interactive: boolean;
   queue: Map<string, { tiles: Tile[]; score?: number; time?: number }>;

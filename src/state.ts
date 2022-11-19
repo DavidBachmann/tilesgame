@@ -12,6 +12,7 @@ import {
   solve,
   spawn_tiles,
   is_grid_solvable,
+  create_empty_tiles,
 } from "./logic";
 import { Config, GameMode, GameStatus, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
@@ -22,6 +23,7 @@ const reset = (
   status: GameStatus = "pregame"
 ): Partial<State> => ({
   tiles: [],
+  empties: [],
   selection: [],
   interactive: true,
   queue: new Map(),
@@ -222,7 +224,7 @@ export const store = (config: Config) =>
             message: {
               ...state.message,
               queue: state.message.queue.add({
-                heading: "Game over",
+                heading: "No possible moves.",
               }),
             },
           }));
@@ -251,6 +253,7 @@ export const store = (config: Config) =>
               ...reset(v4(), gameMode as GameMode, status as GameStatus),
               gameMode,
               tiles: create_grid(config),
+              empties: create_empty_tiles(config),
             }));
           },
           add_to_selection: (id: number) => {

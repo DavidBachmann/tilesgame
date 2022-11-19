@@ -16,6 +16,7 @@ type GridProps = {
 export const Grid = ({ tiles, onSwipe }: GridProps) => {
   const config = useConfig();
   const selection = useStore((state) => state.selection);
+
   return (
     <css.root gridSize={config.gridSize}>
       {tiles.map((tile) => {

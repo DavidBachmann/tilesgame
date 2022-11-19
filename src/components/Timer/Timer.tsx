@@ -24,7 +24,10 @@ const useCountdown = ({
   const [running, run] = useState(false);
 
   let i: number;
-  const startCountdown = () => run(true);
+  const startCountdown = async (d = 0) => {
+    await delay(d);
+    run(true);
+  };
   const stopCountdown = () => run(false);
 
   useEffect(() => {
@@ -34,7 +37,7 @@ const useCountdown = ({
       }
 
       return set((prev) => {
-        const newValue = Math.max(MIN, prev - 100);
+        const newValue = Math.min(Math.max(MIN, prev - 100), MAX);
         onUpdate(newValue);
         return newValue;
       });
@@ -45,11 +48,11 @@ const useCountdown = ({
 
   useEffect(() => {
     if (val <= 0) {
-      onComplete();
       clearInterval(i);
       stopCountdown();
+      onComplete();
     }
-  });
+  }, [val]);
 
   return {
     setValue: set,
@@ -70,14 +73,17 @@ export function Timer() {
       setTimer(latestTime);
     },
     onComplete: async () => {
-      await delay(MS * 10);
+      await delay(400);
+      setGameStatus("time-limit");
+      await delay(CONSTANTS.TILE_ANIMATION.ms * 1.2);
       setGameStatus("game-over");
+      setValue(MAX);
     },
   });
 
   useEffect(() => {
     if (game.status === "in-progress") {
-      startCountdown();
+      startCountdown(MS * 8);
     } else {
       stopCountdown();
     }

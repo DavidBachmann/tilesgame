@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { animate } from "framer-motion";
 import { useStore } from "../../StoreCreator";
-import * as css from "./Score.css";
 import { CONSTANTS } from "../../constants";
-
-// const springVelocity = transform([0, 30], [80, 50]);
-// const springDamping = transform([0, 30], [40, 80]);
+import * as css from "./Score.css";
 
 export function Score() {
   const game = useStore((state) => state.game);
@@ -30,9 +27,23 @@ export function Score() {
     return () => controls.stop();
   }, [game]);
 
+  const renderText = useMemo(() => {
+    switch (game.status) {
+      case "in-progress":
+      case "time-limit":
+        return val;
+      case "game-over":
+        return "Game Over";
+      case "pregame":
+        return "Let's play";
+      default:
+        return val;
+    }
+  }, [game.status, val]);
+
   return (
     <css.root>
-      <css.text>{val}</css.text>
+      <css.text>{renderText}</css.text>
     </css.root>
   );
 }

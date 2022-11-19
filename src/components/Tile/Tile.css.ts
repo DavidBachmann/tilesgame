@@ -59,7 +59,7 @@ export const tile = styled("div")({
   },
 
   '&[data-type="0"]': {
-    //red
+    // red
     "--color-1": "#ff877a",
     "--color-2": "#fd3218",
     "--color-3": "#c70500",
@@ -86,7 +86,7 @@ export const tile = styled("div")({
   '&[data-type="4"]': {
     // purple
     "--color-1": "#c4a3f9",
-    "--color-2": "#ac7bf8",
+    "--color-2": "#9c6aea",
     "--color-3": "#672de1",
   },
   '&[data-type="5"]': {
