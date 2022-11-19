@@ -15,7 +15,7 @@ function seed_from_v4(v4str: string) {
 
 const defaultValue = {
   gridSize: 6,
-  tileTypes: 5,
+  tileTypes: 6,
   random: () => Math.random(),
   seed: seed_from_v4(v4()),
 };
@@ -81,7 +81,7 @@ const MIN_GRID_SIZE = 3;
 const MAX_GRID_SIZE = 8;
 
 const MIN_TILE_TYPES = 3;
-const MAX_TILE_TYPES = 5;
+const MAX_TILE_TYPES = 6;
 
 export function ConfigProvider({
   children,

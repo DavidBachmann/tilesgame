@@ -78,7 +78,7 @@ export const tile = styled("div")({
     "--color-3": "#59a911",
   },
   '&[data-type="3"]': {
-    // blue
+    // light blue
     "--color-1": "#19f2f1",
     "--color-2": "#1bc2d4",
     "--color-3": "#05a3aa",
@@ -88,6 +88,12 @@ export const tile = styled("div")({
     "--color-1": "#c4a3f9",
     "--color-2": "#ac7bf8",
     "--color-3": "#672de1",
+  },
+  '&[data-type="5"]': {
+    // dark blue
+    "--color-1": "#6baffb",
+    "--color-2": "#2b60f3",
+    "--color-3": "#214fcd",
   },
 });
 
