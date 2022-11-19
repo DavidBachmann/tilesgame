@@ -20,7 +20,7 @@ const reset = (
   gameId: string,
   gameMode: GameMode,
   status: GameStatus = "pregame"
-) => ({
+): Partial<State> => ({
   tiles: [],
   selection: [],
   interactive: true,
@@ -55,7 +55,6 @@ const initialState = {
     init: () => {},
     add_to_selection: () => {},
     set_game_status: () => {},
-    add_to_timer: () => {},
     set_timer: () => {},
   },
 } as State;
@@ -102,11 +101,11 @@ export const store = (config: Config) =>
         });
       }
 
-      const enqueue = (t: Tile[], score = 0) => {
+      const enqueue = (t: Tile[], score = 0, time = 0) => {
         const q = get().queue;
         const temp = new Map(q);
         const id = v4();
-        temp.set(id, { tiles: t, score });
+        temp.set(id, { tiles: t, score, time });
 
         set({ queue: temp });
         return;
@@ -132,18 +131,7 @@ export const store = (config: Config) =>
             },
           }));
 
-          if (get().game.gameMode === "time-attack") {
-            set((state) => ({
-              timer: {
-                count: Math.min(
-                  CONSTANTS.TIME_ATTACK.TIMER_START,
-                  state.timer.count + time
-                ),
-              },
-            }));
-          }
-
-          enqueue(deleted, score);
+          enqueue(deleted, score, time);
           const bubbled = bubble_up(deleted, config);
           enqueue(bubbled);
           const spawned = spawn_tiles(bubbled, config);
@@ -180,6 +168,9 @@ export const store = (config: Config) =>
             combo: {
               ...prev.combo,
               score: prev.combo.score + (entry.score ?? 0),
+            },
+            timer: {
+              count: prev.timer.count + (entry.time ?? 0),
             },
           }));
         }
@@ -257,11 +248,7 @@ export const store = (config: Config) =>
           init: (gameMode = "casual", status = "pregame") => {
             set((state) => ({
               ...state,
-              ...(reset(
-                v4(),
-                gameMode as GameMode,
-                status as GameStatus
-              ) as Partial<State>),
+              ...reset(v4(), gameMode as GameMode, status as GameStatus),
               gameMode,
               tiles: create_grid(config),
             }));
@@ -298,13 +285,6 @@ export const store = (config: Config) =>
               game: {
                 ...state.game,
                 status: gameStatus,
-              },
-            }));
-          },
-          add_to_timer: (add: number) => {
-            set((prev) => ({
-              timer: {
-                count: prev.timer.count + add,
               },
             }));
           },

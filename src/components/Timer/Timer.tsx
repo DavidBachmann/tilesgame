@@ -7,7 +7,7 @@ import * as css from "./Timer.css";
 
 const MAX = CONSTANTS.TIME_ATTACK.TIMER_START;
 const MIN = 0;
-const MS = 400;
+const MS = 100;
 const COLOR_FROM = "rgb(229, 45, 34)";
 const COLOR_TO = "rgb(138, 201, 38)";
 
@@ -23,11 +23,12 @@ const useCountdown = ({
   const [val, set] = useState(initialValue);
   const [running, run] = useState(false);
 
+  let i: number;
   const startCountdown = () => run(true);
   const stopCountdown = () => run(false);
 
   useEffect(() => {
-    const i = setInterval(() => {
+    i = setInterval(() => {
       if (!running) {
         return;
       }
@@ -37,7 +38,7 @@ const useCountdown = ({
         onUpdate(newValue);
         return newValue;
       });
-    }, 100);
+    }, MS);
 
     return () => clearInterval(i);
   }, [val, running]);
@@ -45,6 +46,8 @@ const useCountdown = ({
   useEffect(() => {
     if (val <= 0) {
       onComplete();
+      clearInterval(i);
+      stopCountdown();
     }
   });
 
@@ -67,7 +70,7 @@ export function Timer() {
       setTimer(latestTime);
     },
     onComplete: async () => {
-      await delay(MS * 2);
+      await delay(MS * 10);
       setGameStatus("game-over");
     },
   });

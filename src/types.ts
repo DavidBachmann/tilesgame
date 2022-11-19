@@ -14,7 +14,7 @@ export type State = {
   tiles: Tile[];
   selection: number[];
   interactive: boolean;
-  queue: Map<string, { tiles: Tile[]; score?: number }>;
+  queue: Map<string, { tiles: Tile[]; score?: number; time?: number }>;
   game: GameState;
   timer: {
     count: number;
@@ -33,7 +33,6 @@ export type State = {
     init: (gameMode?: GameMode, status?: GameStatus) => void;
     add_to_selection: (id: number) => void;
     set_game_status: (gameStatus: GameStatus) => void;
-    add_to_timer: (add: number) => void;
     set_timer: (time: number) => void;
   };
 };
