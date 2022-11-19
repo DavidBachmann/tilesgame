@@ -106,7 +106,7 @@ export const shuffle_tiles = (tiles: Tile[], config: Config): Tile[] => {
   const get_random_tile = () => copy[Math.floor(config.random() * copy.length)];
 
   for (let i = 0; i < copy.length; i++) {
-    const r1 = get_random_tile();
+    const r1 = copy[i];
     const r2 = get_random_tile();
 
     if (r1.id !== r2.id) {
