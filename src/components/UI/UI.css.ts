@@ -11,19 +11,19 @@ export const root = styled("div")({
     CONSTANTS.TILE_SIZE_MIN,
     CONSTANTS.TILE_SIZE_MAX,
     429,
-    1440
+    1024
   ),
   "--tile-gap": clampy(
     CONSTANTS.TILE_GAP_MIN,
     CONSTANTS.TILE_GAP_MAX,
     429,
-    1440
+    1024
   ),
   "--tile-radius": clampy(
     CONSTANTS.TILE_RADIUS_MIN,
     CONSTANTS.TILE_RADIUS_MAX,
     429,
-    1440
+    1024
   ),
 });
 

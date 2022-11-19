@@ -30,12 +30,11 @@ export function Score() {
   const renderText = useMemo(() => {
     switch (game.status) {
       case "in-progress":
-      case "time-limit":
         return val;
       case "game-over":
         return "Game Over";
       case "pregame":
-        return "Let's play";
+        return "Menu";
       default:
         return val;
     }

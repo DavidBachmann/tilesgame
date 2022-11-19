@@ -86,17 +86,14 @@ export function Game({ gameMode, onGameOver }: GameProps) {
     }
   }, [gameMode, game.status]);
 
-  const tiles =
-    game.status === "game-over" || game.status === "time-limit"
-      ? emptyTiles
-      : gameTiles;
+  const tiles = game.status === "game-over" ? emptyTiles : gameTiles;
 
   return (
     <Fragment>
       <Score />
-      {gameMode === "time-attack" && <Timer />}
+      {gameMode === "time-attack" && game.status === "in-progress" && <Timer />}
       <GameArea>
-        <Board>
+        <Board scroll={game.status !== "in-progress"}>
           {gameMode === "time-attack" && game.status === "pregame" && (
             <MainMenu type="pregame" />
           )}

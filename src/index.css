@@ -126,7 +126,7 @@ button:focus-visible {
 
 @font-face {
   font-family: "Outfit";
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
   src: local(""), url("/fonts/outfit-v6-latin-regular.woff2") format("woff2"),
     url("/fonts/outfit-v6-latin-regular.woff") format("woff");
@@ -134,7 +134,7 @@ button:focus-visible {
 
 @font-face {
   font-family: "Outfit";
-  font-style: italic;
+  font-style: normal;
   font-weight: 500;
   src: local(""), url("/fonts/outfit-v6-latin-500.woff2") format("woff2"),
     url("/fonts/outfit-v6-latin-500.woff") format("woff");

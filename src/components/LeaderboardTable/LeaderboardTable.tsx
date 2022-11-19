@@ -4,7 +4,7 @@ import { format_ordinals } from "../../utils";
 import { usePlayer } from "../../context/PlayerContext";
 import * as css from "./LeaderboardTable.css";
 import { useLeaderboard } from "../../context/LeaderboardContext";
-import { NavButton } from "../Button";
+import Button, { NavButton } from "../Button";
 
 const renderPlaceholders = Array.from({ length: 10 }, (_, i) => (
   <css.row key={i}>
@@ -17,7 +17,7 @@ const renderPlaceholders = Array.from({ length: 10 }, (_, i) => (
 
 export function LeaderboardTable() {
   const player = usePlayer();
-  const { highscores } = useLeaderboard();
+  const { highscores, toggleLeaderboard } = useLeaderboard();
 
   const renderHighscores = useMemo(() => {
     if (!Array.isArray(highscores)) {
@@ -63,9 +63,9 @@ export function LeaderboardTable() {
             {highscores?.length ? renderHighscores : renderPlaceholders}
           </tbody>
         </css.table>
-        <NavButton to="/time" spacing="small" colorScheme="white">
+        <Button onClick={toggleLeaderboard} type={4}>
           Close
-        </NavButton>
+        </Button>
       </css.wrap>
     </css.root>
   );

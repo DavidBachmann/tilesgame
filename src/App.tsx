@@ -5,13 +5,12 @@ import { SwrSupabaseContext } from "supabase-swr";
 import supabase from "./supabase";
 import { UI } from "./components/UI";
 import { ConfigProvider } from "./context/ConfigContext";
+import { LeaderboardProvider } from "./context/LeaderboardContext";
 import { PlayerProvider, usePlayer } from "./context/PlayerContext";
 import { Game } from "./Game";
 import { StoreCreator } from "./StoreCreator";
 import { GameState } from "./types";
 import { debug_message } from "./utils";
-import { LeaderboardTable } from "./components/LeaderboardTable";
-import { LeaderboardProvider } from "./context/LeaderboardContext";
 
 function TimeAttack() {
   const player = usePlayer();
@@ -76,12 +75,7 @@ export default function App() {
                     index
                     element={<Game gameMode="casual" key={v4()} />}
                   />
-                  <Route path="/time" element={<TimeAttack />}>
-                    <Route
-                      path="/time/leaderboard"
-                      element={<LeaderboardTable />}
-                    />
-                  </Route>
+                  <Route path="/time" element={<TimeAttack />} />
                 </Route>
               </Routes>
             </BrowserRouter>

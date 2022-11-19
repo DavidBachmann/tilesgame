@@ -6,9 +6,9 @@ export const root = styled("div")({
   background: "rgba(7,14,23,0.6)",
   borderRadius: 16,
   boxShadow: "0px 8px 20px rgba(0,0,0,0.4)",
-  overflow: "hidden",
   padding: 12,
   position: "relative",
+  maxWidth: "calc(100vw - 64px)",
   "&::before": {
     background: "transparent",
     borderRadius: "50%",

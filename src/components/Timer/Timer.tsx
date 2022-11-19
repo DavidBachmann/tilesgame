@@ -73,9 +73,6 @@ export function Timer() {
       setTimer(latestTime);
     },
     onComplete: async () => {
-      await delay(400);
-      setGameStatus("time-limit");
-      await delay(CONSTANTS.TILE_ANIMATION.ms * 1.2);
       setGameStatus("game-over");
       setValue(MAX);
     },

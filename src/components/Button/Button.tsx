@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 import * as css from "./Button.css";
 
 type ButtonBaseProps = {
   children: ReactNode;
-  colorScheme?: "white" | "dark";
-  spacing?: "small" | "normal";
+  type?: number;
 };
 
 type ButtonProps = ButtonBaseProps & {
@@ -15,33 +15,18 @@ type NavButtonProps = ButtonBaseProps & {
   to: string;
 };
 
-export default function Button({
-  children,
-  onClick,
-  colorScheme,
-  spacing,
-}: ButtonProps) {
+export default function Button({ children, onClick, type = 0 }: ButtonProps) {
   return (
-    <css.button onClick={onClick} colorScheme={colorScheme} spacing={spacing}>
+    <css.button onClick={onClick} data-type={type}>
       <css.buttonText>{children}</css.buttonText>
     </css.button>
   );
 }
 
-export function NavButton({
-  children,
-  to,
-  colorScheme,
-  spacing,
-}: NavButtonProps) {
+export function NavButton({ children, to, type = 0 }: NavButtonProps) {
   return (
-    <css.navButton
-      role="button"
-      to={to}
-      colorScheme={colorScheme}
-      spacing={spacing}
-    >
+    <css.button as={NavLink as any} role="button" to={to} data-type={type}>
       <css.buttonText>{children}</css.buttonText>
-    </css.navButton>
+    </css.button>
   );
 }

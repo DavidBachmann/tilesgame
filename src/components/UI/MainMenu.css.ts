@@ -5,11 +5,14 @@ export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
-  rowGap: 48,
-  height: "100%",
+  rowGap: 24,
+  position: "absolute",
+  inset: 0,
+  zIndex: 1,
 });
 
 export const buttons = styled("div")({
+  padding: 16,
   rowGap: 16,
   display: "flex",
   flexDirection: "column",

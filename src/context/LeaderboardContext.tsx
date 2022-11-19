@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useMemo } from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { useQuery, useSelect } from "supabase-swr";
 import { debug_message } from "../utils";
 import { useStore } from "../StoreCreator";
@@ -15,11 +15,15 @@ type LeaderboardContextProps = {
   highscores?: LeaderboardResponse[];
   // Lowest score on top 10 list
   lowestScore: number;
+  isVisible: boolean;
+  toggleLeaderboard: () => void;
 };
 
 const defaultValue = {
   highscores: [],
   lowestScore: Infinity,
+  isVisible: false,
+  toggleLeaderboard: () => {},
 };
 
 const LeaderboardContext = createContext<LeaderboardContextProps>({
@@ -34,6 +38,7 @@ export function LeaderboardProvider({
   children: ReactNode;
   value?: LeaderboardContextProps;
 }) {
+  const [isVisible, setVisible] = useState(false);
   const gameId = useStore((store) => store.game.id);
   const gameStatus = useStore((store) => store.game.status);
   const leaderboardQuery = useQuery<LeaderboardResponse>(
@@ -58,11 +63,15 @@ export function LeaderboardProvider({
     );
   }, [highscores]);
 
+  const toggleLeaderboard = () => setVisible((prev) => !prev);
+
   return (
     <LeaderboardContext.Provider
       value={{
         highscores: highscores?.data,
         lowestScore,
+        isVisible,
+        toggleLeaderboard,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { CONSTANTS } from "./constants";
 
 export type GameMode = "casual" | "time-attack";
-export type GameStatus = "pregame" | "in-progress" | "game-over" | "time-limit";
+export type GameStatus = "pregame" | "in-progress" | "game-over";
 
 export type GameState = {
   id: string;
