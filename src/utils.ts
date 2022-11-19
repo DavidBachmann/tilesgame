@@ -67,7 +67,7 @@ export const throttle = <
 ) => {
   const now = () => new Date().getTime();
   const resetStartTime = () => (startTime = now());
-  let timeout: number;
+  let timeout: ReturnType<typeof setInterval>;
   let startTime: number = now() - waitFor;
 
   return (...args: Parameters<F>): Promise<ReturnType<F>> =>

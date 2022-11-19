@@ -1,7 +1,11 @@
 {
   "/_app": "pages/_app.js",
+  "/api/hello": "pages/api/hello.js",
+  "/api/leaderboard": "pages/api/leaderboard.js",
+  "/api/submit-score": "pages/api/submit-score.js",
+  "/time": "pages/time.html",
   "/_error": "pages/_error.js",
+  "/": "pages/index.html",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/time": "pages/time.js"
+  "/404": "pages/404.html"
 }

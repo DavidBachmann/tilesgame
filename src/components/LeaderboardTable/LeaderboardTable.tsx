@@ -4,7 +4,7 @@ import { format_ordinals } from "../../utils";
 import { usePlayer } from "../../context/PlayerContext";
 import * as css from "./LeaderboardTable.css";
 import { useLeaderboard } from "../../context/LeaderboardContext";
-import Button, { NavButton } from "../Button";
+import Button from "../Button";
 
 const renderPlaceholders = Array.from({ length: 10 }, (_, i) => (
   <css.row key={i}>
