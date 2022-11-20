@@ -237,13 +237,6 @@ export const store = (config: Config) =>
         debug_message("unlocked", "green");
       };
 
-      if (import.meta.hot) {
-        import.meta.hot.accept(() => {
-          // Re-initialize on HMR to prevent re-submission of high scores etc.
-          get().actions.init();
-        });
-      }
-
       return {
         actions: {
           init: (gameMode = "casual", status = "pregame") => {

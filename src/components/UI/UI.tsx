@@ -1,10 +1,7 @@
 import { ReactNode } from "react";
-import { NavLink, Outlet } from "react-router-dom";
 import { useConfig } from "../../context/ConfigContext";
 import { usePlayer } from "../../context/PlayerContext";
 import { useStore } from "../../StoreCreator";
-import Button from "../Button";
-import { NavButton } from "../Button/Button";
 import { Octocat } from "./artwork/Octocat";
 import * as css from "./UI.css";
 
@@ -12,13 +9,11 @@ type UIProps = {
   children: ReactNode;
 };
 
-export function UI() {
+export default function UI({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <css.root>
-        <Outlet />
-      </css.root>
+      <css.root>{children}</css.root>
       <Footer />
     </>
   );
@@ -43,8 +38,8 @@ function Nav() {
         <span>Tiles</span>
       </css.title>
       <css.content>
-        <css.navItem to="/">Casual</css.navItem>
-        <css.navItem to="/time">Time</css.navItem>
+        <css.navItem href="/">Casual</css.navItem>
+        <css.navItem href="/time">Time</css.navItem>
       </css.content>
       <css.os>
         <a

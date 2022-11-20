@@ -37,6 +37,9 @@ const parse = (value: string) => {
 };
 
 function get_from_query(query: string, cast = false) {
+  if (typeof window === "undefined") {
+    return;
+  }
   const queryString = window.location.search;
   const params = new URLSearchParams(queryString);
   const value = params.get(query);

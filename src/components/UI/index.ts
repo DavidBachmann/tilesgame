@@ -1,1 +1,1 @@
-export { UI, GameArea, Footer } from "./UI";
+export { default, GameArea, Footer } from "./UI";

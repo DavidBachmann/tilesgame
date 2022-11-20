@@ -23,7 +23,6 @@ const useCountdown = ({
   const [val, set] = useState(initialValue);
   const [running, run] = useState(false);
 
-  let i: number;
   const startCountdown = async (d = 0) => {
     await delay(d);
     run(true);
@@ -31,7 +30,7 @@ const useCountdown = ({
   const stopCountdown = () => run(false);
 
   useEffect(() => {
-    i = setInterval(() => {
+    const i = setInterval(() => {
       if (!running) {
         return;
       }
@@ -44,15 +43,14 @@ const useCountdown = ({
     }, MS);
 
     return () => clearInterval(i);
-  }, [val, running]);
+  }, [val, running, onUpdate]);
 
   useEffect(() => {
     if (val <= 0) {
-      clearInterval(i);
       stopCountdown();
       onComplete();
     }
-  }, [val]);
+  }, [val, onComplete]);
 
   return {
     setValue: set,
@@ -84,7 +82,7 @@ export function Timer() {
     } else {
       stopCountdown();
     }
-  }, [game.status]);
+  }, [game.status, startCountdown, stopCountdown]);
 
   useEffect(() => {
     if (timer) {

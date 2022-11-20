@@ -20,13 +20,13 @@ function mode(arr: Array<any>) {
 }
 
 export function Backlight({ tiles, party }: BacklightProps) {
-  if (!tiles) {
-    return null;
-  }
-
   const config = useConfig();
 
   const dominant = useMemo(() => {
+    if (!tiles) {
+      return [];
+    }
+
     const quadrants = [
       [tiles[0], tiles[1], tiles[config.gridSize], tiles[config.gridSize + 1]],
       [
@@ -49,15 +49,20 @@ export function Backlight({ tiles, party }: BacklightProps) {
         tiles[config.gridSize * config.gridSize - 1],
       ],
     ];
+
     const quads = quadrants.map((q) => {
       return q.map((tile) => tile?.type ?? -1);
     });
 
     return quads.map((q) => mode(q));
-  }, [tiles]);
+  }, [tiles, config.gridSize]);
 
   const game = useStore((state) => state.game);
   const gameOver = game.status === "game-over";
+
+  if (!tiles) {
+    return null;
+  }
 
   return (
     <css.root style={{ opacity: gameOver || party ? 0.8 : 0.65 }}>

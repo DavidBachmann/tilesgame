@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLeaderboard } from "../../context/LeaderboardContext";
 import { useStore } from "../../StoreCreator";
-import Button, { NavButton } from "../Button";
+import Button from "../Button";
 import { LeaderboardTable } from "../LeaderboardTable";
 import * as css from "./MainMenu.css";
 
@@ -27,7 +27,7 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
         )}
       </css.buttons>
     ),
-    [gameMode, init, isVisible]
+    [gameMode, init, toggleLeaderboard]
   );
 
   const postgame = useMemo(
@@ -36,7 +36,7 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
         <css.content>
           <h2>You scored {score} points</h2>
           {score >= lowestScore ? (
-            <css.subtitle>You're on the leaderboard!</css.subtitle>
+            <css.subtitle>You&apos;re on the leaderboard!</css.subtitle>
           ) : (
             <css.subtitle>Better luck next time</css.subtitle>
           )}
@@ -55,7 +55,7 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
         </css.buttons>
       </>
     ),
-    [score, lowestScore, setGameStatus, isVisible]
+    [score, lowestScore, setGameStatus, game.gameMode, toggleLeaderboard]
   );
 
   return (

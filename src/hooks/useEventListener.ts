@@ -1,6 +1,7 @@
 // From https://github.com/juliencrn/usehooks-ts/blob/master/src/useEventListener/useEventListener.ts
 
-import { RefObject, useEffect, useLayoutEffect, useRef } from "react";
+import { useIsomorphicLayoutEffect } from "framer-motion";
+import { RefObject, useEffect, useRef } from "react";
 
 // MediaQueryList Event based useEventListener interface
 export function useEventListener<K extends keyof MediaQueryListEventMap>(
@@ -57,7 +58,7 @@ export function useEventListener<
   // Create a ref that stores handler
   const savedHandler = useRef(handler);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     savedHandler.current = handler;
   }, [handler]);
 

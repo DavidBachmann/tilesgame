@@ -1,7 +1,5 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { useQuery, useSelect } from "supabase-swr";
-import { debug_message } from "../utils";
-import { useStore } from "../StoreCreator";
+import useSWR from "swr";
 
 export type LeaderboardResponse = {
   id: number;
@@ -32,6 +30,10 @@ const LeaderboardContext = createContext<LeaderboardContextProps>({
 
 export const useLeaderboard = () => useContext(LeaderboardContext);
 
+async function fetcher(url: string) {
+  return await fetch(url).then((res) => res.json());
+}
+
 export function LeaderboardProvider({
   children,
 }: {
@@ -39,36 +41,22 @@ export function LeaderboardProvider({
   value?: LeaderboardContextProps;
 }) {
   const [isVisible, setVisible] = useState(false);
-  const gameId = useStore((store) => store.game.id);
-  const gameStatus = useStore((store) => store.game.status);
-  const leaderboardQuery = useQuery<LeaderboardResponse>(
-    "highscore",
-    {
-      columns: "id, player_alias, score, created_at",
-      filter: (query) => query.order("score", { ascending: false }).limit(10),
-    },
-    [gameId, gameStatus]
-  );
 
-  const { data: highscores } = useSelect(leaderboardQuery, {
-    onSuccess: () => {
-      debug_message("Fetched highscores", "green");
-    },
-  });
+  const toggleLeaderboard = () => setVisible((prev) => !prev);
+
+  const { data } = useSWR("/api/leaderboard", fetcher);
 
   const lowestScore = useMemo(() => {
     return (
-      highscores?.data[highscores.data.length - 1].score ||
+      data?.highscore[data?.highscore.length - 1].score ||
       defaultValue.lowestScore
     );
-  }, [highscores]);
-
-  const toggleLeaderboard = () => setVisible((prev) => !prev);
+  }, [data]);
 
   return (
     <LeaderboardContext.Provider
       value={{
-        highscores: highscores?.data,
+        highscores: data?.highscore,
         lowestScore,
         isVisible,
         toggleLeaderboard,
