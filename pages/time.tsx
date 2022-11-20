@@ -17,7 +17,6 @@ type ScorePayload = {
 
 type TokenRequestCallback = {
   gameId: GameState["id"];
-  timestamp: number;
 };
 
 async function submitScore(url: string, { arg }: { arg: ScorePayload }) {
@@ -60,16 +59,15 @@ export default function Time() {
             metadata: { publish?: boolean }
           ) => {
             if (metadata.publish && player.alias && game.score && game.id) {
-              const { token } = await triggerRequestToken({
+              const { token, timestamp } = await triggerRequestToken({
                 gameId: game.id,
-                timestamp: Date.now(),
               });
 
               if (token) {
                 await triggerSubmitScore({
                   playerAlias: player.alias,
                   game,
-                  timestamp: Date.now(),
+                  timestamp,
                   token,
                 });
               }

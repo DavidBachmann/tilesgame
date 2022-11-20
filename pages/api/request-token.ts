@@ -3,13 +3,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 type TokenRequestPayload = {
   gameId: string;
-  timestamp: number;
 };
 
-const SECRET = process.env.CYPHER_SECRET ?? String(Math.random());
-
 const encryptWithAES = (text: string) => {
-  return CryptoJS.AES.encrypt(text, SECRET).toString();
+  return CryptoJS.AES.encrypt(text, process.env.CIPHER_SECRET).toString();
 };
 
 export default async function requestToken(
@@ -23,5 +20,5 @@ export default async function requestToken(
     token = encryptWithAES(payload.gameId);
   }
 
-  res.status(200).json({ token });
+  res.status(200).json({ token, timestamp: Date.now() });
 }
