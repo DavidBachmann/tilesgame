@@ -34,7 +34,7 @@ export default async function submitScore(
   const timeDiff = Date.now() - timestamp;
   const decryptedGameId = decryptWithAES(token);
 
-  if (decryptedGameId !== game.id || timeDiff >= 100) {
+  if (decryptedGameId !== game.id || timeDiff >= 500) {
     // Silent failure
     return res.status(200);
   }
