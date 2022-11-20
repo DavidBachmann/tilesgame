@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
+import CryptoJS from "crypto-js";
 import { GameState } from "../../src/types";
 
 const client = createClient(process.env.SUPA_URL!, process.env.SUPA_KEY!);
@@ -8,6 +9,14 @@ type ScorePayload = {
   playerAlias: string;
   game: GameState;
   timestamp: Date;
+  token: string;
+};
+
+const SECRET = process.env.CYPHER_SECRET ?? String(Math.random());
+
+const decryptWithAES = (ciphertext: string) => {
+  const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET);
+  return bytes.toString(CryptoJS.enc.Utf8);
 };
 
 export default async function submitScore(
@@ -15,15 +24,16 @@ export default async function submitScore(
   res: NextApiResponse
 ) {
   const payload = JSON.parse(req.body) as ScorePayload;
-  const { playerAlias, game, timestamp } = payload;
+  const { playerAlias, token, game, timestamp } = payload;
 
-  if (!game.score) {
-    return;
+  if (!game.score || !token || !timestamp) {
+    return res.status(403).json({ message: "Invalid payload" });
   }
 
-  if (!timestamp) {
-    // TODO: Anti cheating of some sorts.
-    return;
+  const decryptedGameId = decryptWithAES(token);
+
+  if (decryptedGameId !== game.id) {
+    return res.status(403).json({ message: "Nice try" });
   }
 
   const { data: record } = await client

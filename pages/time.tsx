@@ -11,7 +11,13 @@ const Game = dynamic(() => import("../src/Game"), { ssr: false });
 type ScorePayload = {
   playerAlias: string;
   game: GameState;
-  timestamp: Date;
+  timestamp: number;
+  token: string;
+};
+
+type TokenRequestCallback = {
+  gameId: GameState["id"];
+  timestamp: number;
 };
 
 async function submitScore(url: string, { arg }: { arg: ScorePayload }) {
@@ -21,9 +27,27 @@ async function submitScore(url: string, { arg }: { arg: ScorePayload }) {
   });
 }
 
+async function requestToken(
+  url: string,
+  { arg }: { arg: TokenRequestCallback }
+) {
+  return fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+  }).then((res) => res.json());
+}
+
 export default function Time() {
   const player = usePlayer();
-  const { trigger } = useSWRMutation("/api/submit-score", submitScore);
+
+  const { trigger: triggerSubmitScore } = useSWRMutation(
+    "/api/submit-score",
+    submitScore
+  );
+  const { trigger: triggerRequestToken } = useSWRMutation(
+    "/api/request-token",
+    requestToken
+  );
 
   return (
     <LeaderboardProvider>
@@ -31,13 +55,24 @@ export default function Time() {
         <Game
           key={v4()}
           gameMode="time-attack"
-          onGameOver={(game: GameState, metadata: { publish?: boolean }) => {
-            if (metadata.publish && player.alias && game.score) {
-              trigger({
-                playerAlias: player.alias,
-                game,
-                timestamp: new Date(),
+          onGameOver={async (
+            game: GameState,
+            metadata: { publish?: boolean }
+          ) => {
+            if (metadata.publish && player.alias && game.score && game.id) {
+              const { token } = await triggerRequestToken({
+                gameId: game.id,
+                timestamp: Date.now(),
               });
+
+              if (token) {
+                await triggerSubmitScore({
+                  playerAlias: player.alias,
+                  game,
+                  timestamp: Date.now(),
+                  token,
+                });
+              }
             }
           }}
         />

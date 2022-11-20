@@ -71,9 +71,7 @@ export function useLocalStorage<T>(
     // Prevent build error "window is undefined" but keeps working
 
     if (typeof window === "undefined") {
-      console.warn(
-        `Tried setting localStorage key “${key}” even though environment is not a client`
-      );
+      return;
     }
 
     try {
