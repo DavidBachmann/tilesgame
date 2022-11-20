@@ -47,10 +47,11 @@ export function LeaderboardProvider({
   const { data } = useSWR("/api/leaderboard", fetcher);
 
   const lowestScore = useMemo(() => {
-    return (
-      data?.highscore[data?.highscore.length - 1].score ||
-      defaultValue.lowestScore
-    );
+    if (!data?.highscore || !data?.highscore?.length) {
+      return defaultValue.lowestScore;
+    }
+
+    return data.highscore[data.highscore.length - 1].score;
   }, [data]);
 
   return (
