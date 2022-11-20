@@ -13,7 +13,10 @@ type ScorePayload = {
 };
 
 const decryptWithAES = (ciphertext: string) => {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, process.env.CIPHER_SECRET);
+  const bytes = CryptoJS.AES.decrypt(
+    ciphertext,
+    process.env.CIPHER_SECRET as string
+  );
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 

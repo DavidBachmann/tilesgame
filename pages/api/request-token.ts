@@ -6,7 +6,10 @@ type TokenRequestPayload = {
 };
 
 const encryptWithAES = (text: string) => {
-  return CryptoJS.AES.encrypt(text, process.env.CIPHER_SECRET).toString();
+  return CryptoJS.AES.encrypt(
+    text,
+    process.env.CIPHER_SECRET as string
+  ).toString();
 };
 
 export default async function requestToken(
