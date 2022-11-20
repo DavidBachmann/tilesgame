@@ -40,10 +40,18 @@ function Nav() {
         <span>Tiles</span>
       </css.title>
       <css.content>
-        <css.navItem data-active={route === "/"} href="/">
+        <css.navItem
+          disabled={route === "/"}
+          data-active={route === "/"}
+          href="/"
+        >
           Casual
         </css.navItem>
-        <css.navItem data-active={route === "/time"} href="/time">
+        <css.navItem
+          data-active={route === "/time"}
+          disabled={route === "/time"}
+          href="/time"
+        >
           Time
         </css.navItem>
       </css.content>

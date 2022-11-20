@@ -15,17 +15,41 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
 
   const pregame = useMemo(
     () => (
-      <css.buttons>
-        <Button onClick={() => init(gameMode, "in-progress")} type={5}>
-          Play
-        </Button>
-
-        {gameMode === "time-attack" && (
-          <Button onClick={toggleLeaderboard} type={4}>
-            Leaderboard
+      <>
+        <css.content>
+          {gameMode === "casual" && (
+            <css.instructions>
+              <css.title>Casual mode</css.title>
+              <css.subtitle>
+                Match 3 tiles to score points. Multiply your score by making
+                combos.{" "}
+              </css.subtitle>
+              <css.subtitle>The goal of the game is to have fun.</css.subtitle>
+            </css.instructions>
+          )}
+          {gameMode === "time-attack" && (
+            <css.instructions>
+              <css.title>Time attack</css.title>
+              <css.subtitle>
+                It&apos;s you against the clock. Match 3 tiles to score points
+                and buy yourself some time.
+              </css.subtitle>
+              <css.subtitle>Try to make it to the leaderboard.</css.subtitle>
+            </css.instructions>
+          )}
+        </css.content>
+        <css.buttons>
+          <Button onClick={() => init(gameMode, "in-progress")} type={5}>
+            Play
           </Button>
-        )}
-      </css.buttons>
+
+          {gameMode === "time-attack" && (
+            <Button onClick={toggleLeaderboard} type={4}>
+              Leaderboard
+            </Button>
+          )}
+        </css.buttons>
+      </>
     ),
     [gameMode, init, toggleLeaderboard]
   );

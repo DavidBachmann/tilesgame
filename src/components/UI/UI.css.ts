@@ -47,18 +47,20 @@ export const nav = styled("nav")({
   padding: 16,
 });
 
-export const navItem = styled(Link)({
+export const navItem = styled(Link)<{ disabled?: boolean }>({
   lineHeight: 1,
   fontSize: 16,
   color: CONSTANTS.NEW_COLORS.WHITE,
   opacity: 0.7,
   transition: "opacity 200ms",
+  userSelect: "none",
   "&[data-active='true']": {
     color: CONSTANTS.NEW_COLORS.SEA_GREEN,
     opacity: 1,
   },
   "&[disabled]": {
     cursor: "auto",
+    pointerEvents: "none",
   },
 });
 
