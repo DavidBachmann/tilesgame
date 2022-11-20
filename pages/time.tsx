@@ -2,10 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import useSWRMutation from "swr/mutation";
 import { v4 } from "uuid";
-import {
-  LeaderboardProvider,
-  useLeaderboard,
-} from "../src/context/LeaderboardContext";
+import { LeaderboardProvider } from "../src/context/LeaderboardContext";
 import { usePlayer } from "../src/context/PlayerContext";
 import { GameState } from "../src/types";
 
