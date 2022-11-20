@@ -15,12 +15,14 @@ type LeaderboardContextProps = {
   lowestScore: number;
   isVisible: boolean;
   toggleLeaderboard: () => void;
+  fetchLeaderboard: () => void;
 };
 
 const defaultValue = {
   highscores: [],
   lowestScore: Infinity,
   isVisible: false,
+  fetchLeaderboard: () => {},
   toggleLeaderboard: () => {},
 };
 
@@ -44,7 +46,7 @@ export function LeaderboardProvider({
 
   const toggleLeaderboard = () => setVisible((prev) => !prev);
 
-  const { data } = useSWR("/api/leaderboard", fetcher);
+  const { data, mutate } = useSWR("/api/leaderboard", fetcher);
 
   const lowestScore = useMemo(() => {
     if (!data?.highscore || !data?.highscore?.length) {
@@ -58,6 +60,7 @@ export function LeaderboardProvider({
     <LeaderboardContext.Provider
       value={{
         highscores: data?.highscore,
+        fetchLeaderboard: async () => await mutate(),
         lowestScore,
         isVisible,
         toggleLeaderboard,

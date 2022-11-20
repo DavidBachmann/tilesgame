@@ -56,7 +56,7 @@ export function LeaderboardTable() {
               <th>Rank</th>
               <th>Score</th>
               <th>Player</th>
-              <css.timeHeader>Time</css.timeHeader>
+              <css.timeHeader>Time ago</css.timeHeader>
             </tr>
           </thead>
           <tbody>

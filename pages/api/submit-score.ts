@@ -55,5 +55,5 @@ export default async function submitScore(
       { player_alias: playerAlias, score: game.score, game_id: game.id },
     ]);
 
-  res.status(200);
+  res.status(200).send(undefined);
 }

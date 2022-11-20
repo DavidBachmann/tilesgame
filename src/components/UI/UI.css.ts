@@ -53,7 +53,7 @@ export const navItem = styled(Link)({
   color: CONSTANTS.NEW_COLORS.WHITE,
   opacity: 0.7,
   transition: "opacity 200ms",
-  "&.active": {
+  "&[data-active='true']": {
     color: CONSTANTS.NEW_COLORS.SEA_GREEN,
     opacity: 1,
   },

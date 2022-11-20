@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import { useConfig } from "../../context/ConfigContext";
 import { usePlayer } from "../../context/PlayerContext";
@@ -32,14 +33,19 @@ export function Header() {
 }
 
 function Nav() {
+  const { route } = useRouter();
   return (
     <css.nav>
       <css.title>
         <span>Tiles</span>
       </css.title>
       <css.content>
-        <css.navItem href="/">Casual</css.navItem>
-        <css.navItem href="/time">Time</css.navItem>
+        <css.navItem data-active={route === "/"} href="/">
+          Casual
+        </css.navItem>
+        <css.navItem data-active={route === "/time"} href="/time">
+          Time
+        </css.navItem>
       </css.content>
       <css.os>
         <a

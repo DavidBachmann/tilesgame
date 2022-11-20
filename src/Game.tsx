@@ -72,13 +72,6 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
     [addToSelection, game]
   );
 
-  useEffect(() => {
-    // Auto start the game in casual mode
-    if (gameMode === "casual" && game.status === "pregame") {
-      setGameStatus("in-progress");
-    }
-  }, [gameMode, game.status, setGameStatus]);
-
   if (!gameTiles) {
     return <p>404 tiles not found</p>;
   }
@@ -91,9 +84,7 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
       {gameMode === "time-attack" && game.status === "in-progress" && <Timer />}
       <GameArea>
         <Board scroll={game.status !== "in-progress"}>
-          {gameMode === "time-attack" && game.status === "pregame" && (
-            <MainMenu type="pregame" />
-          )}
+          {game.status === "pregame" && <MainMenu type="pregame" />}
           {game.status === "in-progress" && (
             <Grid tiles={tiles} onSwipe={handleSwipeSwap} />
           )}
