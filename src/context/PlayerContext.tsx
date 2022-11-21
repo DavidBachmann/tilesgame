@@ -1,9 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-
-type Player = {
-  alias: string | null;
-};
+import { Player } from "../types";
 
 const firstNames = [
   "Active",

@@ -76,3 +76,7 @@ export type TileElement = Tile & {
 };
 
 export type Directions = typeof CONSTANTS.DIRECTIONS[number];
+
+export type Player = {
+  alias: string | null;
+};

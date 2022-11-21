@@ -8,37 +8,16 @@ import { GameState } from "../src/types";
 
 const Game = dynamic(() => import("../src/Game"), { ssr: false });
 
-declare global {
-  interface Window {
-    grecaptcha: ReCaptchaInstance;
-  }
-}
-
-interface ReCaptchaInstance {
-  ready: (cb: () => any) => void;
-  execute: (id: string, options: ReCaptchaExecuteOptions) => Promise<string>;
-  render: (id: string, options: ReCaptchaRenderOptions) => any;
-}
-
-interface ReCaptchaExecuteOptions {
-  action: string;
-}
-
-interface ReCaptchaRenderOptions {
-  sitekey: string;
-  size: "invisible";
-}
-
 type ScorePayload = {
   playerAlias: string;
   game: GameState;
   timestamp: number;
   token: string;
-  captcha: string;
 };
 
 type TokenRequestCallback = {
   gameId: GameState["id"];
+  captcha: string;
 };
 
 async function submitScore(url: string, { arg }: { arg: ScorePayload }) {
@@ -76,19 +55,14 @@ export default function Time() {
         <Game
           key={v4()}
           gameMode="time-attack"
-          onGameOver={async (
-            game: GameState,
-            metadata: { publish?: boolean }
-          ) => {
-            if (metadata.publish && player.alias && game.score && game.id) {
-              const { token, timestamp } = await triggerRequestToken({
-                gameId: game.id,
-              });
+          onGameOver={async (game: GameState) => {
+            if (player.alias && game.score && game.id) {
+              let token = "";
+              let timestamp = 0;
 
               if (
-                token &&
                 window.grecaptcha &&
-                typeof window.grecaptcha.ready === "function"
+                typeof window.grecaptcha.execute === "function"
               ) {
                 const captcha = await window.grecaptcha.execute(
                   process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
@@ -97,14 +71,21 @@ export default function Time() {
                   }
                 );
 
-                await triggerSubmitScore({
-                  playerAlias: player.alias,
-                  game,
-                  timestamp,
-                  token,
+                const tokenResponse = await triggerRequestToken({
+                  gameId: game.id,
                   captcha,
                 });
+
+                token = tokenResponse.token;
+                timestamp = tokenResponse.timestamp;
               }
+
+              await triggerSubmitScore({
+                playerAlias: player.alias,
+                game,
+                timestamp,
+                token,
+              });
             }
           }}
         />
