@@ -5,6 +5,7 @@ import { StoreCreator } from "../src/StoreCreator";
 import { PlayerProvider } from "../src/context/PlayerContext";
 import "../styles/globals.css";
 import Head from "next/head";
+import Script from "next/script";
 
 const UI = dynamic(() => import("../src/components/UI"), { ssr: false });
 
@@ -29,6 +30,11 @@ export default function App({ Component }: AppProps) {
           </UI>
         </PlayerProvider>
       </StoreCreator>
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async={true}
+        defer={true}
+      />
     </ConfigProvider>
   );
 }

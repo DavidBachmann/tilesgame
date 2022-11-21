@@ -36,8 +36,8 @@ const TIME_ATTACK = {
 
 export const CONSTANTS = {
   DIRECTIONS: ["top", "right", "bottom", "left"] as const,
-  TILE_SIZE_MAX: 58,
-  TILE_SIZE_MIN: 44,
+  TILE_SIZE_MAX: 62,
+  TILE_SIZE_MIN: 52,
   TILE_GAP_MAX: 12,
   TILE_GAP_MIN: 7,
   TILE_RADIUS_MAX: 16,

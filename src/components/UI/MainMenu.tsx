@@ -38,17 +38,33 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
             </css.instructions>
           )}
         </css.content>
-        <css.buttons>
-          <Button onClick={() => init(gameMode, "in-progress")} type={5}>
-            Play
-          </Button>
 
-          {gameMode === "time-attack" && (
-            <Button onClick={toggleLeaderboard} type={4}>
-              Leaderboard
+        <form
+          method="POST"
+          action="/api/turnstile"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <div
+            className="cf-turnstile checkbox"
+            data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+          />
+
+          <css.buttons>
+            <Button
+              onClick={() => init(gameMode, "in-progress")}
+              variant={5}
+              type="submit"
+            >
+              Play
             </Button>
-          )}
-        </css.buttons>
+
+            {gameMode === "time-attack" && (
+              <Button onClick={toggleLeaderboard} variant={4}>
+                Leaderboard
+              </Button>
+            )}
+          </css.buttons>
+        </form>
       </>
     ),
     [gameMode, init, toggleLeaderboard]
@@ -58,22 +74,22 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
     () => (
       <>
         <css.content>
-          <h2>You scored {score} points</h2>
+          <css.title>You scored {score} points</css.title>
           {score >= lowestScore ? (
             <css.subtitle>You&apos;re on the leaderboard!</css.subtitle>
           ) : (
-            <css.subtitle>Better luck next time</css.subtitle>
+            <css.subtitle>Better luck next time.</css.subtitle>
           )}
         </css.content>
 
         <css.buttons>
           {game.gameMode === "time-attack" && (
-            <Button onClick={toggleLeaderboard} type={4}>
+            <Button onClick={toggleLeaderboard} variant={4}>
               Leaderboard
             </Button>
           )}
 
-          <Button type={5} onClick={() => setGameStatus("pregame")}>
+          <Button variant={5} onClick={() => setGameStatus("pregame")}>
             Back
           </Button>
         </css.buttons>

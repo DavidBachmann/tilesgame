@@ -5,8 +5,6 @@ export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
-  position: "absolute",
-  inset: 0,
   zIndex: 1,
 });
 
@@ -31,6 +29,7 @@ export const subtitle = styled("h3")({
 
 export const content = styled("div")({
   rowGap: 8,
+  paddding: 16,
   display: "flex",
   flexDirection: "column",
 });

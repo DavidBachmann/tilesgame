@@ -63,7 +63,7 @@ export function LeaderboardTable() {
             {highscores?.length ? renderHighscores : renderPlaceholders}
           </tbody>
         </css.table>
-        <Button onClick={toggleLeaderboard} type={4}>
+        <Button onClick={toggleLeaderboard} variant={4}>
           Close
         </Button>
       </css.wrap>

@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import { useConfig } from "../../context/ConfigContext";
 import { usePlayer } from "../../context/PlayerContext";
-import { useStore } from "../../StoreCreator";
 import { Octocat } from "./artwork/Octocat";
 import * as css from "./UI.css";
 
@@ -72,12 +71,11 @@ function Nav() {
 export function Footer() {
   const config = useConfig();
   const player = usePlayer();
-  const game = useStore((store) => store.game);
 
   return (
     <css.footer>
       <css.text>
-        {player.alias} playing {game.id} (seed {config.seed})
+        {player.alias} playing seed {config.seed}
       </css.text>
     </css.footer>
   );

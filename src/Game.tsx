@@ -19,7 +19,6 @@ type GameProps = {
 export default function Game({ gameMode, onGameOver }: GameProps) {
   const init = useStore((state) => state.actions.init);
   const addToSelection = useStore((state) => state.actions.add_to_selection);
-  const setGameStatus = useStore((state) => state.actions.set_game_status);
 
   const gameTiles = useStore((state) => state.tiles);
   const emptyTiles = useStore((state) => state.empties);

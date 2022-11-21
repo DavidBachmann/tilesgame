@@ -6,6 +6,7 @@ import { clampy } from "../../utils";
 export const root = styled("div")({
   display: "flex",
   flexDirection: "column",
+  maxWidth: 480,
 
   "--tile-size": clampy(
     CONSTANTS.TILE_SIZE_MIN,

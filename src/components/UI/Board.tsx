@@ -15,8 +15,8 @@ export function Board({
   return (
     <css.root
       style={{
-        width: size,
-        height: size,
+        minWidth: size,
+        minHeight: size,
         overflow: scroll ? "auto" : "hidden",
       }}
     >
