@@ -23,18 +23,25 @@ const decryptWithAES = (ciphertext: string) => {
 
 const verifyCaptcha = async (
   response: string
-): Promise<undefined | { success: boolean; score: number }> => {
+): Promise<{ success: boolean; score: number }> => {
   const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`;
+  let res = {
+    success: false,
+    score: 0,
+  };
 
   try {
     const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
-
-    const { success = false, score = 0 } = await recaptchaRes.json();
-
-    return { success, score };
+    const response = await recaptchaRes.json();
+    res = {
+      success: response.success,
+      score: response.score,
+    };
   } catch (e) {
     console.error(e);
   }
+
+  return res;
 };
 
 export default async function submitScore(
@@ -50,6 +57,8 @@ export default async function submitScore(
 
   const results = await verifyCaptcha(captcha);
 
+  console.log({ results });
+
   if (!results?.success) {
     // Silent failure
     return res.status(200);
@@ -57,6 +66,8 @@ export default async function submitScore(
 
   const timeDiff = Date.now() - timestamp;
   const decryptedGameId = decryptWithAES(token);
+
+  console.log({ timeDiff });
 
   if (decryptedGameId !== game.id || timeDiff >= 1500) {
     // Silent failure
