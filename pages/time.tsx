@@ -8,11 +8,33 @@ import { GameState } from "../src/types";
 
 const Game = dynamic(() => import("../src/Game"), { ssr: false });
 
+declare global {
+  interface Window {
+    grecaptcha: ReCaptchaInstance;
+  }
+}
+
+interface ReCaptchaInstance {
+  ready: (cb: () => any) => void;
+  execute: (id: string, options: ReCaptchaExecuteOptions) => Promise<string>;
+  render: (id: string, options: ReCaptchaRenderOptions) => any;
+}
+
+interface ReCaptchaExecuteOptions {
+  action: string;
+}
+
+interface ReCaptchaRenderOptions {
+  sitekey: string;
+  size: "invisible";
+}
+
 type ScorePayload = {
   playerAlias: string;
   game: GameState;
   timestamp: number;
   token: string;
+  captcha: string;
 };
 
 type TokenRequestCallback = {
@@ -63,12 +85,24 @@ export default function Time() {
                 gameId: game.id,
               });
 
-              if (token) {
+              if (
+                token &&
+                window.grecaptcha &&
+                typeof window.grecaptcha.ready === "function"
+              ) {
+                const captcha = await window.grecaptcha.execute(
+                  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
+                  {
+                    action: "submit",
+                  }
+                );
+
                 await triggerSubmitScore({
                   playerAlias: player.alias,
                   game,
                   timestamp,
                   token,
+                  captcha,
                 });
               }
             }

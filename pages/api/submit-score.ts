@@ -10,6 +10,7 @@ type ScorePayload = {
   game: GameState;
   timestamp: number;
   token: string;
+  captcha: string;
 };
 
 const decryptWithAES = (ciphertext: string) => {
@@ -20,21 +21,44 @@ const decryptWithAES = (ciphertext: string) => {
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 
+const verifyCaptcha = async (
+  response: string
+): Promise<undefined | { success: boolean; score: number }> => {
+  const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`;
+
+  try {
+    const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
+
+    const { success = false, score = 0 } = await recaptchaRes.json();
+
+    return { success, score };
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export default async function submitScore(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const payload = JSON.parse(req.body) as ScorePayload;
-  const { playerAlias, token, game, timestamp } = payload;
+  const { playerAlias, token, game, timestamp, captcha } = payload;
 
   if (!game.score || !token) {
     return res.status(403).json({ message: "Invalid payload" });
   }
 
+  const results = await verifyCaptcha(captcha);
+
+  if (!results?.success) {
+    // Silent failure
+    return res.status(200);
+  }
+
   const timeDiff = Date.now() - timestamp;
   const decryptedGameId = decryptWithAES(token);
 
-  if (decryptedGameId !== game.id || timeDiff >= 500) {
+  if (decryptedGameId !== game.id || timeDiff >= 1500) {
     // Silent failure
     return res.status(200);
   }
