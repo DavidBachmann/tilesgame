@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { GameState, Relationships } from "./types";
 import { Grid } from "./components/Grid";
@@ -13,7 +13,7 @@ import { MainMenu } from "./components/UI/MainMenu";
 
 type GameProps = {
   gameMode: "casual" | "time-attack";
-  onGameOver?: (game: GameState, metadata: { publish?: boolean }) => void;
+  onGameOver?: (game: GameState) => void;
 };
 
 export default function Game({ gameMode, onGameOver }: GameProps) {
@@ -29,9 +29,7 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
   useEffect(() => {
     if (game.status === "game-over") {
       if (typeof onGameOver === "function") {
-        onGameOver(game, {
-          publish: true,
-        });
+        onGameOver(game);
       }
     }
   }, [game, onGameOver]);

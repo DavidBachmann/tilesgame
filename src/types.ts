@@ -8,6 +8,7 @@ export type GameState = {
   score: number;
   status: GameStatus;
   gameMode: GameMode;
+  moves: [number, number][];
 };
 
 export type State = {
@@ -33,6 +34,7 @@ export type State = {
   actions: {
     init: (gameMode?: GameMode, status?: GameStatus) => void;
     add_to_selection: (id: number) => void;
+    add_to_moves: (moves: [number, number]) => void;
     set_game_status: (gameStatus: GameStatus) => void;
     set_timer: (time: number) => void;
   };

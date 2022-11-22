@@ -33,6 +33,7 @@ const reset = (
     status,
     id: gameId,
     gameMode,
+    moves: [],
   },
   timer: {
     count: CONSTANTS.TIME_ATTACK.TIMER_START,
@@ -58,7 +59,9 @@ const initialState = {
     init: () => {},
     add_to_selection: () => {},
     set_game_status: () => {},
+    set_game_token: () => {},
     set_timer: () => {},
+    add_to_moves: () => {},
   },
 } as State;
 
@@ -271,6 +274,8 @@ export const store = (config: Config) =>
               return;
             }
 
+            get().actions.add_to_moves([idx1, idx2]);
+
             return prepare_and_add_to_queue(
               swap_two_tiles(idx1, idx2, tiles, config, true)
             );
@@ -280,6 +285,14 @@ export const store = (config: Config) =>
               game: {
                 ...state.game,
                 status: gameStatus,
+              },
+            }));
+          },
+          add_to_moves: (moves: [number, number]) => {
+            set((state) => ({
+              game: {
+                ...state.game,
+                moves: [...state.game.moves, moves],
               },
             }));
           },
