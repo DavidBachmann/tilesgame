@@ -1,11 +1,15 @@
 import styled from "styled-components";
 
 export const root = styled("div")({
-  padding: 16,
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
   zIndex: 1,
+  maxHeight: "66vh",
+  "@media (min-width: 429px)": {
+    padding: 16,
+    maxHeight: "70vh",
+  },
 });
 
 export const buttons = styled("div")({

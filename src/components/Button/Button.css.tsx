@@ -6,8 +6,12 @@ export const buttonText = styled("span")({
   textAlign: "center",
   position: "relative",
   zIndex: 1,
-  fontSize: "1.4rem",
   color: "var(--color-text)",
+  fontSize: "1.2rem",
+
+  "@media (min-width: 429px)": {
+    fontSize: "1.4rem",
+  },
 });
 
 export const button = styled("button")({
@@ -19,11 +23,16 @@ export const button = styled("button")({
   cursor: "grab",
   display: "grid",
   fontWeight: 400,
-  minHeight: 48,
+  minHeight: 36,
   padding: "0.6rem 1.2rem",
   placeItems: "center",
   position: "relative",
   transition: "opacity 0.1s",
+
+  "@media (min-width: 429px)": {
+    minHeight: 48,
+  },
+
   "&::before": {
     borderRadius: `var(--tile-radius, ${CONSTANTS.TILE_RADIUS_MAX})`,
     content: "''",
