@@ -21,14 +21,8 @@ export type State = {
   timer: {
     count: number;
   };
-  message: {
-    queue: Set<EndGameMessage>;
-    current: EndGameMessage;
-    uuid: string;
-  };
   combo: {
     count: number;
-    message: string | null;
     score: number;
   };
   actions: {
@@ -38,11 +32,6 @@ export type State = {
     set_game_status: (gameStatus: GameStatus) => void;
     set_timer: (time: number) => void;
   };
-};
-
-type EndGameMessage = {
-  heading: string;
-  subtitle?: string;
 };
 
 export type Config = {

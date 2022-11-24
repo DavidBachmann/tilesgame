@@ -74,7 +74,7 @@ const create_random_tile_at_index = (
   return {
     id: v4(),
     idx: idx,
-    type: Math.floor(random() * (totalTileTypes - 0) + 0) as TileType,
+    type: Math.floor(random() * totalTileTypes) as TileType,
     relationships: {
       top: -1,
       right: -1,

@@ -18,6 +18,8 @@ import {
 import { Config, GameMode, GameStatus, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
 
+const FAST = false;
+
 const reset = (
   gameId: string,
   gameMode: GameMode,
@@ -40,16 +42,7 @@ const reset = (
   },
   combo: {
     count: 0,
-    message: null,
     score: 0,
-  },
-  message: {
-    queue: new Set(),
-    current: {
-      heading: "",
-      subtitle: "",
-    },
-    uuid: "",
   },
 });
 
@@ -73,36 +66,7 @@ export const store = (config: Config) =>
         set({
           combo: {
             score: 0,
-            message: null,
             count: 0,
-          },
-        });
-      }
-
-      async function empty_message_queue() {
-        const queue = get().message.queue;
-        for await (const message of queue) {
-          set((state) => ({
-            message: {
-              ...state.message,
-              current: message,
-              uuid: v4(),
-            },
-          }));
-          await delay(CONSTANTS.MESSAGE_ANIMATION.ms);
-        }
-
-        await delay(CONSTANTS.MESSAGE_ANIMATION.ms / 2);
-
-        // Clean up
-        set({
-          message: {
-            queue: new Set(),
-            current: {
-              heading: "",
-              subtitle: "",
-            },
-            uuid: v4(),
           },
         });
       }
@@ -153,10 +117,6 @@ export const store = (config: Config) =>
 
       const solve_queue = async () => {
         const q = get().queue;
-        const comboCount = get().combo.count;
-        const gameMode = get().game.gameMode;
-        const multiplier = combo_counter(comboCount);
-
         debug_message("LOCKED", "red");
 
         // Lock user interactions, clear selection
@@ -165,7 +125,9 @@ export const store = (config: Config) =>
         for (const [id, entry] of q) {
           q.delete(id);
 
-          await delay(CONSTANTS.TILE_ANIMATION.ms);
+          if (!FAST) {
+            await delay(CONSTANTS.TILE_ANIMATION.ms);
+          }
 
           set((prev) => ({
             tiles: entry.tiles,
@@ -192,48 +154,14 @@ export const store = (config: Config) =>
           },
         }));
 
-        if (gameMode !== "time-attack" && multiplier > 1) {
-          set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: `${multiplier}x multiplier`,
-                subtitle: `${toAdd} points!`,
-              }),
-            },
-          }));
-        }
-
-        if (multiplier >= 4 && gameMode !== "time-attack") {
-          set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: "Awesome!",
-              }),
-            },
-          }));
-        }
-
         // Check if grid is solvable
         const solvable = is_grid_solvable(get().tiles, config);
 
         if (!solvable) {
-          debug_message("Unsolvable", "red");
           set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: "No possible moves.",
-                subtitle: "Shuffling!",
-              }),
-            },
             tiles: shuffle_tiles(state.tiles, config),
           }));
         }
-
-        // Post all messages we have for the player
-        empty_message_queue();
 
         // Reset interactivity state
         set({ interactive: true });
