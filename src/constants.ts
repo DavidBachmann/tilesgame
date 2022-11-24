@@ -43,6 +43,7 @@ export const CONSTANTS = {
   TILE_RADIUS_MAX: 16,
   TILE_RADIUS_MIN: 10,
   TILE_ANIMATION: { ms: 300, s: 0.3 },
+  TOTAL_TILE_TYPES: 6,
   MESSAGE_ANIMATION: { ms: 1200, s: 1.2 },
   COLORS: colors,
   NEW_COLORS: newColors,

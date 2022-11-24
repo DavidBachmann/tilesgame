@@ -61,16 +61,6 @@ const initialState = {
 export const store = (config: Config) =>
   create(
     combine(initialState, (set, get) => {
-      function prepare_next_state() {
-        // Reset state that might have been set during the last move.
-        set({
-          combo: {
-            score: 0,
-            count: 0,
-          },
-        });
-      }
-
       const enqueue = (t: Tile[], score = 0, time = 0) => {
         const q = get().queue;
         const temp = new Map(q);
@@ -178,6 +168,7 @@ export const store = (config: Config) =>
               tiles: create_grid(config),
               empties: create_empty_tiles(config),
             }));
+            config.random.reset();
           },
           add_to_selection: (id: number) => {
             if (!get().interactive) {
@@ -185,7 +176,13 @@ export const store = (config: Config) =>
               return;
             }
 
-            prepare_next_state();
+            // Reset combo state
+            set({
+              combo: {
+                score: 0,
+                count: 0,
+              },
+            });
 
             set((state) => ({
               selection: push_tile_selection(id, state.selection),

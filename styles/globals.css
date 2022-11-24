@@ -139,7 +139,3 @@ button:focus-visible {
   src: local(""), url("/fonts/outfit-v6-latin-500.woff2") format("woff2"),
     url("/fonts/outfit-v6-latin-500.woff") format("woff");
 }
-
-.grecaptcha-badge {
-  visibility: hidden;
-}

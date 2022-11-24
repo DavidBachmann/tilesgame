@@ -36,8 +36,7 @@ export type State = {
 
 export type Config = {
   gridSize: number;
-  tileTypes: number;
-  random: () => number;
+  random: { next: () => number; reset: () => void };
   seed: string;
 };
 

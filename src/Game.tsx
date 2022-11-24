@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo } from "react";
-import { GameState, Relationships } from "./types";
+import { Config, GameState, Relationships } from "./types";
 import { Grid } from "./components/Grid";
 import { GameArea } from "./components/UI";
 import { Backlight } from "./components/Backlight";
@@ -8,10 +8,11 @@ import { Timer } from "./components/Timer/Timer";
 import { useStore } from "./StoreCreator";
 import { Board } from "./components/UI/Board";
 import { MainMenu } from "./components/UI/MainMenu";
+import { useConfig } from "./context/ConfigContext";
 
 type GameProps = {
   gameMode: "casual" | "time-attack";
-  onGameOver?: (game: GameState) => void;
+  onGameOver?: (game: GameState, config: Config) => void;
 };
 
 export default function Game({ gameMode, onGameOver }: GameProps) {
@@ -21,14 +22,15 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
   const gameTiles = useStore((state) => state.tiles);
   const emptyTiles = useStore((state) => state.empties);
   const game = useStore((state) => state.game);
+  const config = useConfig();
 
   useEffect(() => {
     if (game.status === "game-over") {
       if (typeof onGameOver === "function") {
-        onGameOver(game);
+        onGameOver(game, config);
       }
     }
-  }, [game, onGameOver]);
+  }, [game, config, onGameOver]);
 
   useMemo(() => {
     init(gameMode);
