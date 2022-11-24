@@ -12,9 +12,9 @@ import {
   solve,
   spawn_tiles,
   check_swap,
-} from "../../../src/logic";
-import { Config, Tile } from "../../../src/types";
-import { combo_counter } from "../../../src/utils";
+} from "../../../logic";
+import { Config, Tile } from "../../../types";
+import { combo_counter } from "../../../utils";
 
 type GameState = {
   score: number;

@@ -1,12 +1,12 @@
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import useSWRMutation from "swr/mutation";
-import { LeaderboardProvider } from "../src/context/LeaderboardContext";
-import { usePlayer } from "../src/context/PlayerContext";
-import { fetcher } from "../src/fetcher";
-import { Config, GameState } from "../src/types";
+import { LeaderboardProvider } from "../context/LeaderboardContext";
+import { usePlayer } from "../context/PlayerContext";
+import { fetcher } from "../fetcher";
+import { Config, GameState } from "../types";
 
-const Game = dynamic(() => import("../src/Game"), { ssr: false });
+const Game = dynamic(() => import("../Game"), { ssr: false });
 
 type ScorePayload = {
   playerAlias: string;

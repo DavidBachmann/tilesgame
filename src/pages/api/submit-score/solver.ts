@@ -1,5 +1,5 @@
 import Prando from "prando";
-import { Config } from "../../../src/types";
+import { Config } from "../../../types";
 import { store } from "./state";
 
 export const solve_game = (

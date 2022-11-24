@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
-import { GameState } from "../../../src/types";
+import { GameState } from "../../../types";
 import { solve_game } from "./solver";
 
 const client = createClient(process.env.SUPA_URL!, process.env.SUPA_KEY!);
