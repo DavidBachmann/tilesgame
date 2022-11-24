@@ -68,13 +68,12 @@ export const create_empty_tile_at_index = (idx: number): Tile => ({
 // Empty tiles get turned into random tiles
 const create_random_tile_at_index = (
   idx: number,
-  totalTileTypes: number,
   random: () => number
 ): Tile => {
   return {
     id: v4(),
     idx: idx,
-    type: Math.floor(random() * (totalTileTypes - 0) + 0) as TileType,
+    type: Math.floor(random() * CONSTANTS.TOTAL_TILE_TYPES) as TileType,
     relationships: {
       top: -1,
       right: -1,
@@ -86,14 +85,13 @@ const create_random_tile_at_index = (
 
 export const initialize_grid = (
   count: number,
-  totalTileTypes: number,
   random: () => number
 ) => {
   const grid = [];
   const dimensions = count * count;
 
   for (let i = 0; i < dimensions; i++) {
-    const tile = create_random_tile_at_index(i, totalTileTypes, random);
+    const tile = create_random_tile_at_index(i, random);
 
     grid.push(tile);
   }
@@ -103,7 +101,8 @@ export const initialize_grid = (
 
 export const shuffle_tiles = (tiles: Tile[], config: Config): Tile[] => {
   const copy = [...tiles];
-  const get_random_tile = () => copy[Math.floor(config.random() * copy.length)];
+  const get_random_tile = () =>
+    copy[Math.floor(config.random.next() * copy.length)];
 
   for (let i = 0; i < copy.length; i++) {
     const r1 = copy[i];
@@ -231,10 +230,8 @@ export const spawn_tiles = (tiles: Tile[], config: Config) => {
     const tile = tiles[i];
 
     if (tile.type === -1) {
-      clone[tile.idx] = create_random_tile_at_index(
-        tile.idx,
-        config.tileTypes,
-        config.random
+      clone[tile.idx] = create_random_tile_at_index(tile.idx, () =>
+        config.random.next()
       );
     }
   }
@@ -314,11 +311,7 @@ export const solve = (tiles: Tile[]) => {
 
 // Tries to generate a solvable grid without any matches
 export const create_grid = (config: Config): Tile[] => {
-  const newGrid = initialize_grid(
-    config.gridSize,
-    config.tileTypes,
-    config.random
-  );
+  const newGrid = initialize_grid(config.gridSize, () => config.random.next());
 
   const m = [];
 

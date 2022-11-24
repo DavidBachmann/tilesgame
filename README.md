@@ -35,21 +35,3 @@ Special seeds
 /?seed=today
 /?seed=yesterday
 ```
-
-### Grid size
-
-min. 3 and max. 8
-
-```
-/?gridSize=3
-/?gridSize=8
-```
-
-### Tile types
-
-min. 3 and max. 5
-
-```
-/?tileTypes=3
-/?tileTypes=5
-```

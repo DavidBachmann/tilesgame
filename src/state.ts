@@ -18,6 +18,8 @@ import {
 import { Config, GameMode, GameStatus, State, Tile } from "./types";
 import { combo_counter, debug_message, delay } from "./utils";
 
+const FAST = false;
+
 const reset = (
   gameId: string,
   gameMode: GameMode,
@@ -40,16 +42,7 @@ const reset = (
   },
   combo: {
     count: 0,
-    message: null,
     score: 0,
-  },
-  message: {
-    queue: new Set(),
-    current: {
-      heading: "",
-      subtitle: "",
-    },
-    uuid: "",
   },
 });
 
@@ -68,45 +61,6 @@ const initialState = {
 export const store = (config: Config) =>
   create(
     combine(initialState, (set, get) => {
-      function prepare_next_state() {
-        // Reset state that might have been set during the last move.
-        set({
-          combo: {
-            score: 0,
-            message: null,
-            count: 0,
-          },
-        });
-      }
-
-      async function empty_message_queue() {
-        const queue = get().message.queue;
-        for await (const message of queue) {
-          set((state) => ({
-            message: {
-              ...state.message,
-              current: message,
-              uuid: v4(),
-            },
-          }));
-          await delay(CONSTANTS.MESSAGE_ANIMATION.ms);
-        }
-
-        await delay(CONSTANTS.MESSAGE_ANIMATION.ms / 2);
-
-        // Clean up
-        set({
-          message: {
-            queue: new Set(),
-            current: {
-              heading: "",
-              subtitle: "",
-            },
-            uuid: v4(),
-          },
-        });
-      }
-
       const enqueue = (t: Tile[], score = 0, time = 0) => {
         const q = get().queue;
         const temp = new Map(q);
@@ -153,10 +107,6 @@ export const store = (config: Config) =>
 
       const solve_queue = async () => {
         const q = get().queue;
-        const comboCount = get().combo.count;
-        const gameMode = get().game.gameMode;
-        const multiplier = combo_counter(comboCount);
-
         debug_message("LOCKED", "red");
 
         // Lock user interactions, clear selection
@@ -165,7 +115,9 @@ export const store = (config: Config) =>
         for (const [id, entry] of q) {
           q.delete(id);
 
-          await delay(CONSTANTS.TILE_ANIMATION.ms);
+          if (!FAST) {
+            await delay(CONSTANTS.TILE_ANIMATION.ms);
+          }
 
           set((prev) => ({
             tiles: entry.tiles,
@@ -192,48 +144,14 @@ export const store = (config: Config) =>
           },
         }));
 
-        if (gameMode !== "time-attack" && multiplier > 1) {
-          set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: `${multiplier}x multiplier`,
-                subtitle: `${toAdd} points!`,
-              }),
-            },
-          }));
-        }
-
-        if (multiplier >= 4 && gameMode !== "time-attack") {
-          set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: "Awesome!",
-              }),
-            },
-          }));
-        }
-
         // Check if grid is solvable
         const solvable = is_grid_solvable(get().tiles, config);
 
         if (!solvable) {
-          debug_message("Unsolvable", "red");
           set((state) => ({
-            message: {
-              ...state.message,
-              queue: state.message.queue.add({
-                heading: "No possible moves.",
-                subtitle: "Shuffling!",
-              }),
-            },
             tiles: shuffle_tiles(state.tiles, config),
           }));
         }
-
-        // Post all messages we have for the player
-        empty_message_queue();
 
         // Reset interactivity state
         set({ interactive: true });
@@ -250,6 +168,7 @@ export const store = (config: Config) =>
               tiles: create_grid(config),
               empties: create_empty_tiles(config),
             }));
+            config.random.reset();
           },
           add_to_selection: (id: number) => {
             if (!get().interactive) {
@@ -257,7 +176,13 @@ export const store = (config: Config) =>
               return;
             }
 
-            prepare_next_state();
+            // Reset combo state
+            set({
+              combo: {
+                score: 0,
+                count: 0,
+              },
+            });
 
             set((state) => ({
               selection: push_tile_selection(id, state.selection),

@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext } from "react";
 import { v4 } from "uuid";
 import Prando from "prando";
 import { Config } from "../types";
-import { clamp, convert_date_to_UTC } from "../utils";
+import { convert_date_to_UTC } from "../utils";
 
 function seed_from_v4(v4str: string) {
   // This is a v4 uuid
@@ -15,8 +15,7 @@ function seed_from_v4(v4str: string) {
 
 const defaultValue = {
   gridSize: 6,
-  tileTypes: 6,
-  random: () => Math.random(),
+  random: { next: () => Math.random(), reset: () => {} },
   seed: seed_from_v4(v4()),
 };
 
@@ -80,12 +79,6 @@ function parse_seed(seed: string) {
   return seed;
 }
 
-const MIN_GRID_SIZE = 3;
-const MAX_GRID_SIZE = 8;
-
-const MIN_TILE_TYPES = 3;
-const MAX_TILE_TYPES = 6;
-
 export function ConfigProvider({
   children,
   value = defaultValue,
@@ -93,22 +86,18 @@ export function ConfigProvider({
   children: ReactNode;
   value?: Config;
 }) {
-  const gridSize = get_from_query("gridSize", true) as number;
-  const tileTypes = get_from_query("tileTypes", true) as number;
   const seed = (get_from_query("seed") as string) || seed_from_v4(v4());
   const prando = new Prando(seed);
-  const random = () => prando.next();
+  const random = {
+    next: () => prando.next(),
+    reset: () => prando.reset(),
+  };
 
   const merged = {
     ...value,
     seed: parse_seed(seed),
     random,
-    gridSize: gridSize
-      ? clamp(gridSize, MIN_GRID_SIZE, MAX_GRID_SIZE)
-      : value.gridSize,
-    tileTypes: tileTypes
-      ? clamp(tileTypes, MIN_TILE_TYPES, MAX_TILE_TYPES)
-      : value.tileTypes,
+    gridSize: 6,
   };
 
   return (

@@ -1,19 +1,18 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { GameState, Relationships } from "./types";
+import { Fragment, useCallback, useEffect, useMemo } from "react";
+import { Config, GameState, Relationships } from "./types";
 import { Grid } from "./components/Grid";
 import { GameArea } from "./components/UI";
 import { Backlight } from "./components/Backlight";
 import { Score } from "./components/UI/Score";
-import { PlayerMessage } from "./components/UI/PlayerMessage";
 import { Timer } from "./components/Timer/Timer";
 import { useStore } from "./StoreCreator";
 import { Board } from "./components/UI/Board";
 import { MainMenu } from "./components/UI/MainMenu";
+import { useConfig } from "./context/ConfigContext";
 
 type GameProps = {
   gameMode: "casual" | "time-attack";
-  onGameOver?: (game: GameState) => void;
+  onGameOver?: (game: GameState, config: Config) => void;
 };
 
 export default function Game({ gameMode, onGameOver }: GameProps) {
@@ -23,16 +22,15 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
   const gameTiles = useStore((state) => state.tiles);
   const emptyTiles = useStore((state) => state.empties);
   const game = useStore((state) => state.game);
-  const message = useStore((state) => state.message);
-  const showPlayerMessage = !!message.current.heading;
+  const config = useConfig();
 
   useEffect(() => {
     if (game.status === "game-over") {
       if (typeof onGameOver === "function") {
-        onGameOver(game);
+        onGameOver(game, config);
       }
     }
-  }, [game, onGameOver]);
+  }, [game, config, onGameOver]);
 
   useMemo(() => {
     init(gameMode);
@@ -91,15 +89,6 @@ export default function Game({ gameMode, onGameOver }: GameProps) {
           tiles={tiles}
           party={tiles.some((tile) => tile.type === -1)}
         />
-        <AnimatePresence mode="wait">
-          {showPlayerMessage && (
-            <PlayerMessage
-              key={message.uuid}
-              heading={message.current.heading}
-              subtitle={message.current.subtitle}
-            />
-          )}
-        </AnimatePresence>
       </GameArea>
     </Fragment>
   );

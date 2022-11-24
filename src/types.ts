@@ -21,14 +21,8 @@ export type State = {
   timer: {
     count: number;
   };
-  message: {
-    queue: Set<EndGameMessage>;
-    current: EndGameMessage;
-    uuid: string;
-  };
   combo: {
     count: number;
-    message: string | null;
     score: number;
   };
   actions: {
@@ -40,15 +34,9 @@ export type State = {
   };
 };
 
-type EndGameMessage = {
-  heading: string;
-  subtitle?: string;
-};
-
 export type Config = {
   gridSize: number;
-  tileTypes: number;
-  random: () => number;
+  random: { next: () => number; reset: () => void };
   seed: string;
 };
 
