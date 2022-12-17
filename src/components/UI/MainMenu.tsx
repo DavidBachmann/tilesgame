@@ -1,15 +1,32 @@
 import { useMemo } from "react";
-import { useLeaderboard } from "../../context/LeaderboardContext";
 import { useStore } from "../../StoreCreator";
 import Button from "../Button";
-import { LeaderboardTable } from "../LeaderboardTable";
 import * as css from "./MainMenu.css";
+
+function getSubtitle(score: number) {
+  if (score >= 100 && score < 200) {
+    return "That's pretty good. Keep it up.";
+  }
+  if (score >= 200 && score < 400) {
+    return "Nice score. Can you improve it?";
+  }
+  if (score >= 400 && score < 600) {
+    return "That was mighty impressive!";
+  }
+  if (score >= 600 && score < 1000) {
+    return "I didn't think a score this high was even possible.";
+  }
+  if (score >= 1000) {
+    return "That. Was. Awesome.";
+  }
+
+  return "Practice makes perfect.";
+}
 
 export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
   const game = useStore((store) => store.game);
   const init = useStore((store) => store.actions.init);
   const setGameStatus = useStore((store) => store.actions.set_game_status);
-  const { lowestScore, toggleLeaderboard, isVisible } = useLeaderboard();
 
   const { gameMode, score } = game;
 
@@ -34,7 +51,6 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
                 It&apos;s you against the clock. Match 3 tiles to score points
                 and buy yourself some time.
               </css.subtitle>
-              <css.subtitle>Try to make it to the leaderboard.</css.subtitle>
             </css.instructions>
           )}
         </css.content>
@@ -46,50 +62,29 @@ export function MainMenu({ type }: { type: "pregame" | "postgame" }) {
           >
             Play
           </Button>
-
-          {gameMode === "time-attack" && (
-            <Button onClick={toggleLeaderboard} variant={4}>
-              Leaderboard
-            </Button>
-          )}
         </css.buttons>
       </>
     ),
-    [gameMode, init, toggleLeaderboard]
+    [gameMode, init]
   );
 
   const postgame = useMemo(
     () => (
       <>
         <css.content>
-          <css.title>You scored {score} points</css.title>
-          {score >= lowestScore ? (
-            <css.subtitle>You&apos;re on the leaderboard!</css.subtitle>
-          ) : (
-            <css.subtitle>Better luck next time.</css.subtitle>
-          )}
+          <css.title>You scored {score} points.</css.title>
+          <css.subtitle>{getSubtitle(score)}</css.subtitle>
         </css.content>
 
         <css.buttons>
-          {game.gameMode === "time-attack" && (
-            <Button onClick={toggleLeaderboard} variant={4}>
-              Leaderboard
-            </Button>
-          )}
-
           <Button variant={5} onClick={() => setGameStatus("pregame")}>
             Back
           </Button>
         </css.buttons>
       </>
     ),
-    [score, lowestScore, setGameStatus, game.gameMode, toggleLeaderboard]
+    [setGameStatus, score]
   );
 
-  return (
-    <css.root>
-      {isVisible && <LeaderboardTable />}
-      {!isVisible && <>{type === "pregame" ? pregame : postgame}</>}
-    </css.root>
-  );
+  return <css.root>{type === "pregame" ? pregame : postgame}</css.root>;
 }
